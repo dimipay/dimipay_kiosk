@@ -27,6 +27,21 @@ flutter:
   # Enable generation of localized Strings from arb files.
   generate: true
 
-  assets:
-    # Add assets from the images directory to the application.
-    - assets/images/
+  # assets:
+  #   - asset/images/
+  #   - asset/lottie/
+  #   - asset/icon/
+
+  # fonts:
+  #   - family: Montserrat
+  #     fonts:
+  #       - asset: fonts/Montserrat/Montserrat-Black.ttf
+  #   - family: Pretendard
+  #     fonts:
+  #       - asset: fonts/Pretendard/Pretendard-Regular.ttf
+  #         weight: 400
+  #       - asset: fonts/Pretendard/Pretendard-Medium.ttf
+  #         weight: 500
+  #       - asset: fonts/Pretendard/Pretendard-SemiBold.ttf
+  #         weight: 600
+  #       - asset: fonts/Pretendard/Pretendard-Bold.ttf
