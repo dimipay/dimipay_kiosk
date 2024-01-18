@@ -1,19 +1,19 @@
+import 'package:dimipay_pos_flutter/app/routes/pages.dart';
+import 'package:dimipay_pos_flutter/app/routes/routes.dart';
 import 'package:flutter/material.dart';
-import './utils/colors.dart';
+import 'package:get/get.dart';
+
+String getInintialRoute({bool debug = false}) {
+  return Routes.pin;
+  // return debug ? Routes.test : Routes.home;
+}
 
 void main() async {
-  var a = DPColors.Primary.Brand;
-  var b = DPColors.Grayscale[100];
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
-  // final settingsController = SettingsController(SettingsService());
-
-  // // Load the user's preferred theme while the splash screen is displayed.
-  // // This prevents a sudden theme change when the app is first displayed.
-  // await settingsController.loadSettings();
-
-  // // Run the app and pass in the SettingsController. The app listens to the
-  // // SettingsController for changes, then passes it further down to the
-  // // SettingsView.
-  // runApp(MyApp(settingsController: settingsController));
+  // await AppLoader().load();
+  runApp(GetMaterialApp(
+    title: '디미페이 POS',
+    initialRoute: getInintialRoute(debug: true),
+    getPages: AppPages.pages,
+    debugShowCheckedModeBanner: false,
+  ));
 }

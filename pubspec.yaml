@@ -12,8 +12,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  get: ^4.6.6
+  flutter_dotenv: ^5.1.0
+  google_sign_in: ^6.2.1
+  dio: ^5.4.0
+  flutter_secure_storage: ^9.0.0
+  uuid: ^4.3.3
+  jwt_decoder: ^2.0.1
+  dimipay_design_kit: ^0.0.1
+  material_symbols_icons: ^4.2716.0
+
 
 dev_dependencies:
   flutter_test:
@@ -23,9 +35,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  # Enable generation of localized Strings from arb files.
-  generate: true
 
   # assets:
   #   - asset/images/
@@ -51,5 +60,5 @@ flutter:
           weight: 700
         - asset: assets/fonts/SUIT-ExtraBold.ttf
           weight: 800
-        - asset: fonts/SUIT-Black.ttf
+        - asset: assets/fonts/SUIT-Heavy.ttf
           weight: 900
