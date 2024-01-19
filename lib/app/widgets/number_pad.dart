@@ -15,9 +15,9 @@ class NumberPadButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTapDown: (_) => Get.find<NumberController>().pressed(number),
-        onTapUp: (_) => Get.find<NumberController>().released(number),
-        onTapCancel: () => Get.find<NumberController>().canceled(),
+        onTapDown: (_) => NumberController.to.down(number),
+        onTapUp: (_) => NumberController.to.up(number),
+        onTapCancel: () => NumberController.to.canceled(),
         behavior: HitTestBehavior.translucent,
         child: Obx(() {
           return Container(
@@ -25,10 +25,8 @@ class NumberPadButton extends StatelessWidget {
             width: buttonWidth,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: Get.find<NumberController>().isPressed &&
-                      Get.find<NumberController>()
-                          .pressedNumber
-                          .contains(number)
+              color: NumberController.to.pressed &&
+                      NumberController.to.pressedNumber.contains(number)
                   ? DPColors.grayscale500
                   : Colors.transparent,
             ),
@@ -51,11 +49,6 @@ class NumberPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<int> numbers = List.generate(10, (index) => index);
-    numbers.shuffle();
-    Get.lazyPut(() => NumberController());
-    Get.find<NumberController>().init(numbers);
-
     return Container(
         constraints: const BoxConstraints(maxWidth: 280),
         padding: const EdgeInsets.fromLTRB(
@@ -64,26 +57,29 @@ class NumberPad extends StatelessWidget {
             34 - buttonWidth * 0.5,
             52 - buttonHeight * 0.5),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          for (int i = 0; i < numbers.length - 1; i += 3)
+          for (int i = 0; i < NumberController.to.numbers.length - 1; i += 3)
             Column(children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 for (int j = i; j < i + 3; j++)
-                  NumberPadButton(number: numbers[j])
+                  NumberPadButton(number: NumberController.to.numbers[j])
               ]),
               const SizedBox(height: 96 - buttonHeight)
             ]),
-          Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: buttonWidth * 0.5 - 10, vertical: 0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(width: 32, height: 32),
-                    NumberPadButton(number: numbers[9]),
-                    GestureDetector(
-                        onTap: () {},
-                        child: const DPIcons(Symbols.backspace_rounded))
-                  ]))
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            const SizedBox(width: buttonWidth, height: buttonHeight),
+            NumberPadButton(number: NumberController.to.numbers[9]),
+            GestureDetector(
+                onTapDown: (_) => NumberController.to.down(10),
+                onTapUp: (_) => NumberController.to.up(10),
+                child: Container(
+                    height: buttonHeight,
+                    width: buttonWidth,
+                    color: NumberController.to.pressed &&
+                            NumberController.to.pressedNumber.contains(10)
+                        ? DPColors.grayscale500
+                        : Colors.transparent,
+                    child: const DPIcons(Symbols.backspace_rounded)))
+          ])
         ]));
   }
 }

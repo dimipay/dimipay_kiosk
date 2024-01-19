@@ -1,5 +1,6 @@
 import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
+import 'package:dimipay_pos_flutter/app/widgets/number_controller.dart';
 import 'package:dimipay_pos_flutter/app/widgets/number_pad.dart';
 import 'package:dimipay_pos_flutter/app/widgets/number_indicator.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class PinPage extends GetView<PinPageController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(NumberController());
     return Scaffold(
       backgroundColor: DPColors.grayscale100,
       body: SizedBox.expand(
