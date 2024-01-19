@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dimipay_pos_flutter/app/routes/routes.dart';
 import 'package:get/get.dart';
 
 class NumberController extends GetxController {
@@ -61,10 +62,6 @@ class NumberController extends GetxController {
   void up(int number) {
     pressed = !pressed;
 
-    // if (length == 4 || length == 0) {
-    //   return;
-    // }
-
     if (number == 10) {
       if (length == 0) return;
       password.removeLast();
@@ -72,10 +69,11 @@ class NumberController extends GetxController {
       return;
     }
 
-    if (length == 4) return;
     password.add(number);
     length++;
 
-    print("password : ${password}");
+    if (length == 4) {
+      Get.toNamed(Routes.payment);
+    }
   }
 }
