@@ -1,7 +1,7 @@
 import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:dimipay_pos_flutter/app/widgets/num_pad.dart';
-import 'package:dimipay_pos_flutter/app/widgets/page_indicator.dart';
+import 'package:dimipay_pos_flutter/app/widgets/number_pad.dart';
+import 'package:dimipay_pos_flutter/app/widgets/number_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,9 +30,9 @@ class PinPage extends GetView<PinPageController> {
               ],
             ),
             const SizedBox(height: 120),
-            const PageIndicator(),
+            const NumberIndicator(),
             const SizedBox(height: 120),
-            const NumPad(),
+            const NumberPad(),
           ],
         ),
       ),
