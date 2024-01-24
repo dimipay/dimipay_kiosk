@@ -1,5 +1,5 @@
-import 'package:dimipay_pos_flutter/app/pages/payment/binding.dart';
-import 'package:dimipay_pos_flutter/app/pages/payment/page.dart';
+import 'package:dimipay_pos_flutter/app/pages/product/binding.dart';
+import 'package:dimipay_pos_flutter/app/pages/product/page.dart';
 import 'package:dimipay_pos_flutter/app/pages/pin/binding.dart';
 import 'package:dimipay_pos_flutter/app/pages/pin/page.dart';
 import 'package:dimipay_pos_flutter/app/routes/routes.dart';
@@ -10,9 +10,9 @@ class AppPages {
     // GetPage(name: Routes.test, page: () => const TestPage()),
     // GetPage(name: Routes.home, page: () => const HomePage()),
     GetPage(
-        name: Routes.payment,
-        page: () => const PaymentPage(),
-        binding: PaymentPageBinding()),
+        name: Routes.product,
+        page: () => const ProductPage(),
+        binding: ProductPageBinding()),
     GetPage(
         name: Routes.pin,
         page: () => const PinPage(),

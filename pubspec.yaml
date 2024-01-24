@@ -23,7 +23,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   uuid: ^4.3.3
   jwt_decoder: ^2.0.1
-  dimipay_design_kit: ^0.0.1
+  dimipay_design_kit: ^0.1.0
   material_symbols_icons: ^4.2716.0
 
 
@@ -36,29 +36,30 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # assets:
+  assets:
+    - assets/fonts/
   #   - asset/images/
   #   - asset/lottie/
   #   - asset/icon/
 
   fonts:
-    - family: SUIT
+    - family: SUITv1
       fonts:
-        - asset: assets/fonts/SUIT-Thin.ttf
+        - asset: assets/fonts/SUITv1-Thin.ttf
           weight: 100
-        - asset: assets/fonts/SUIT-ExtraLight.ttf
+        - asset: assets/fonts/SUITv1-ExtraLight.ttf
           weight: 200
-        - asset: assets/fonts/SUIT-Light.ttf
+        - asset: assets/fonts/SUITv1-Light.ttf
           weight: 300
-        - asset: assets/fonts/SUIT-Regular.ttf
+        - asset: assets/fonts/SUITv1-Regular.ttf
           weight: 400
-        - asset: assets/fonts/SUIT-Medium.ttf
+        - asset: assets/fonts/SUITv1-Medium.ttf
           weight: 500
-        - asset: assets/fonts/SUIT-SemiBold.ttf
+        - asset: assets/fonts/SUITv1-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/SUIT-Bold.ttf
+        - asset: assets/fonts/SUITv1-Bold.ttf
           weight: 700
-        - asset: assets/fonts/SUIT-ExtraBold.ttf
+        - asset: assets/fonts/SUITv1-ExtraBold.ttf
           weight: 800
-        - asset: assets/fonts/SUIT-Heavy.ttf
+        - asset: assets/fonts/SUITv1-Heavy.ttf
           weight: 900

@@ -1,17 +1,16 @@
-import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:dimipay_pos_flutter/app/widgets/number_controller.dart';
-import 'package:dimipay_pos_flutter/app/widgets/number_pad.dart';
-import 'package:dimipay_pos_flutter/app/widgets/number_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'package:dimipay_pos_flutter/app/pages/pin/widget/pin_indicator.dart';
+import 'package:dimipay_pos_flutter/app/pages/pin/widget/pin_pad.dart';
+import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
 
 class PinPage extends GetView<PinPageController> {
   const PinPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(NumberController());
     return Scaffold(
         body: SafeArea(
             child: SizedBox.expand(
@@ -20,21 +19,17 @@ class PinPage extends GetView<PinPageController> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-          Column(
-            children: [
-              Text(
-                "결재 단말기 활성화 코드 입력",
-                style: DPTypography.title(color: DPColors.grayscale1000),
-              ),
-              const SizedBox(height: 16),
-              Text("관리자 페이지에서 단말기 활성화 코드를 발급하여 입력해주세요",
-                  style: DPTypography.header2(color: DPColors.grayscale700))
-            ],
-          ),
+          Column(children: [
+            Text("결재 단말기 활성화 코드 입력",
+                style: DPTypography.title(color: DPColors.grayscale1000)),
+            const SizedBox(height: 16),
+            Text("관리자 페이지에서 단말기 활성화 코드를 발급하여 입력해주세요",
+                style: DPTypography.header2(color: DPColors.grayscale700))
+          ]),
           const SizedBox(height: 120),
-          const NumberIndicator(),
+          const PinIndicator(),
           const SizedBox(height: 120),
-          const NumberPad(),
+          const PinPad(),
         ]))));
   }
 }

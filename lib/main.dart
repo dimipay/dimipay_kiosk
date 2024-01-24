@@ -15,9 +15,10 @@ void main() async {
     title: '디미페이 POS',
     getPages: AppPages.pages,
     theme: ThemeData(
-        fontFamily: 'SUIT',
-        primaryColor: DPColors.primaryBrand,
-        scaffoldBackgroundColor: DPColors.grayscale100),
+      fontFamily: 'SUITv1',
+      primaryColor: DPColors.primaryBrand,
+      scaffoldBackgroundColor: DPColors.grayscale100,
+    ),
     initialRoute: getInintialRoute(debug: true),
     debugShowCheckedModeBanner: false,
   ));

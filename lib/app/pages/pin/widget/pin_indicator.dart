@@ -1,10 +1,11 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:dimipay_pos_flutter/app/widgets/number_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class NumberIndicator extends StatelessWidget {
-  const NumberIndicator({super.key});
+import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
+
+class PinIndicator extends StatelessWidget {
+  const PinIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class NumberIndicator extends StatelessWidget {
               height: 28,
               width: 28,
               decoration: BoxDecoration(
-                color: i < NumberController.to.length
+                color: i < PinPageController.to.inputLength
                     ? DPColors.grayscale800
                     : DPColors.grayscale300,
                 borderRadius: BorderRadius.circular(14),
