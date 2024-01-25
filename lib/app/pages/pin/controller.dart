@@ -81,7 +81,7 @@ class PinPageController extends GetxController {
     inputLength++;
 
     if (inputLength == 4) {
-      Get.toNamed(Routes.onboard);
+      Get.offAndToNamed(Routes.onboard);
     }
   }
 }

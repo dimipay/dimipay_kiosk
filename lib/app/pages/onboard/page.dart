@@ -48,9 +48,9 @@ class OnboardPage extends GetView<OnboardPageController> {
       Expanded(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SvgPicture.asset('assets/images/logo.svg'),
+          SvgPicture.asset("assets/images/dimipay_logo.svg"),
           const SizedBox(width: 24),
-          SvgPicture.asset('assets/images/dimipay.svg')
+          SvgPicture.asset("assets/images/dimipay_typography.svg")
         ]),
         const SizedBox(height: 64),
         Text("매점에 오신 것을 환영합니다!",

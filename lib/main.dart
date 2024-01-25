@@ -12,14 +12,12 @@ String getInintialRoute({bool debug = false}) {
 void main() async {
   // await AppLoader().load();
   runApp(GetMaterialApp(
-    title: '디미페이 POS',
-    getPages: AppPages.pages,
-    theme: ThemeData(
-      fontFamily: 'SUITv1',
-      primaryColor: DPColors.primaryBrand,
-      scaffoldBackgroundColor: DPColors.grayscale100,
-    ),
-    initialRoute: getInintialRoute(debug: true),
-    debugShowCheckedModeBanner: false,
-  ));
+      title: '디미페이 POS',
+      getPages: AppPages.pages,
+      initialRoute: getInintialRoute(debug: true),
+      theme: ThemeData(
+          fontFamily: 'SUITv1',
+          primaryColor: DPColors.primaryBrand,
+          scaffoldBackgroundColor: DPColors.grayscale100),
+      debugShowCheckedModeBanner: false));
 }

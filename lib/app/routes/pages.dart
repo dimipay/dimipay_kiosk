@@ -4,6 +4,8 @@ import 'package:dimipay_pos_flutter/app/pages/onboard/binding.dart';
 import 'package:dimipay_pos_flutter/app/pages/onboard/page.dart';
 import 'package:dimipay_pos_flutter/app/pages/product/binding.dart';
 import 'package:dimipay_pos_flutter/app/pages/product/page.dart';
+import 'package:dimipay_pos_flutter/app/pages/payment/binding.dart';
+import 'package:dimipay_pos_flutter/app/pages/payment/page.dart';
 import 'package:dimipay_pos_flutter/app/routes/routes.dart';
 import 'package:get/get.dart';
 
@@ -21,5 +23,9 @@ class AppPages {
         name: Routes.product,
         page: () => const ProductPage(),
         binding: ProductPageBinding()),
+    GetPage(
+        name: Routes.payment,
+        page: () => const PaymentPage(),
+        binding: PaymentPageBinding()),
   ];
 }
