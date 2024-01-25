@@ -1,7 +1,7 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:flutter/material.dart';
 
-import 'package:dimipay_pos_flutter/app/pages/product/controller.dart';
+import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 
 class ProductBar extends StatelessWidget {
   const ProductBar({super.key});

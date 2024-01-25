@@ -3,7 +3,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
+import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 
 const double buttonHeight = 72;
 const double buttonWidth = 72;

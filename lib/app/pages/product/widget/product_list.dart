@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:dimipay_pos_flutter/app/pages/product/controller.dart';
+import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 
 class ProductListItem extends StatelessWidget {
   const ProductListItem({super.key, required this.id});

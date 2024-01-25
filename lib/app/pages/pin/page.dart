@@ -2,9 +2,9 @@ import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_pos_flutter/app/pages/pin/widget/pin_indicator.dart';
-import 'package:dimipay_pos_flutter/app/pages/pin/widget/pin_pad.dart';
-import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
+import 'package:dimipay_kiosk/app/pages/pin/widget/pin_indicator.dart';
+import 'package:dimipay_kiosk/app/pages/pin/widget/pin_pad.dart';
+import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 
 class PinPage extends GetView<PinPageController> {
   const PinPage({super.key});

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'dart:math';
 
-import 'package:dimipay_pos_flutter/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class PinPageController extends GetxController {
   static PinPageController get to => Get.find<PinPageController>();

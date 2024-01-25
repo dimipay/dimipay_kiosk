@@ -1,4 +1,4 @@
-import 'package:dimipay_pos_flutter/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:get/get.dart';
 
 class Product {

@@ -1,5 +1,5 @@
-name: dimipay_pos_flutter
-description: "Dimipay POS"
+name: dimipay_kiosk
+description: "Dimipay Kiosk"
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'

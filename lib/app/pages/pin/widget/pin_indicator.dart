@@ -2,7 +2,7 @@ import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_pos_flutter/app/pages/pin/controller.dart';
+import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 
 class PinIndicator extends StatelessWidget {
   const PinIndicator({super.key});

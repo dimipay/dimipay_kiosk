@@ -1,4 +1,4 @@
-import 'package:dimipay_pos_flutter/app/pages/product/controller.dart';
+import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 import 'package:get/get.dart';
 
 class ProductPageBinding implements Bindings {

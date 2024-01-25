@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_pos_flutter/app/pages/onboard/controller.dart';
+import 'package:dimipay_kiosk/app/pages/onboard/controller.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class OnboardStatus extends StatelessWidget {

@@ -1,12 +1,12 @@
-import 'package:dimipay_pos_flutter/app/pages/pin/binding.dart';
-import 'package:dimipay_pos_flutter/app/pages/pin/page.dart';
-import 'package:dimipay_pos_flutter/app/pages/onboard/binding.dart';
-import 'package:dimipay_pos_flutter/app/pages/onboard/page.dart';
-import 'package:dimipay_pos_flutter/app/pages/product/binding.dart';
-import 'package:dimipay_pos_flutter/app/pages/product/page.dart';
-import 'package:dimipay_pos_flutter/app/pages/payment/binding.dart';
-import 'package:dimipay_pos_flutter/app/pages/payment/page.dart';
-import 'package:dimipay_pos_flutter/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/pages/pin/binding.dart';
+import 'package:dimipay_kiosk/app/pages/pin/page.dart';
+import 'package:dimipay_kiosk/app/pages/onboard/binding.dart';
+import 'package:dimipay_kiosk/app/pages/onboard/page.dart';
+import 'package:dimipay_kiosk/app/pages/product/binding.dart';
+import 'package:dimipay_kiosk/app/pages/product/page.dart';
+import 'package:dimipay_kiosk/app/pages/payment/binding.dart';
+import 'package:dimipay_kiosk/app/pages/payment/page.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:get/get.dart';
 
 class AppPages {
