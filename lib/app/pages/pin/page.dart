@@ -16,8 +16,6 @@ class PinPage extends GetView<PinPageController> {
             child: SizedBox.expand(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
           Column(children: [
             Text("결재 단말기 활성화 코드 입력",
