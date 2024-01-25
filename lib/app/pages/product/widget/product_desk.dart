@@ -2,6 +2,7 @@ import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dimipay_pos_flutter/app/pages/product/controller.dart';
+import 'package:get/get.dart';
 
 class ProductSelection extends StatelessWidget {
   const ProductSelection({super.key});
@@ -37,11 +38,12 @@ class ProductDesk extends StatelessWidget {
         child: Column(children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("${ProductPageController.to.productCount}개 상품",
-                  style: DPTypography.pos.itemDescription()),
+              Obx(() => Text(
+                  "${ProductPageController.to.productTotalCount}개 상품",
+                  style: DPTypography.pos.itemDescription())),
               const SizedBox(height: 8),
-              Text("3,860원",
-                  style: DPTypography.pos.title(color: DPColors.primaryBrand))
+              Obx(() => Text("${ProductPageController.to.productTotalPrice}원",
+                  style: DPTypography.pos.title(color: DPColors.primaryBrand)))
             ]),
             Container(
                 padding:

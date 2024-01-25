@@ -26,10 +26,10 @@ class PinPageController extends GetxController {
 
   final numbers = List.generate(10, (index) => index);
 
-  List<int> get input => _input.value;
+  List<int> get input => _input;
   int get inputLength => _inputLength.value;
   bool get isPressed => _isPressed.value;
-  List<int> get pressedPin => _pressedPin.value;
+  List<int> get pressedPin => _pressedPin;
 
   set input(List<int> value) => _input.value = value;
   set inputLength(int value) => _inputLength.value = value;
