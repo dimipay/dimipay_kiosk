@@ -10,7 +10,4 @@ class OnboardPageController extends GetxController {
 
   bool get isConnecting => _isConnecting.value;
   bool get isConnected => _isConnected.value;
-
-  set isConnecting(bool value) => _isConnecting.value = value;
-  set isConnected(bool value) => _isConnected.value = value;
 }

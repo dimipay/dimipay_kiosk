@@ -1,6 +1,4 @@
-import 'package:dimipay_kiosk/app/services/auth/repository.dart';
-import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
-import 'package:dio/dio.dart';
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:get/get.dart';
 import 'dart:math';
 
@@ -10,31 +8,26 @@ class PinPageController extends GetxController {
   static PinPageController get to => Get.find<PinPageController>();
 
   final numbers = List.generate(10, (index) => index).obs;
-
+  final pressedPin = <int>[].obs;
   final _input = <int>[].obs;
   final _inputLength = 0.obs;
   final _isPressed = false.obs;
-  final _pressedPin = <int>[].obs;
   final _dimension = [
     [0, 3, 6],
     [1, 4, 7, 9],
     [2, 5, 8]
   ];
 
-  List<int> get input => _input;
   int get inputLength => _inputLength.value;
   bool get isPressed => _isPressed.value;
-  List<int> get pressedPin => _pressedPin;
 
-  set input(List<int> value) => _input.value = value;
-  set inputLength(int value) => _inputLength.value = value;
-  set isPressed(bool value) => _isPressed.value = value;
-  set pressedPin(List<int> value) => _pressedPin.value = value;
+  set pressedPin(List<int> value) => pressedPin.value = value;
 
-  @override
-  void onInit() {
-    super.onInit();
+  PinPageController init() {
+    _input.clear();
+    _inputLength.value = 0;
     numbers.shuffle();
+    return this;
   }
 
   List<int> _random(int number) {
@@ -50,7 +43,7 @@ class PinPageController extends GetxController {
   }
 
   void down(int number) {
-    isPressed = !isPressed;
+    _isPressed.value = !isPressed;
     if (number == 10) {
       pressedPin = [10];
       return;
@@ -58,51 +51,26 @@ class PinPageController extends GetxController {
     pressedPin = _random(number);
   }
 
-  void canceled() {
-    isPressed = !isPressed;
-  }
+  void canceled() => _isPressed.value = !isPressed;
 
-  Future<void> up(int number) async {
-    isPressed = !isPressed;
+  void up(int number) async {
+    _isPressed.value = !isPressed;
 
     if (inputLength == 4) return;
 
     if (number == 10) {
       if (inputLength == 0) return;
-      input.removeLast();
-      inputLength--;
+      _input.removeLast();
+      _inputLength.value--;
       return;
     }
 
-    input.add(number);
-    inputLength++;
+    _input.add(number);
+    _inputLength.value++;
 
-    if (inputLength == 4) {
-      if (await _auth()) Get.offAndToNamed(Routes.ONBOARD);
-    }
-  }
-
-  Future<bool> _auth() async {
-    var dio = Dio();
-    try {
-      final response =
-          await dio.request("https://dev-api.dimipay.io/pos-login/",
-              data: {
-                "passcode": input.join(),
-              },
-              options: Options(method: 'POST', headers: {
-                'Content-Type': 'application/json',
-              }));
-      // print(AuthRepository().refreshAccessToken(response.data['accessToken']));
-
-      return true;
-    } catch (e) {
-      input.clear();
-      inputLength = 0;
-      numbers.shuffle();
-      // PinPageController.to.refresh();
-      AlertModal.to.show("비밀번호가 틀렸습니다. 다시 입력해주세요.");
-      return false;
+    if (inputLength == 4 &&
+        await AuthService.to.activateKiosk(_input.join().toString())) {
+      Get.offAndToNamed(Routes.ONBOARD);
     }
   }
 }

@@ -7,6 +7,7 @@ class AlertModal extends GetxController {
   static AlertModal get to => Get.find<AlertModal>();
 
   void show(String message) {
+    if (Get.isSnackbarOpen) Get.closeCurrentSnackbar();
     Get.rawSnackbar(
         messageText: Text(message,
             style: DPTypography.header1(color: DPColors.grayscale100)),

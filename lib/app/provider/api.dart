@@ -10,43 +10,43 @@ class JWTInterceptor extends Interceptor {
   // Dependency Injection
   JWTInterceptor(this._dioInstance);
 
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    AuthService authService = Get.find<AuthService>();
-    if (options.path == '/auth/refresh') {
-      return handler.next(options);
-    }
+  // @override
+  // void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  //   AuthService authService = Get.find<AuthService>();
+  //   if (options.path == '/auth/refresh') {
+  //     return handler.next(options);
+  //   }
 
-    if (authService.isAuthenticated) {
-      options.headers['Authorization'] = 'Bearer ${authService.accessToken}';
-    }
+  //   if (authService.isAuthenticated) {
+  //     options.headers['Authorization'] = 'Bearer ${authService.accessToken}';
+  //   }
 
-    return handler.next(options);
-  }
+  //   return handler.next(options);
+  // }
 
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
-    AuthService authService = Get.find<AuthService>();
-    //refresh api가 401시 무한 루프 방지
-    if (err.response?.requestOptions.path == '/auth/refresh') {
-      return handler.next(err);
-    }
+  // @override
+  // void onError(DioException err, ErrorInterceptorHandler handler) async {
+  //   AuthService authService = Get.find<AuthService>();
+  //   //refresh api가 401시 무한 루프 방지
+  //   if (err.response?.requestOptions.path == '/auth/refresh') {
+  //     return handler.next(err);
+  //   }
 
-    if (err.response?.statusCode == 401 && authService.accessToken != null) {
-      try {
-        // await authService.refreshAcessToken();
-        print("error");
+  //   if (err.response?.statusCode == 401 && authService.accessToken != null) {
+  //     try {
+  //       // await authService.refreshAcessToken();
+  //       print("error");
 
-        //api 호출을 다시 시도함
-        final Response response = await _dioInstance.fetch(err.requestOptions);
-        return handler.resolve(response);
-      } catch (e) {
-        //refresh 실패 시 401을 그대로 반환
-        return handler.next(err);
-      }
-    }
-    return handler.next(err);
-  }
+  //       //api 호출을 다시 시도함
+  //       final Response response = await _dioInstance.fetch(err.requestOptions);
+  //       return handler.resolve(response);
+  //     } catch (e) {
+  //       //refresh 실패 시 401을 그대로 반환
+  //       return handler.next(err);
+  //     }
+  //   }
+  //   return handler.next(err);
+  // }
 }
 
 class LogInterceptor extends Interceptor {

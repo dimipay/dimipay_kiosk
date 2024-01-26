@@ -19,7 +19,11 @@ class ProductListItem extends StatelessWidget {
     return Column(children: [
       const SizedBox(height: 36),
       GestureDetector(
-          onTapDown: (_) => ProductPageController.to.pressedButton = "${id}box",
+          onTapDown: (_) {
+            if (ProductPageController.to.pressedButton == "") {
+              ProductPageController.to.pressedButton = "${id}box";
+            }
+          },
           onTapCancel: () => ProductPageController.to.pressedButton = "",
           onTapUp: (_) {
             ProductPageController.to.pressedButton = "";
@@ -62,7 +66,8 @@ class ProductListItem extends StatelessWidget {
                                   fontSize: 20,
                                   fontWeight: DPTypography.weight.medium,
                                   letterSpacing: -0.6,
-                                  color: DPColors.grayscale600))),
+                                  color: const Color.fromARGB(
+                                      255, 137, 136, 128)))),
                           GestureDetector(
                               onTapDown: (_) =>
                                   ProductPageController.to.pressedButton = id,

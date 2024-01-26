@@ -1,7 +1,9 @@
-import 'package:dimipay_kiosk/app/services/auth/model.dart';
 import 'package:get/instance_manager.dart';
 import 'package:dio/dio.dart';
 
+import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
+import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/services/auth/model.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 
 class AuthRepository {
@@ -9,9 +11,23 @@ class AuthRepository {
 
   AuthRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
-  Future<String> refreshAccessToken(String accessToken) async {
+  Future<String> getAccessToken(String passcode) async {
+    String url = "/pos-login/";
+    Map body = {"passcode": passcode};
+    try {
+      Response response = await api.post(url, data: body);
+      return response.data["accessToken"];
+    } on DioException catch (e) {
+      var message = e.response?.data["message"];
+
+      AlertModal.to.show(message);
+      throw IncorrectPinException(message);
+    }
+  }
+
+  Future<String> refreshAccessToken(String refreshToken) async {
     String url = "/pos-login/refresh/";
-    Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
+    Map<String, dynamic> headers = {'Authorization': 'Bearer $refreshToken'};
     Response response = await api.post(url, options: Options(headers: headers));
     return response.data['accessToken'];
   }
