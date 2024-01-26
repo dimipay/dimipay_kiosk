@@ -9,7 +9,7 @@ import 'package:dimipay_kiosk/app/routes/routes.dart';
 class PinPageController extends GetxController {
   static PinPageController get to => Get.find<PinPageController>();
 
-  final numbers = List.generate(10, (index) => index);
+  final numbers = List.generate(10, (index) => index).obs;
 
   final _input = <int>[].obs;
   final _inputLength = 0.obs;
@@ -99,6 +99,8 @@ class PinPageController extends GetxController {
     } catch (e) {
       input.clear();
       inputLength = 0;
+      numbers.shuffle();
+      // PinPageController.to.refresh();
       AlertModal.to.show("비밀번호가 틀렸습니다. 다시 입력해주세요.");
       return false;
     }

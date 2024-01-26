@@ -9,12 +9,13 @@ const double buttonHeight = 72;
 const double buttonWidth = 72;
 
 class PinPadButton extends StatelessWidget {
-  const PinPadButton({required this.number, super.key});
+  const PinPadButton({required this.index, super.key});
 
-  final int number;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
+    int number = PinPageController.to.numbers[index];
     return GestureDetector(
         onTapDown: (_) => PinPageController.to.down(number),
         onTapUp: (_) => PinPageController.to.up(number),
@@ -32,7 +33,8 @@ class PinPadButton extends StatelessWidget {
                   : Colors.transparent,
             ),
             alignment: Alignment.center,
-            child: Text(number.toString(),
+            //re-render를 위해 number 대신 직접 호출
+            child: Text(PinPageController.to.numbers[index].toString(),
                 style: TextStyle(
                   fontFamily: 'SUITv1',
                   fontSize: 28,
@@ -58,12 +60,11 @@ class PinPad extends StatelessWidget {
         children: [
           for (int i = 0; i < PinPageController.to.numbers.length - 1; i += 3)
             Wrap(spacing: 40, children: [
-              for (int j = i; j < i + 3; j++)
-                PinPadButton(number: PinPageController.to.numbers[j])
+              for (int j = i; j < i + 3; j++) PinPadButton(index: j)
             ]),
           Wrap(spacing: 40, children: [
             const SizedBox(width: buttonWidth, height: buttonHeight),
-            PinPadButton(number: PinPageController.to.numbers[9]),
+            const PinPadButton(index: 9),
             GestureDetector(
                 onTapDown: (_) => PinPageController.to.down(10),
                 onTapUp: (_) => PinPageController.to.up(10),
