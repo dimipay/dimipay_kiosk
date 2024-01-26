@@ -12,19 +12,19 @@ import 'package:get/get.dart';
 class AppPages {
   static final pages = [
     GetPage(
-        name: Routes.pin,
+        name: Routes.PIN,
         page: () => const PinPage(),
         binding: PinPageBinding()),
     GetPage(
-        name: Routes.onboard,
+        name: Routes.ONBOARD,
         page: () => const OnboardPage(),
         binding: OnboardPageBinding()),
     GetPage(
-        name: Routes.product,
+        name: Routes.PRODUCT,
         page: () => const ProductPage(),
         binding: ProductPageBinding()),
     GetPage(
-        name: Routes.payment,
+        name: Routes.PAYMENT,
         page: () => const PaymentPage(),
         binding: PaymentPageBinding()),
   ];

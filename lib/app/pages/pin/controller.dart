@@ -1,3 +1,6 @@
+import 'package:dimipay_kiosk/app/services/auth/repository.dart';
+import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'dart:math';
 
@@ -6,16 +9,10 @@ import 'package:dimipay_kiosk/app/routes/routes.dart';
 class PinPageController extends GetxController {
   static PinPageController get to => Get.find<PinPageController>();
 
-  // AuthService authService = Get.find<AuthService>();
-
-  // Future onboardingAuth(String pin) async {
-  //   await authService.onBoardingAuth(pin);
-  //   Get.offNamed(Routes.home);
-  // }
+  final numbers = List.generate(10, (index) => index);
 
   final _input = <int>[].obs;
   final _inputLength = 0.obs;
-
   final _isPressed = false.obs;
   final _pressedPin = <int>[].obs;
   final _dimension = [
@@ -23,8 +20,6 @@ class PinPageController extends GetxController {
     [1, 4, 7, 9],
     [2, 5, 8]
   ];
-
-  final numbers = List.generate(10, (index) => index);
 
   List<int> get input => _input;
   int get inputLength => _inputLength.value;
@@ -67,8 +62,10 @@ class PinPageController extends GetxController {
     isPressed = !isPressed;
   }
 
-  void up(int number) {
+  Future<void> up(int number) async {
     isPressed = !isPressed;
+
+    if (inputLength == 4) return;
 
     if (number == 10) {
       if (inputLength == 0) return;
@@ -81,7 +78,29 @@ class PinPageController extends GetxController {
     inputLength++;
 
     if (inputLength == 4) {
-      Get.offAndToNamed(Routes.onboard);
+      if (await _auth()) Get.offAndToNamed(Routes.ONBOARD);
+    }
+  }
+
+  Future<bool> _auth() async {
+    var dio = Dio();
+    try {
+      final response =
+          await dio.request("https://dev-api.dimipay.io/pos-login/",
+              data: {
+                "passcode": input.join(),
+              },
+              options: Options(method: 'POST', headers: {
+                'Content-Type': 'application/json',
+              }));
+      // print(AuthRepository().refreshAccessToken(response.data['accessToken']));
+
+      return true;
+    } catch (e) {
+      input.clear();
+      inputLength = 0;
+      AlertModal.to.show("비밀번호가 틀렸습니다. 다시 입력해주세요.");
+      return false;
     }
   }
 }
