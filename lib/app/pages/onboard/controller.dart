@@ -1,13 +1,17 @@
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/services/auth/model.dart';
 
 class OnboardPageController extends GetxController {
   static OnboardPageController get to => Get.find<OnboardPageController>();
 
-  final RxBool _isConnecting = false.obs;
-  final RxBool _isConnected = true.obs;
+  final Rx<Kiosk?> kiosk = Rx(null);
 
-  bool get isConnecting => _isConnecting.value;
-  bool get isConnected => _isConnected.value;
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    kiosk.value = await AuthService.to.repository
+        .getKioskHealth(AuthService.to.accessToken!);
+  }
 }

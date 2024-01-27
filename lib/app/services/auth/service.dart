@@ -20,30 +20,32 @@ class AuthService extends GetxController {
   String? get accessToken => _jwtToken.value.accessToken;
 
   Future<AuthService> init() async {
-    final String? accessToken = await _storage.read(key: 'accessToken');
+    // delete on production
+    // await _storage.deleteAll();
+
     final String? refreshToken = await _storage.read(key: 'refreshToken');
+    if (refreshToken == null) {
+      return this;
+    }
 
-    _jwtToken.value =
-        JWTToken(accessToken: accessToken, refreshToken: refreshToken);
-
+    _jwtToken.value = JWTToken(
+        accessToken: await repository.refreshAccessToken(refreshToken),
+        refreshToken: refreshToken);
     return this;
   }
 
   Future<void> _setJWTToken(JWTToken newToken) async {
-    await _storage.write(key: 'accessToken', value: newToken.accessToken);
     await _storage.write(key: 'refreshToken', value: newToken.refreshToken);
     _jwtToken.value = newToken;
   }
 
   Future<bool> activateKiosk(String pin) async {
     try {
-      _jwtToken.value =
-          JWTToken(accessToken: await repository.getAccessToken(pin));
+      _setJWTToken(await repository.login(pin));
     } catch (_) {
       PinPageController.to.init();
       return false;
     }
-    _setJWTToken(_jwtToken.value);
     return true;
   }
 }

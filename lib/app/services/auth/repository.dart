@@ -11,29 +11,48 @@ class AuthRepository {
 
   AuthRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
-  Future<String> getAccessToken(String passcode) async {
+  Future<JWTToken> login(String passcode) async {
     String url = "/pos-login/";
     Map body = {"passcode": passcode};
     try {
       Response response = await api.post(url, data: body);
-      return response.data["accessToken"];
+      return JWTToken(
+          accessToken: response.data["accessToken"],
+          refreshToken: response.data["refreshToken"]);
     } on DioException catch (e) {
-      var message = e.response?.data["message"];
-
-      AlertModal.to.show(message);
-      throw IncorrectPinException(message);
+      AlertModal.to.show(e.response?.data["message"]);
+      throw IncorrectPinException(e.response?.data["message"]);
     }
   }
 
   Future<String> refreshAccessToken(String refreshToken) async {
     String url = "/pos-login/refresh/";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $refreshToken'};
-    Response response = await api.post(url, options: Options(headers: headers));
-    return response.data['accessToken'];
+    try {
+      Response response =
+          await api.post(url, options: Options(headers: headers));
+      return response.data['accessToken'];
+    } on DioException catch (e) {
+      AlertModal.to.show(e.response?.data["message"]);
+      throw NoRefreshTokenException();
+    }
+  }
+
+  Future<Kiosk> getKioskHealth(String accessToken) async {
+    String url = "/pos-login/health/";
+    Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
+    try {
+      Response response =
+          await api.get(url, options: Options(headers: headers));
+      return Kiosk.fromJson(response.data);
+    } on DioException catch (e) {
+      AlertModal.to.show(e.response?.data["message"]);
+      throw NoAccessTokenException(e.response?.data["message"]);
+    }
   }
 
   // Future<Map> onBoardingAuth(JWTToken accessToken) async {
-  //   String url = '/pos-login/onBoarding';
+  //   String url = '/pos-login/';
   //   try {
   //     Response response = await api.post(url, data: body);
   //     return response.data['accessToken'];
