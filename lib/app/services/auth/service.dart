@@ -43,7 +43,6 @@ class AuthService extends GetxController {
     try {
       _setJWTToken(await repository.login(pin));
     } catch (_) {
-      PinPageController.to.init();
       return false;
     }
     return true;

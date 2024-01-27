@@ -6,8 +6,14 @@ import 'package:get/get.dart';
 class AlertModal extends GetxController {
   static AlertModal get to => Get.find<AlertModal>();
 
-  void show(String message) {
-    if (Get.isSnackbarOpen) Get.closeCurrentSnackbar();
+  static RxBool _isOpened = false.obs;
+
+  Future<void> show(String message) async {
+    if (Get.isSnackbarOpen) {
+      _isOpened.value = true;
+      await Get.closeCurrentSnackbar();
+      _isOpened.value = false;
+    }
     Get.rawSnackbar(
         messageText: Text(message,
             style: DPTypography.header1(color: DPColors.grayscale100)),
@@ -18,7 +24,7 @@ class AlertModal extends GetxController {
         borderRadius: 16,
         snackPosition: SnackPosition.TOP,
         backgroundColor: DPColors.primaryNegative,
-        animationDuration: const Duration(milliseconds: 500),
+        animationDuration: Duration(milliseconds: _isOpened.value ? 250 : 500),
         reverseAnimationCurve: Curves.easeOut);
   }
 }

@@ -7,14 +7,12 @@ class Product {
   String name;
   int sellingPrice;
   String barcode;
-  String id;
 
   Product({
     required this.systemId,
     required this.name,
     required this.sellingPrice,
     required this.barcode,
-    required this.id,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) =>

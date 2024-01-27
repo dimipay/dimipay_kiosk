@@ -1,6 +1,7 @@
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:get/get.dart';
 
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/auth/model.dart';
 
 class OnboardPageController extends GetxController {
@@ -13,5 +14,6 @@ class OnboardPageController extends GetxController {
     super.onInit();
     kiosk.value = await AuthService.to.repository
         .getKioskHealth(AuthService.to.accessToken!);
+    Get.lazyPut(() => ProductService());
   }
 }
