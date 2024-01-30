@@ -50,27 +50,4 @@ class AuthRepository {
       throw NoAccessTokenException(e.response?.data["message"]);
     }
   }
-
-  // Future<Map> onBoardingAuth(JWTToken accessToken) async {
-  //   String url = '/pos-login/';
-  //   try {
-  //     Response response = await api.post(url, data: body);
-  //     return response.data['accessToken'];
-  //   } on DioException catch (e) {
-  //     switch (e.response?.statusCode) {
-  //       case 400:
-  //         switch (e.response?.data['code']) {
-  //           case 'ERR_PIN_MISMATCH':
-  //             throw IncorrectPinException(
-  //                 e.response?.data['message'], e.response?.data['left']);
-  //           case 'PIN_LOCKED':
-  //             throw PinLockException(e.response?.data['message']);
-  //         }
-  //         break;
-  //       case 401:
-  //         throw OnboardingTokenException('구글 로그인을 다시 진행해주세요');
-  //     }
-  //   }
-  //   return {};
-  // }
 }

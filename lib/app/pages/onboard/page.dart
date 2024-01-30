@@ -1,12 +1,13 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:dimipay_kiosk/app/routes/routes.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/onboard/controller.dart';
-import 'package:dimipay_kiosk/app/widgets/scanner_listener.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class OnboardStatus extends StatelessWidget {
   const OnboardStatus(
@@ -47,9 +48,11 @@ class OnboardPage extends GetView<OnboardPageController> {
   const OnboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) => ScannerListener(
-      onKey: (_) {
-        Get.toNamed(Routes.PRODUCT);
+  Widget build(BuildContext context) => BarcodeScanner(
+      onKey: (input) async {
+        if (await ProductService.to.addProduct(input)) {
+          Get.toNamed(Routes.PRODUCT);
+        }
       },
       child: Scaffold(
           body: SafeArea(

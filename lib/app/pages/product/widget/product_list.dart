@@ -1,18 +1,19 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:get/get.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 
 class ProductListItem extends StatelessWidget {
-  const ProductListItem({super.key, required this.id});
+  const ProductListItem({super.key, required this.barcode});
 
-  final String id;
+  final String barcode;
 
   @override
   Widget build(BuildContext context) {
-    if (ProductPageController.to.productList[id] == null) {
+    if (ProductService.to.productList[barcode] == null) {
       return const SizedBox();
     }
 
@@ -21,19 +22,20 @@ class ProductListItem extends StatelessWidget {
       GestureDetector(
           onTapDown: (_) {
             if (ProductPageController.to.pressedButton == "") {
-              ProductPageController.to.pressedButton = "${id}box";
+              ProductPageController.to.pressedButton = "${barcode}box";
             }
           },
           onTapCancel: () => ProductPageController.to.pressedButton = "",
           onTapUp: (_) {
             ProductPageController.to.pressedButton = "";
-            ProductPageController.to.deleteProduct(id);
+            ProductService.to.deleteProduct(barcode);
           },
           child: Obx(() => Container(
               decoration: BoxDecoration(
-                  color: ProductPageController.to.pressedButton == "${id}box"
-                      ? DPColors.grayscale300
-                      : DPColors.grayscale100,
+                  color:
+                      ProductPageController.to.pressedButton == "${barcode}box"
+                          ? DPColors.grayscale300
+                          : DPColors.grayscale100,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                       width: 2,
@@ -49,11 +51,11 @@ class ProductListItem extends StatelessWidget {
                         direction: Axis.vertical,
                         alignment: WrapAlignment.start,
                         children: [
-                          Text(ProductPageController.to.productList[id]!.name,
+                          Text(ProductService.to.productList[barcode]!.name,
                               style: DPTypography.pos
                                   .itemTitle(color: DPColors.grayscale900)),
                           Text(
-                              "${ProductPageController.to.productList[id]!.price}원",
+                              "${ProductService.to.productList[barcode]!.sellingPrice}원",
                               style: DPTypography.pos.itemDescription())
                         ]),
                     Wrap(
@@ -61,7 +63,7 @@ class ProductListItem extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Obx(() => Text(
-                              "${ProductPageController.to.productList[id]!.count}개",
+                              "${ProductService.to.productList[barcode]!.count}개",
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: DPTypography.weight.medium,
@@ -69,20 +71,20 @@ class ProductListItem extends StatelessWidget {
                                   color: const Color.fromARGB(
                                       255, 137, 136, 128)))),
                           GestureDetector(
-                              onTapDown: (_) =>
-                                  ProductPageController.to.pressedButton = id,
+                              onTapDown: (_) => ProductPageController
+                                  .to.pressedButton = barcode,
                               onTapCancel: () =>
                                   ProductPageController.to.pressedButton = "",
                               onTapUp: (_) {
                                 ProductPageController.to.pressedButton = "";
-                                ProductPageController.to.removeProduct(id);
+                                ProductService.to.removeProduct(barcode);
                               },
                               child: Obx(() => Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
                                       color: ProductPageController
                                                   .to.pressedButton ==
-                                              id
+                                              barcode
                                           ? DPColors.grayscale800
                                           : DPColors.grayscale600,
                                       borderRadius: BorderRadius.circular(8)),
@@ -119,7 +121,7 @@ class ProductList extends StatelessWidget {
                                 ProductPageController.to.pressedButton = "",
                             onTapUp: (_) {
                               ProductPageController.to.pressedButton = "";
-                              ProductPageController.to.cleanProduct();
+                              ProductService.to.cleanProduct();
                             },
                             child: Obx(() => Container(
                                 padding: const EdgeInsets.symmetric(
@@ -140,10 +142,9 @@ class ProductList extends StatelessWidget {
                                         height: 1.25)))))
                       ]),
                   Obx(() => Column(
-                        children: ProductPageController.to.productList.entries
-                            .map((e) => ProductListItem(id: e.key))
-                            .toList(),
-                      ))
+                      children: ProductService.to.productList.entries
+                          .map((e) => ProductListItem(barcode: e.key))
+                          .toList()))
                 ]))));
   }
 }

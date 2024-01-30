@@ -2,7 +2,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
-import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 import 'package:dimipay_kiosk/app/services/auth/repository.dart';
 import 'package:dimipay_kiosk/app/services/auth/model.dart';
 

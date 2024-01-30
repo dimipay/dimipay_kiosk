@@ -20,9 +20,11 @@ class ProductBar extends StatelessWidget {
                 border: Border.all(color: DPColors.grayscale300, width: 1),
               )),
           Text(
-              ProductPageController.to.faceRecognitionLoading
+              true
+                  // ProductService.to.faceRecognitionLoading
                   ? "얼굴 인식 중..."
-                  : ProductPageController.to.faceRecognitionSuccessed
+                  : false
+                      // : ProductService.to.faceRecognitionSuccessed
                       ? "김형석님"
                       : "얼굴 인식에 실패했습니다",
               style: DPTypography.header1(color: DPColors.grayscale600)),

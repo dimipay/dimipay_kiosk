@@ -1,8 +1,8 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:flutter/material.dart';
-
-import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 import 'package:get/get.dart';
+
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 
 class ProductSelection extends StatelessWidget {
   const ProductSelection({super.key});
@@ -38,11 +38,10 @@ class ProductDesk extends StatelessWidget {
         child: Column(children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Obx(() => Text(
-                  "${ProductPageController.to.productTotalCount}개 상품",
+              Obx(() => Text("${ProductService.to.productTotalCount}개 상품",
                   style: DPTypography.pos.itemDescription())),
               const SizedBox(height: 8),
-              Obx(() => Text("${ProductPageController.to.productTotalPrice}원",
+              Obx(() => Text("${ProductService.to.productTotalPrice}원",
                   style: DPTypography.pos.title(color: DPColors.primaryBrand)))
             ]),
             Container(
@@ -63,10 +62,8 @@ class ProductDesk extends StatelessWidget {
                     style: DPTypography.pos
                         .itemTitle(color: DPColors.grayscale100)))
           ]),
-          if (ProductPageController.to.faceRecognitionSuccessed)
-            const SizedBox(height: 36),
-          if (ProductPageController.to.faceRecognitionSuccessed)
-            const ProductSelection()
+          if (false) const SizedBox(height: 36),
+          if (false) const ProductSelection()
         ]));
   }
 }
