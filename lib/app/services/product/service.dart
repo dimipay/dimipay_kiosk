@@ -22,7 +22,7 @@ class ProductService extends GetxController {
 
   final Rx<Map<String, ProductListItem>> _productList = Rx({});
   // productList = {
-  //  "barcoce": Product(),
+  //  "barcode": Product(),
   // }
   final RxInt _productTotalCount = 0.obs;
   final RxInt _productTotalPrice = 0.obs;
@@ -32,25 +32,12 @@ class ProductService extends GetxController {
   int get productTotalPrice => _productTotalPrice.value;
 
   Future<bool> addProduct(String barcode) async {
-    // delete on production
-    // final samepleProduct = Product(
-    //     barcode: "8806718073624",
-    //     name: "코카콜라",
-    //     sellingPrice: 1500,
-    //     systemId: "1");
-
-    // _productList.value["8806718073624"] = ProductListItem(
-    //     systemId: samepleProduct.systemId,
-    //     name: samepleProduct.name,
-    //     sellingPrice: samepleProduct.sellingPrice,
-    //     barcode: samepleProduct.barcode);
-
     try {
       if (_productList.value.containsKey(barcode)) {
         _productList.value[barcode]!.count++;
       } else {
-        var product = await repository.getProductByBarcode(
-            barcode, AuthService.to.accessToken!);
+        var product =
+            await repository.getProduct(barcode, AuthService.to.accessToken!);
 
         _productList.value[barcode] = ProductListItem(
             systemId: product.systemId,
@@ -66,13 +53,9 @@ class ProductService extends GetxController {
     }
   }
 
-  bool isProductListEmpty() {
-    if (_productList.value.isEmpty) {
-      Get.back();
-      return true;
-    } else {
-      return false;
-    }
+  void resetProduct() {
+    AuthService.to.resetUser();
+    Get.back();
   }
 
   void removeProduct(String barcode) {
@@ -84,7 +67,7 @@ class ProductService extends GetxController {
       _productList.value.remove(barcode);
     }
     _productList.refresh();
-    isProductListEmpty();
+    if (_productList.value.isEmpty) resetProduct();
   }
 
   void deleteProduct(String barcode) {
@@ -93,14 +76,14 @@ class ProductService extends GetxController {
         _productList.value[barcode]!.count.value;
     _productList.value.remove(barcode);
     _productList.refresh();
-    isProductListEmpty();
+    if (_productList.value.isEmpty) resetProduct();
   }
 
-  void cleanProduct() {
+  void clearProduct() {
     _productTotalCount.value = 0;
     _productTotalPrice.value = 0;
     _productList.value.clear();
     _productList.refresh();
-    Get.back();
+    resetProduct();
   }
 }

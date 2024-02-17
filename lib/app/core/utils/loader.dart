@@ -10,7 +10,11 @@ import 'package:dimipay_kiosk/app/provider/api.dart';
 class AppLoader {
   Future<void> load() async {
     WidgetsFlutterBinding.ensureInitialized();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     // await dotenv.load(fileName: "env/.env", isOptional: true);
     Get.lazyPut(() => AlertModal());
     Get.lazyPut<ApiProvider>(() => DevApiProvider());

@@ -1,9 +1,35 @@
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:get/get.dart';
+import 'dart:async';
+
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 
 class ProductPageController extends GetxController {
   static ProductPageController get to => Get.find<ProductPageController>();
 
+  @override
+  void onInit() {
+    super.onInit();
+    AuthService.to.findUser();
+  }
+
+  var _timer = Timer(const Duration(minutes: 1), () {
+    ProductService.to.clearProduct();
+    Get.back();
+  });
+
+  void resetTimer() {
+    _timer.cancel();
+    _timer = Timer(const Duration(minutes: 1), () {
+      ProductService.to.clearProduct();
+      Get.back();
+    });
+  }
+
   final _pressedButton = "".obs;
   String get pressedButton => _pressedButton.value;
-  set pressedButton(String value) => _pressedButton.value = value;
+  set pressedButton(String value) {
+    _pressedButton.value = value;
+    resetTimer();
+  }
 }

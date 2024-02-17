@@ -64,6 +64,7 @@ class PinPad extends StatelessWidget {
               GestureDetector(
                   onTapDown: (_) => PinPageController.to.down(10),
                   onTapUp: (_) => PinPageController.to.up(10),
+                  onTapCancel: () => PinPageController.to.canceled(),
                   child: Obx(() {
                     return Container(
                         height: buttonHeight,

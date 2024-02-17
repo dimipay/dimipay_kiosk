@@ -10,8 +10,7 @@ class ProductRepository {
 
   ProductRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
-  Future<Product> getProductByBarcode(
-      String barcode, String accessToken) async {
+  Future<Product> getProduct(String barcode, String accessToken) async {
     String url = "/product/$barcode";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
     try {

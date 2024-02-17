@@ -1,3 +1,4 @@
+// import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,46 @@ import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
+
+// class ProductListTimer extends StatelessWidget {
+//   const ProductListTimer({super.key});
+
+//   @override
+//   Widget build(BuildContext context) => Row(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           CircularCountDownTimer(
+//             duration: 5,
+//             initialDuration: 0,
+//             controller: CountDownController(),
+//             width: 48,
+//             height: 48,
+//             ringColor: DPColors.grayscale100,
+//             fillColor: DPColors.grayscale400,
+//             backgroundColor: DPColors.grayscale100,
+//             strokeWidth: 6,
+//             strokeCap: StrokeCap.round,
+//             textStyle: TextStyle(
+//                 fontSize: 24,
+//                 color: DPColors.grayscale400,
+//                 fontWeight: DPTypography.weight.semiBold),
+//             textFormat: CountdownTextFormat.S,
+//             isTimerTextShown: true,
+//             isReverse: true,
+//             autoStart: true,
+//             onComplete: () {
+//               Get.back();
+//             },
+//             timeFormatterFunction: (defaultFormatterFunction, duration) {
+//               return duration.inSeconds + 1;
+//             },
+//           ),
+//           const SizedBox(width: 16),
+//           Text("상품 리스트가 비어있어 복귀합니다.",
+//               style: DPTypography.readable(color: DPColors.grayscale500))
+//         ],
+//       );
+// }
 
 class ProductListItem extends StatelessWidget {
   const ProductListItem({super.key, required this.barcode});
@@ -107,7 +148,13 @@ class ProductList extends StatelessWidget {
             child: SingleChildScrollView(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 36),
-                child: Column(children: [
+                child:
+                    // Obx(() {
+                    // if (ProductService.to.productTotalCount == 0) {
+                    // return const ProductListTimer();
+                    // } else {
+                    // return
+                    Column(children: [
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -121,7 +168,7 @@ class ProductList extends StatelessWidget {
                                 ProductPageController.to.pressedButton = "",
                             onTapUp: (_) {
                               ProductPageController.to.pressedButton = "";
-                              ProductService.to.cleanProduct();
+                              ProductService.to.clearProduct();
                             },
                             child: Obx(() => Container(
                                 padding: const EdgeInsets.symmetric(
@@ -145,6 +192,8 @@ class ProductList extends StatelessWidget {
                       children: ProductService.to.productList.entries
                           .map((e) => ProductListItem(barcode: e.key))
                           .toList()))
-                ]))));
+                ])
+                // }})
+                )));
   }
 }

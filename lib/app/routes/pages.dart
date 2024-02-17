@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 import 'package:dimipay_kiosk/app/pages/pin/binding.dart';
 import 'package:dimipay_kiosk/app/pages/pin/page.dart';
 import 'package:dimipay_kiosk/app/pages/onboard/binding.dart';
@@ -7,7 +9,6 @@ import 'package:dimipay_kiosk/app/pages/product/page.dart';
 import 'package:dimipay_kiosk/app/pages/payment/binding.dart';
 import 'package:dimipay_kiosk/app/pages/payment/page.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
-import 'package:get/get.dart';
 
 class AppPages {
   static final pages = [
@@ -18,11 +19,13 @@ class AppPages {
     GetPage(
         name: Routes.ONBOARD,
         page: () => const OnboardPage(),
-        binding: OnboardPageBinding()),
+        binding: OnboardPageBinding(),
+        transition: Transition.cupertino),
     GetPage(
         name: Routes.PRODUCT,
         page: () => const ProductPage(),
-        binding: ProductPageBinding()),
+        binding: ProductPageBinding(),
+        transition: Transition.cupertino),
     GetPage(
         name: Routes.PAYMENT,
         page: () => const PaymentPage(),

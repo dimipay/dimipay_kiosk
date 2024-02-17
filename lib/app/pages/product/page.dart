@@ -13,7 +13,10 @@ class ProductPage extends GetView<ProductPageController> {
 
   @override
   Widget build(BuildContext context) => BarcodeScanner(
-      onKey: (input) => ProductService.to.addProduct(input),
+      onKey: (input) {
+        ProductService.to.addProduct(input);
+        ProductPageController.to.resetTimer();
+      },
       child: const Scaffold(
           body: SafeArea(
               child: Column(

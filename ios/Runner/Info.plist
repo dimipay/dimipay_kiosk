@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>얼굴 인식을 위한 카메라 사용을 허락해 주세요!</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 </dict>
 </plist>

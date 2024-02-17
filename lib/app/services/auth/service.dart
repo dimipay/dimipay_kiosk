@@ -1,15 +1,23 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dimipay_kiosk/app/services/auth/repository.dart';
 import 'package:dimipay_kiosk/app/services/auth/model.dart';
+
+enum FaceSignStatus { success, loading, fail, multipleUserDetected }
 
 class AuthService extends GetxController {
   static AuthService get to => Get.find<AuthService>();
 
   final AuthRepository repository;
+  final Rx<List<User>?> _users = Rx(null);
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
+  final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
+  final Rx<CameraController?> _cameraController = Rx(null);
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   AuthService({AuthRepository? repository})
@@ -17,16 +25,19 @@ class AuthService extends GetxController {
 
   bool get isAuthenticated => _jwtToken.value.accessToken != null;
   String? get accessToken => _jwtToken.value.accessToken;
+  List<User>? get users => _users.value;
+  FaceSignStatus get faceSignStatus => _faceSignStatus.value;
 
   Future<AuthService> init() async {
-    // delete on production
-    // await _storage.deleteAll();
-
+    if (kDebugMode) {
+      // await _storage.deleteAll();
+    } else {
+      initializeCamera();
+    }
     final String? refreshToken = await _storage.read(key: 'refreshToken');
     if (refreshToken == null) {
       return this;
     }
-
     _jwtToken.value = JWTToken(
         accessToken: await repository.refreshAccessToken(refreshToken),
         refreshToken: refreshToken);
@@ -38,12 +49,56 @@ class AuthService extends GetxController {
     _jwtToken.value = newToken;
   }
 
-  Future<bool> activateKiosk(String pin) async {
+  Future<bool> initializeKiosk(String pin) async {
     try {
-      _setJWTToken(await repository.login(pin));
+      await _setJWTToken(await repository.login(pin));
+      return true;
     } catch (_) {
       return false;
     }
-    return true;
+  }
+
+  Future<void> initializeCamera() async {
+    _cameraController.value = CameraController(
+        ((await availableCameras())[1]), ResolutionPreset.high,
+        imageFormatGroup:
+            Platform.isIOS ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
+        enableAudio: false);
+    await _cameraController.value!.initialize();
+    await _cameraController.value!.setFlashMode(FlashMode.off);
+  }
+
+  void resetUser() {
+    _users.value = null;
+    _faceSignStatus.value = FaceSignStatus.loading;
+  }
+
+  Future<void> findUser() async {
+    if (_users.value != null) resetUser();
+    // var timeOut = false;
+
+    // Future.delayed(const Duration(seconds: 5), () async {
+    //   timeOut = true;
+    //   if (_users.value == null) _faceSignStatus.value = FaceSignStatus.fail;
+    //   return;
+    // });
+
+    do {
+      if (kDebugMode) {
+        _users.value = await repository.findFace(
+            accessToken!, "assets/images/single_test_face.png");
+      } else {
+        final image = await _cameraController.value!.takePicture();
+        _users.value = await repository.findFace(accessToken!, image.path);
+      }
+    } while (_users.value == null);
+    // } while (_users.value == null && !timeOut);
+
+    if (_users.value!.length > 1) {
+      _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
+      return;
+    }
+
+    _faceSignStatus.value = FaceSignStatus.success;
   }
 }

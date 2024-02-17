@@ -14,13 +14,15 @@ dependencies:
     sdk: flutter
 
   get: ^4.6.6
-  flutter_svg: ^2.0.9
-  dimipay_design_kit: ^0.1.0
-  material_symbols_icons: ^4.2716.0
   dio: ^5.4.0
+  camera: ^0.10.5+9
   jwt_decode: ^0.3.1
+  flutter_svg: ^2.0.9
   json_annotation: ^4.8.1
+  dimipay_design_kit: ^0.1.0
   flutter_secure_storage: ^9.0.0
+  material_symbols_icons: ^4.2716.0
+  circular_countdown_timer: ^0.2.3
 
 
 dev_dependencies:

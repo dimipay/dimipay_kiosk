@@ -23,5 +23,14 @@ class Kiosk {
       required this.disabled,
       required this.id});
   factory Kiosk.fromJson(Map<String, dynamic> json) => _$KioskFromJson(json);
-  Map<String, dynamic> toJson() => _$KioskToJson(this);
+}
+
+@JsonSerializable()
+class User {
+  String id;
+  String name;
+  String profileImage;
+
+  User({required this.id, required this.name, required this.profileImage});
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
