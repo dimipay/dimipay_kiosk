@@ -14,7 +14,7 @@ class AuthService extends GetxController {
   static AuthService get to => Get.find<AuthService>();
 
   final AuthRepository repository;
-  final Rx<List<User>?> _users = Rx(null);
+  final Rx<UserFace?> _users = Rx(null);
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
@@ -25,7 +25,7 @@ class AuthService extends GetxController {
 
   bool get isAuthenticated => _jwtToken.value.accessToken != null;
   String? get accessToken => _jwtToken.value.accessToken;
-  List<User>? get users => _users.value;
+  UserFace? get users => _users.value;
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
 
   Future<AuthService> init() async {
@@ -75,30 +75,24 @@ class AuthService extends GetxController {
 
   Future<void> findUser() async {
     if (_users.value != null) resetUser();
-    // var timeOut = false;
-
-    // Future.delayed(const Duration(seconds: 5), () async {
-    //   timeOut = true;
-    //   if (_users.value == null) _faceSignStatus.value = FaceSignStatus.fail;
-    //   return;
-    // });
-
     do {
       if (kDebugMode) {
-        _users.value = await repository.findFace(
+        _users.value = await repository.findUserByFace(
             accessToken!, "assets/images/single_test_face.png");
       } else {
         final image = await _cameraController.value!.takePicture();
-        _users.value = await repository.findFace(accessToken!, image.path);
+        _users.value =
+            await repository.findUserByFace(accessToken!, image.path);
       }
     } while (_users.value == null);
-    // } while (_users.value == null && !timeOut);
-
-    if (_users.value!.length > 1) {
+    if (_users.value!.users.length > 1) {
       _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
       return;
     }
-
     _faceSignStatus.value = FaceSignStatus.success;
+    repository.getPaymentByFace(
+        accessToken!, _users.value!.code, _users.value!.users[0].id, "0221");
   }
+
+  // Future<void> getUserPayment()
 }

@@ -10,20 +10,21 @@ class ProductPageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    resetTimer();
     AuthService.to.findUser();
   }
 
-  var _timer = Timer(const Duration(minutes: 1), () {
+  var timer = Timer(const Duration(minutes: 1), () {
     ProductService.to.clearProduct();
     Get.back();
   });
 
   void resetTimer() {
-    _timer.cancel();
-    _timer = Timer(const Duration(minutes: 1), () {
-      ProductService.to.clearProduct();
-      Get.back();
-    });
+    timer.cancel();
+    // timer = Timer(const Duration(minutes: 1), () {
+    //   ProductService.to.clearProduct();
+    //   Get.back();
+    // });
   }
 
   final _pressedButton = "".obs;

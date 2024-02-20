@@ -21,9 +21,6 @@ class ProductService extends GetxController {
       : repository = repository ?? ProductRepository();
 
   final Rx<Map<String, ProductListItem>> _productList = Rx({});
-  // productList = {
-  //  "barcode": Product(),
-  // }
   final RxInt _productTotalCount = 0.obs;
   final RxInt _productTotalPrice = 0.obs;
 

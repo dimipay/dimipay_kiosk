@@ -36,15 +36,15 @@ class ProductBar extends StatelessWidget {
                         image: AuthService.to.faceSignStatus ==
                                 FaceSignStatus.success
                             ? DecorationImage(
-                                image: NetworkImage(
-                                    AuthService.to.users![0].profileImage))
+                                image: NetworkImage(AuthService
+                                    .to.users!.users[0].profileImage))
                             : null))),
                 Obx(() => Text(
                     AuthService.to.faceSignStatus == FaceSignStatus.loading
                         ? "얼굴 인식 중..."
                         : AuthService.to.faceSignStatus ==
                                 FaceSignStatus.success
-                            ? "${AuthService.to.users![0].name}님"
+                            ? "${AuthService.to.users!.users[0].name}님"
                             : "얼굴 인식에 실패했습니다",
                     style: DPTypography.pos
                         .itemDescription(color: DPColors.grayscale800))),
