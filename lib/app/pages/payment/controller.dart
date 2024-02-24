@@ -21,6 +21,7 @@ class Spot {
 class PaymentPageController extends GetxController {
   static PaymentPageController get to => Get.find<PaymentPageController>();
 
+  final _timer = RxInt(30);
   final _turns = RxDouble(0.0);
   final _backgroundSpot = <Spot>[
     Spot(
@@ -90,10 +91,13 @@ class PaymentPageController extends GetxController {
 
   get backgroundSpot => _backgroundSpot;
   get turns => _turns.value;
+  get timer => _timer.value;
 
   @override
   void onInit() {
     super.onInit();
+
+    startTimer();
 
     Timer(const Duration(milliseconds: 500), () {
       for (var spot in _backgroundSpot) {
@@ -109,6 +113,17 @@ class PaymentPageController extends GetxController {
     Timer(const Duration(milliseconds: 5000), () {
       _turns.value++;
       turnBackground();
+    });
+  }
+
+  void startTimer() {
+    Timer(const Duration(seconds: 1), () {
+      if (_timer.value > 0) {
+        _timer.value--;
+        startTimer();
+      } else {
+        Get.back();
+      }
     });
   }
 }

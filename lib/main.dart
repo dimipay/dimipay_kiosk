@@ -12,8 +12,8 @@ void main() async {
   runApp(GetMaterialApp(
       title: '디미페이 POS',
       getPages: AppPages.pages,
-      initialRoute: Routes.PAYMENT,
-      // AuthService.to.isAuthenticated ? Routes.ONBOARD : Routes.PIN,
+      initialRoute:
+          AuthService.to.isAuthenticated ? Routes.ONBOARD : Routes.PIN,
       theme: ThemeData(
           fontFamily: 'SUITv1',
           primaryColor: DPColors.primaryBrand,
