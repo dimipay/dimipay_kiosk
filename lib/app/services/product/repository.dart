@@ -11,12 +11,12 @@ class ProductRepository {
   ProductRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
   Future<Product> getProduct(String barcode, String accessToken) async {
-    String url = "/product/$barcode";
+    String url = "/kiosk/product/$barcode";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
     try {
       Response response =
           await api.get(url, options: Options(headers: headers));
-      return Product.fromJson(response.data["product"]);
+      return Product.fromJson(response.data["data"]["product"]);
     } on DioException catch (e) {
       throw NoProductException(e.response?.data["message"]);
     }
