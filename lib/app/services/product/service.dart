@@ -51,7 +51,7 @@ class ProductService extends GetxController {
   }
 
   void resetProduct() {
-    AuthService.to.resetUser();
+    // AuthService.to.resetUser();
     Get.back();
   }
 

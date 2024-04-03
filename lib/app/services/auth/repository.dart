@@ -13,43 +13,28 @@ class AuthRepository {
 
   AuthRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
-  Future<JWTToken> login(String passcode) async {
-    String url = "/pos-login/";
+  Future<Login> authLogin(String passcode) async {
+    String url = "/kiosk/auth/login";
     Map body = {"passcode": passcode};
     try {
       Response response = await api.post(url, data: body);
-      return JWTToken(
-          accessToken: response.data["accessToken"],
-          refreshToken: response.data["refreshToken"]);
+      return Login.fromJson(response.data["data"]);
     } on DioException catch (e) {
       AlertModal.to.show(e.response?.data["message"]);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
 
-  Future<String> refreshAccessToken(String refreshToken) async {
-    String url = "/pos-login/refresh";
+  Future<JWTToken> authRefresh(String refreshToken) async {
+    String url = "/kiosk/auth/refresh";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $refreshToken'};
     try {
       Response response =
-          await api.post(url, options: Options(headers: headers));
-      return response.data['accessToken'];
+          await api.get(url, options: Options(headers: headers));
+      return JWTToken.fromJson(response.data["data"]["tokens"]);
     } on DioException catch (e) {
       AlertModal.to.show(e.response?.data["message"]);
       throw NoRefreshTokenException();
-    }
-  }
-
-  Future<Kiosk> getHealth(String accessToken) async {
-    String url = "/pos-login/health";
-    Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
-    try {
-      Response response =
-          await api.get(url, options: Options(headers: headers));
-      return Kiosk.fromJson(response.data);
-    } on DioException catch (e) {
-      AlertModal.to.show(e.response?.data["message"]);
-      throw NoAccessTokenException(e.response?.data["message"]);
     }
   }
 

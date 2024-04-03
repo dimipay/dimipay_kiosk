@@ -68,14 +68,10 @@ class PinPageController extends GetxController {
     _input.add(number);
     _inputLength.value++;
     if (inputLength == 4) {
-      if (AuthService.to.isAuthenticated) {
-        print(_input.join().toString());
+      if (await AuthService.to.loginKiosk(_input.join().toString())) {
+        Get.offAndToNamed(Routes.ONBOARD);
       } else {
-        if (await AuthService.to.initializeKiosk(_input.join().toString())) {
-          Get.offAndToNamed(Routes.ONBOARD);
-        } else {
-          init();
-        }
+        init();
       }
     }
   }

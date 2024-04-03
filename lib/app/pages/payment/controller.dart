@@ -21,6 +21,12 @@ class Spot {
 class PaymentPageController extends GetxController {
   static PaymentPageController get to => Get.find<PaymentPageController>();
 
+  final _pressedButton = "".obs;
+  String get pressedButton => _pressedButton.value;
+  set pressedButton(String value) {
+    _pressedButton.value = value;
+  }
+
   final _timer = RxInt(30);
   final _turns = RxDouble(0.0);
   final _backgroundSpot = <Spot>[

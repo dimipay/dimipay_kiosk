@@ -19,6 +19,9 @@ class ProductPage extends GetView<ProductPageController> {
       },
       child: const Scaffold(
           body: SafeArea(
-              child: Column(
-                  children: [ProductBar(), ProductList(), ProductDesk()]))));
+              child: Column(children: [
+        // ProductBar(),
+        ProductList(),
+        // ProductDesk()
+      ]))));
 }

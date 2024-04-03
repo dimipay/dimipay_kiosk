@@ -59,12 +59,27 @@ class PaymentPage extends GetView<PaymentPageController> {
         Obx(() => Text("${PaymentPageController.to.timer}초",
             style: DPTypography.header2(color: DPColors.grayscale600))),
         const SizedBox(height: 132),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const DPIcons(Symbols.arrow_back_ios_new,
-              size: 24, color: DPColors.grayscale600),
-          const SizedBox(width: 24),
-          Text("상품 스캔 화면으로 돌아가기", style: DPTypography.header2())
-        ])
+        GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTapDown: (_) => PaymentPageController.to.pressedButton = "back",
+            onTapCancel: () => PaymentPageController.to.pressedButton = "",
+            onTapUp: (_) => () {
+                  PaymentPageController.to.pressedButton = "";
+                  Get.back();
+                },
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Obx(() => DPIcons(Symbols.arrow_back_ios_new,
+                  size: 24,
+                  color: PaymentPageController.to.pressedButton == "back"
+                      ? DPColors.grayscale600.withOpacity(0.5)
+                      : DPColors.grayscale600)),
+              const SizedBox(width: 24),
+              Obx(() => Text("상품 스캔 화면으로 돌아가기",
+                  style: DPTypography.header2(
+                      color: PaymentPageController.to.pressedButton == "back"
+                          ? DPColors.grayscale600.withOpacity(0.5)
+                          : DPColors.grayscale600)))
+            ]))
       ])),
       Obx(() => AnimatedRotation(
           turns: PaymentPageController.to.turns,

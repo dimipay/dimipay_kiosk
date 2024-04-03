@@ -1,28 +1,24 @@
-import 'package:json_annotation/json_annotation.dart';
-part 'model.g.dart';
-
 class JWTToken {
   final String? accessToken;
   final String? refreshToken;
 
   JWTToken({this.accessToken, this.refreshToken});
+
+  factory JWTToken.fromJson(Map<String, dynamic> json) {
+    return JWTToken(
+        accessToken: json['accessToken'], refreshToken: json['refreshToken']);
+  }
 }
 
-@JsonSerializable()
-class Kiosk {
-  String createdAt;
-  String updatedAt;
-  String name;
-  bool disabled;
-  String id;
+class Login {
+  final String name;
+  final JWTToken tokens;
 
-  Kiosk(
-      {required this.createdAt,
-      required this.updatedAt,
-      required this.name,
-      required this.disabled,
-      required this.id});
-  factory Kiosk.fromJson(Map<String, dynamic> json) => _$KioskFromJson(json);
+  Login({required this.name, required this.tokens});
+
+  factory Login.fromJson(Map<String, dynamic> json) {
+    return Login(name: json['name'], tokens: JWTToken.fromJson(json['tokens']));
+  }
 }
 
 class User {

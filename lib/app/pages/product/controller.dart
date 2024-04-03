@@ -11,7 +11,7 @@ class ProductPageController extends GetxController {
   void onInit() {
     super.onInit();
     resetTimer();
-    AuthService.to.findUser();
+    // AuthService.to.findUser();
   }
 
   var timer = Timer(const Duration(minutes: 1), () {
@@ -27,7 +27,7 @@ class ProductPageController extends GetxController {
     // });
   }
 
-  final _pressedButton = "".obs;
+  final _pressedButton = RxString("");
   String get pressedButton => _pressedButton.value;
   set pressedButton(String value) {
     _pressedButton.value = value;

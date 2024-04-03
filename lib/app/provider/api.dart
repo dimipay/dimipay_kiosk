@@ -15,7 +15,7 @@ class LogInterceptor extends Interceptor {
 }
 
 class ProdApiProvider extends ApiProvider {
-  final baseUrl = 'https://api.dimipay.io';
+  final baseUrl = 'http://server.dimipay.io:4002/';
 
   ProdApiProvider() {
     dio.options.baseUrl = baseUrl;
@@ -23,7 +23,7 @@ class ProdApiProvider extends ApiProvider {
 }
 
 class DevApiProvider extends ApiProvider {
-  final baseUrl = 'https://dev-api.dimipay.io';
+  final baseUrl = 'http://server.dimipay.io:4002/';
 
   DevApiProvider() {
     dio.options.baseUrl = baseUrl;
