@@ -10,15 +10,18 @@ class AuthService extends GetxController {
   static AuthService get to => Get.find<AuthService>();
 
   final AuthRepository repository;
-  final Rx<String> _deviceName = Rx("");
+  final Rx<String?> _transactionId = Rx(null);
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   AuthService({AuthRepository? repository})
       : repository = repository ?? AuthRepository();
   bool get isAuthenticated => _jwtToken.value.accessToken != null;
-  String get deviceName => _deviceName.value;
   String? get accessToken => _jwtToken.value.accessToken;
+  Future<String?> get transactionId async {
+    _transactionId.value ??= await repository.transactionId(accessToken!);
+    return _transactionId.value;
+  }
 
   Future<AuthService> init() async {
     if (kDebugMode) {
@@ -28,7 +31,7 @@ class AuthService extends GetxController {
     if (refreshToken == null) {
       return this;
     }
-    _jwtToken.value = await repository.refresh(refreshToken);
+    _jwtToken.value = await repository.authRefresh(refreshToken);
     return this;
   }
 
@@ -39,12 +42,15 @@ class AuthService extends GetxController {
 
   Future<bool> loginKiosk(String pin) async {
     try {
-      var result = await repository.login(pin);
-      _deviceName.value = result.name;
-      await _storeJWTToken(result.tokens);
+      await _storeJWTToken(await repository.authLogin(pin));
       return true;
     } catch (_) {
       return false;
     }
   }
+
+  // Future<void> createTransactionId() async {
+  //   if (_transactionId.value != null) return;
+  //   _transactionId.value = await repository.transactionId(accessToken!);
+  // }
 }
