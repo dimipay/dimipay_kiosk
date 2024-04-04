@@ -11,7 +11,7 @@ class AuthRepository {
 
   AuthRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
-  Future<Login> authLogin(String passcode) async {
+  Future<Login> login(String passcode) async {
     String url = "/kiosk/auth/login";
     Map body = {"passcode": passcode};
     try {
@@ -23,7 +23,7 @@ class AuthRepository {
     }
   }
 
-  Future<JWTToken> authRefresh(String refreshToken) async {
+  Future<JWTToken> refresh(String refreshToken) async {
     String url = "/kiosk/auth/refresh";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $refreshToken'};
     try {

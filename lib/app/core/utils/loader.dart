@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ class AppLoader {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     // await dotenv.load(fileName: "env/.env", isOptional: true);
     Get.lazyPut(() => AlertModal());
+    Get.lazyPut(() => HealthService());
     Get.lazyPut<ApiProvider>(() => DevApiProvider());
 
     await Get.putAsync(() => AuthService().init());

@@ -23,27 +23,14 @@ class AuthService extends GetxController {
   Future<AuthService> init() async {
     if (kDebugMode) {
       // await _storage.deleteAll();
-    } else {
-      // initializeCamera();
     }
-    // final String? deviceName = await _storage.read(key: 'deviceName');
     final String? refreshToken = await _storage.read(key: 'refreshToken');
-    // if (refreshToken == null || deviceName == null) {
     if (refreshToken == null) {
       return this;
     }
-    // _deviceName.value = deviceName;
-    _jwtToken.value = await repository.authRefresh(refreshToken);
+    _jwtToken.value = await repository.refresh(refreshToken);
     return this;
   }
-
-  // Future<void> _storeLoginData(Login loginData) async {
-  //   await _storage.write(
-  //       key: 'refreshToken', value: loginData.tokens.refreshToken);
-  //   await _storage.write(key: 'deviceName', value: deviceName);
-  //   _deviceName.value = deviceName;
-  // _jwtToken.value = loginData.tokens.refreshToken!;
-  // }
 
   Future<void> _storeJWTToken(JWTToken jwtToken) async {
     await _storage.write(key: "refreshToken", value: jwtToken.refreshToken);
@@ -52,10 +39,9 @@ class AuthService extends GetxController {
 
   Future<bool> loginKiosk(String pin) async {
     try {
-      var result = await repository.authLogin(pin);
+      var result = await repository.login(pin);
       _deviceName.value = result.name;
       await _storeJWTToken(result.tokens);
-      // await _storeLoginData(result);
       return true;
     } catch (_) {
       return false;

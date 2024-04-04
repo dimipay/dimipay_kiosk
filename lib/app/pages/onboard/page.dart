@@ -1,5 +1,6 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -102,36 +103,35 @@ class OnboardPage extends GetView<OnboardPageController> {
                       children: [
                         Obx(
                           () => OnboardStatus(
-                            icon: AuthService.to.deviceName == ""
+                            icon: HealthService.to.status == null
                                 ? Symbols.hourglass_rounded
                                 : Symbols.dns_rounded,
-                            title: AuthService.to.deviceName == ""
+                            title: HealthService.to.status == null
                                 ? "서버 연결 중"
-                                // : OnboardPageController
-                                //             .to.kiosk.value?.updatedAt !=
-                                //         null
-                                //     ? "서버 연결 완료"
-                                //     : "서버 연결 실패",
-                                : "서버 연결 완료",
-                            color: AuthService.to.deviceName == ""
+                                : HealthService.to.status == "healthy"
+                                    ? "서버 연결 완료"
+                                    : "서버 연결 실패",
+                            color: HealthService.to.status == null
                                 ? DPColors.primaryNegative
                                 : DPColors.grayscale500,
                           ),
                         ),
                         const SizedBox(width: 16),
                         Obx(
-                          // () => AuthService.to.deviceName == ""
-                          () => OnboardPageController.to.isHealthy.value
+                          () => HealthService.to.status == null
                               ? const SizedBox(height: 0)
                               : Row(
                                   children: [
                                     const OnboardDivider(),
                                     const SizedBox(width: 16),
                                     OnboardStatus(
-                                        icon: Symbols.browse_activity_rounded,
-                                        title: AuthService.to.deviceName,
-                                        color: DPColors.grayscale500),
-                                    const SizedBox(width: 16),
+                                      icon: Symbols.browse_activity_rounded,
+                                      title: HealthService.to.name!,
+                                      color: DPColors.grayscale500,
+                                    ),
+                                    const SizedBox(
+                                      width: 16,
+                                    ),
                                     const OnboardDivider(),
                                     const SizedBox(width: 16),
                                     const OnboardStatus(
