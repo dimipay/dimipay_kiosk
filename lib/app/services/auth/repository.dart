@@ -6,12 +6,12 @@ import 'package:dimipay_kiosk/app/services/auth/model.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 
 class AuthRepository {
-  Future<JWTToken> authLogin(String passcode) async {
+  Future<Login> authLogin(String passcode) async {
     String url = "/kiosk/auth/login";
     Map body = {"passcode": passcode};
     try {
       Response response = await ApiProvider.to.post(url, data: body);
-      return JWTToken.fromJson(response.data["data"]["tokens"]);
+      return Login.fromJson(response.data["data"]);
     } on DioException catch (e) {
       AlertModal.to.show(e.response?.data["message"]);
       throw IncorrectPinException(e.response?.data["message"]);
@@ -33,11 +33,11 @@ class AuthRepository {
 
   Future<String?> transactionId(String accessToken) async {
     String url = "/kiosk/transaction/id";
-    Map<String, dynamic> headers = {'Authorization ': 'Bearer  $accessToken'};
+    Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
     try {
       Response response =
-          await ApiProvider.to.post(url, options: Options(headers: headers));
-      return response.data["data"]["id"];
+          await ApiProvider.to.get(url, options: Options(headers: headers));
+      return response.data["data"]["transactionId"];
     } on DioException catch (e) {
       AlertModal.to.show(e.response?.data["message"]);
       throw NoAccessTokenException(e.response?.data["message"]);

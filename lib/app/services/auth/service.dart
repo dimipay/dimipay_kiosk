@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -11,12 +13,14 @@ class AuthService extends GetxController {
 
   final AuthRepository repository;
   final Rx<String?> _transactionId = Rx(null);
+  final Rx<String?> _deviceName = Rx(null);
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   AuthService({AuthRepository? repository})
       : repository = repository ?? AuthRepository();
   bool get isAuthenticated => _jwtToken.value.accessToken != null;
+  String? get deviceName => _deviceName.value;
   String? get accessToken => _jwtToken.value.accessToken;
   Future<String?> get transactionId async {
     _transactionId.value ??= await repository.transactionId(accessToken!);
@@ -28,21 +32,25 @@ class AuthService extends GetxController {
       // await _storage.deleteAll();
     }
     final String? refreshToken = await _storage.read(key: 'refreshToken');
-    if (refreshToken == null) {
+    _deviceName.value = await _storage.read(key: 'deviceName');
+    if (refreshToken == null || _deviceName.value == null) {
       return this;
     }
     _jwtToken.value = await repository.authRefresh(refreshToken);
     return this;
   }
 
-  Future<void> _storeJWTToken(JWTToken jwtToken) async {
-    await _storage.write(key: "refreshToken", value: jwtToken.refreshToken);
-    _jwtToken.value = jwtToken;
+  Future<void> _storeLoginData(Login loginData) async {
+    await _storage.write(key: "deviceName", value: loginData.name);
+    await _storage.write(
+        key: "refreshToken", value: loginData.tokens.refreshToken);
+    _deviceName.value = loginData.name;
+    _jwtToken.value = loginData.tokens;
   }
 
   Future<bool> loginKiosk(String pin) async {
     try {
-      await _storeJWTToken(await repository.authLogin(pin));
+      await _storeLoginData(await repository.authLogin(pin));
       return true;
     } catch (_) {
       return false;

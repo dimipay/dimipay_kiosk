@@ -40,11 +40,15 @@ class FaceSignService extends GetxController {
     do {
       if (kDebugMode) {
         _users.value = await repository.faceSign(
-            AuthService.to.accessToken!, "assets/images/single_test_face.png");
+          AuthService.to.accessToken!,
+          "assets/images/single_test_face.png",
+        );
       } else {
         final image = await _cameraController.value!.takePicture();
-        _users.value =
-            await repository.faceSign(AuthService.to.accessToken!, image.path);
+        _users.value = await repository.faceSign(
+          AuthService.to.accessToken!,
+          image.path,
+        );
       }
     } while (_users.value.isEmpty);
   }

@@ -9,3 +9,14 @@ class JWTToken {
         accessToken: json['accessToken'], refreshToken: json['refreshToken']);
   }
 }
+
+class Login {
+  final String name;
+  final JWTToken tokens;
+
+  Login({required this.name, required this.tokens});
+
+  factory Login.fromJson(Map<String, dynamic> json) {
+    return Login(name: json['name'], tokens: JWTToken.fromJson(json['tokens']));
+  }
+}

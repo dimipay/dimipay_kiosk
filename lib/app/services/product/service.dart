@@ -7,13 +7,13 @@ import 'package:dimipay_kiosk/app/services/product/repository.dart';
 class ProductListItem extends Product {
   String barcode = "";
   RxInt count = 1.obs;
-
-  ProductListItem(
-      {required super.id,
-      required super.name,
-      required super.alias,
-      required super.price,
-      required barcode});
+  ProductListItem({
+    required super.id,
+    required super.name,
+    required super.alias,
+    required super.price,
+    required barcode,
+  });
 }
 
 class ProductService extends GetxController {

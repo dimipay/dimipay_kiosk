@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
@@ -9,26 +10,36 @@ import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 class FaceSignRepository {
   Future<List<User>> faceSign(String accessToken, String imagePath) async {
     String url = "/kiosk/face-sign";
-    Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Transaction-ID': await AuthService.to.transactionId
+    };
     try {
       FormData formData;
       if (kDebugMode) {
         var bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
-        formData = FormData.fromMap({
-          "image": MultipartFile.fromBytes(bytes, filename: "face.jpg"),
-        });
+        formData = FormData.fromMap(
+          {
+            "image": MultipartFile.fromBytes(bytes, filename: "face.png"),
+          },
+        );
       } else {
-        formData = FormData.fromMap({
-          "image":
-              await MultipartFile.fromFile(imagePath, filename: "face.jpg"),
-        });
+        formData = FormData.fromMap(
+          {
+            "image":
+                await MultipartFile.fromFile(imagePath, filename: "face.jpg"),
+          },
+        );
       }
 
-      Response response = await ApiProvider.to.post(url,
-          data: formData,
-          options: Options(
-              headers: headers,
-              contentType: Headers.multipartFormDataContentType));
+      Response response = await ApiProvider.to.post(
+        url,
+        data: formData,
+        options: Options(
+          headers: headers,
+          contentType: Headers.multipartFormDataContentType,
+        ),
+      );
 
       var a = [
         for (var user in response.data["data"]["foundedUsers"])

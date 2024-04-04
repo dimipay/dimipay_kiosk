@@ -15,7 +15,7 @@ class HealthService extends GetxController {
   final HealthRepository repository;
   final Rx<Health> _health = Rx(Health());
 
-  String? get name => _health.value.name;
+  String? get name => AuthService.to.deviceName;
   String? get status => _health.value.status;
   String? get message => _health.value.message;
 
