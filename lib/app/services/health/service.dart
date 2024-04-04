@@ -1,3 +1,7 @@
+import 'package:dimipay_kiosk/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/services/product/service.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -18,14 +22,14 @@ class HealthService extends GetxController {
   HealthService({HealthRepository? repository})
       : repository = repository ?? HealthRepository();
 
-  @override
-  Future<void> onInit() async {
-    super.onInit();
+  Future<void> checkHealth() async {
+    _health.value = Health();
     _health.value = await repository.health(AuthService.to.accessToken!);
-  }
 
-  // Future<HealthService> init() async {
-  //   _health.value = await repository.health(AuthService.to.accessToken!);
-  //   return this;
-  // }
+    if (kDebugMode) {
+      if (await ProductService.to.addProduct("1202303246757")) {
+        Get.toNamed(Routes.PRODUCT);
+      }
+    }
+  }
 }

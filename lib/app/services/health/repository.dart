@@ -1,4 +1,3 @@
-import 'package:get/instance_manager.dart';
 import 'package:dio/dio.dart';
 
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';

@@ -5,12 +5,15 @@ import 'package:dimipay_kiosk/app/services/product/model.dart';
 import 'package:dimipay_kiosk/app/services/product/repository.dart';
 
 class ProductListItem extends Product {
+  String barcode = "";
   RxInt count = 1.obs;
+
   ProductListItem(
-      {required super.systemId,
+      {required super.id,
       required super.name,
-      required super.sellingPrice,
-      required super.barcode});
+      required super.alias,
+      required super.price,
+      required barcode});
 }
 
 class ProductService extends GetxController {
@@ -37,13 +40,14 @@ class ProductService extends GetxController {
             await repository.getProduct(barcode, AuthService.to.accessToken!);
 
         _productList.value[barcode] = ProductListItem(
-            systemId: product.systemId,
+            id: product.id,
             name: product.name,
-            sellingPrice: product.sellingPrice,
-            barcode: product.barcode);
+            alias: product.alias,
+            price: product.price,
+            barcode: barcode);
       }
       _productTotalCount.value++;
-      _productTotalPrice.value += _productList.value[barcode]!.sellingPrice;
+      _productTotalPrice.value += _productList.value[barcode]!.price;
       return true;
     } catch (_) {
       return false;
@@ -57,7 +61,7 @@ class ProductService extends GetxController {
 
   void removeProduct(String barcode) {
     _productTotalCount.value--;
-    _productTotalPrice.value -= _productList.value[barcode]!.sellingPrice;
+    _productTotalPrice.value -= _productList.value[barcode]!.price;
     if (_productList.value[barcode]!.count > 1) {
       _productList.value[barcode]!.count--;
     } else {
@@ -69,7 +73,7 @@ class ProductService extends GetxController {
 
   void deleteProduct(String barcode) {
     _productTotalCount.value -= _productList.value[barcode]!.count.value;
-    _productTotalPrice.value -= _productList.value[barcode]!.sellingPrice *
+    _productTotalPrice.value -= _productList.value[barcode]!.price *
         _productList.value[barcode]!.count.value;
     _productList.value.remove(barcode);
     _productList.refresh();
