@@ -19,7 +19,6 @@ dependencies:
   lottie: ^3.1.0
   jwt_decode: ^0.3.1
   flutter_svg: ^2.0.9
-  json_annotation: ^4.8.1
   dimipay_design_kit: ^0.1.0
   flutter_secure_storage: ^9.0.0
   material_symbols_icons: ^4.2716.0
@@ -30,8 +29,6 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^3.0.1
-  build_runner: ^2.4.8
-  json_serializable: ^6.7.1
 
 flutter:
   uses-material-design: true

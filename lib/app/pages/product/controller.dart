@@ -1,8 +1,8 @@
-import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 
 class ProductPageController extends GetxController {
   static ProductPageController get to => Get.find<ProductPageController>();
@@ -11,6 +11,7 @@ class ProductPageController extends GetxController {
   void onInit() {
     super.onInit();
     resetTimer();
+    FaceSignService.to.findUser();
     // AuthService.to.findUser();
   }
 

@@ -22,6 +22,6 @@ class ProductPage extends GetView<ProductPageController> {
               child: Column(children: [
         // ProductBar(),
         ProductList(),
-        // ProductDesk()
+        // ProductDesk(),
       ]))));
 }
