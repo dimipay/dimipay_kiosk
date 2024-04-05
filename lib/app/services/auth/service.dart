@@ -54,9 +54,4 @@ class AuthService extends GetxController {
       return false;
     }
   }
-
-  // Future<void> createTransactionId() async {
-  //   if (_transactionId.value != null) return;
-  //   _transactionId.value = await repository.transactionId(accessToken!);
-  // }
 }

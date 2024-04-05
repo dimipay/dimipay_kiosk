@@ -9,7 +9,7 @@ import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class FaceSignRepository {
-  Future<List<User>> faceSign(String accessToken, String imagePath) async {
+  Future<List<User>> faceSign(String accessToken, Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
     Map<String, dynamic> headers = {
       'Authorization': 'Bearer $accessToken',
@@ -17,25 +17,15 @@ class FaceSignRepository {
     };
 
     try {
-      MultipartFile image;
-      if (kDebugMode) {
-        var bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
-        image = MultipartFile.fromBytes(
-          bytes,
-          filename: "image.jpg",
-          contentType: MediaType('image', 'jpeg'),
-        );
-      } else {
-        image = await MultipartFile.fromFile(
-          imagePath,
-          filename: "image.jpg",
-          contentType: MediaType('image', 'jpeg'),
-        );
-      }
-
       Response response = await ApiProvider.to.post(
         url,
-        data: FormData.fromMap({"image": image}),
+        data: FormData.fromMap({
+          "image": MultipartFile.fromBytes(
+            imageBytes,
+            filename: "image.jpeg",
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        }),
         options: Options(
           headers: headers,
           contentType: Headers.multipartFormDataContentType,

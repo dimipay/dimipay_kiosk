@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'dart:io';
@@ -14,6 +15,8 @@ class FaceSignService extends GetxController {
   static FaceSignService get to => Get.find<FaceSignService>();
 
   final FaceSignRepository repository;
+
+  final kDebugMode = false;
 
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
@@ -38,10 +41,11 @@ class FaceSignService extends GetxController {
     super.onInit();
     if (kDebugMode) return this;
     _cameraController.value = CameraController(
-        ((await availableCameras())[1]), ResolutionPreset.high,
-        imageFormatGroup:
-            Platform.isIOS ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
-        enableAudio: false);
+      ((await availableCameras())[1]),
+      ResolutionPreset.medium,
+      imageFormatGroup: ImageFormatGroup.jpeg,
+      enableAudio: false,
+    );
     await _cameraController.value!.initialize();
     await _cameraController.value!.setFlashMode(FlashMode.off);
     return this;
@@ -55,37 +59,42 @@ class FaceSignService extends GetxController {
     }
     if (_users.value.isNotEmpty) resetUser();
 
-    do {
-      if (_stop.value) {
-        resetUser();
-        return;
-      }
+    await _cameraController.value!.startImageStream(
+      (image) async {
+        do {
+          if (_stop.value) {
+            resetUser();
+            return;
+          }
 
-      try {
-        if (kDebugMode) {
-          _users.value = await repository.faceSign(
-            AuthService.to.accessToken!,
-            "assets/images/single_test_face.png",
-          );
-        } else {
-          final image = await _cameraController.value!.takePicture();
-          _users.value = await repository.faceSign(
-            AuthService.to.accessToken!,
-            image.path,
-          );
-        }
-        if (_users.value.length > 1) {
-          _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
-          return;
-        }
-        _faceSignStatus.value = FaceSignStatus.success;
+          try {
+            if (kDebugMode) {
+              _users.value = await repository.faceSign(
+                AuthService.to.accessToken!,
+                (await rootBundle.load("assets/images/single_test_face.png"))
+                    .buffer
+                    .asUint8List(),
+              );
+            } else {
+              _users.value = await repository.faceSign(
+                AuthService.to.accessToken!,
+                image.planes[0].bytes,
+              );
+            }
+            _faceSignStatus.value = _users.value.length > 1
+                ? FaceSignStatus.multipleUserDetected
+                : FaceSignStatus.success;
+            // _cameraController.value!.stopImageStream();
+            return;
+          } on NoUserFoundException {
+            attempts++;
+            continue;
+          }
+        } while (_users.value.isEmpty && attempts < 10);
+        _faceSignStatus.value = FaceSignStatus.failed;
         return;
-      } on NoUserFoundException {
-        attempts++;
-        continue;
-      }
-    } while (_users.value.isEmpty && attempts < 10);
-    _faceSignStatus.value = FaceSignStatus.failed;
-    return;
+      },
+    );
+    _cameraController.value!.stopImageStream();
   }
 }

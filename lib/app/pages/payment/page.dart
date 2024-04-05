@@ -70,9 +70,12 @@ class PaymentPage extends GetView<PaymentPageController> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Obx(() => Text("${PaymentPageController.to.timer}초",
-                      style:
-                          DPTypography.header2(color: DPColors.grayscale600))),
+                  Obx(
+                    () => Text(
+                      "${PaymentPageController.to.timer}초",
+                      style: DPTypography.header2(color: DPColors.grayscale600),
+                    ),
+                  ),
                   const SizedBox(height: 132),
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
