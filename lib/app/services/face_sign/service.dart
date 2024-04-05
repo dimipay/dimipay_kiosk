@@ -62,7 +62,6 @@ class FaceSignService extends GetxController {
       }
 
       try {
-        print(attempts);
         if (kDebugMode) {
           _users.value = await repository.faceSign(
             AuthService.to.accessToken!,
