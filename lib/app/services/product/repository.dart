@@ -5,7 +5,7 @@ import 'package:dimipay_kiosk/app/services/product/model.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class ProductRepository {
-  Future<Product> getProduct(String barcode, String accessToken) async {
+  Future<Product> getProduct(String accessToken, String barcode) async {
     String url = "/kiosk/product/$barcode";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
     try {

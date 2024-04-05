@@ -1,10 +1,11 @@
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class FaceSignRepository {
@@ -14,47 +15,43 @@ class FaceSignRepository {
       'Authorization': 'Bearer $accessToken',
       'Transaction-ID': await AuthService.to.transactionId
     };
+
     try {
-      FormData formData;
+      MultipartFile image;
       if (kDebugMode) {
         var bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
-        formData = FormData.fromMap(
-          {
-            "image": MultipartFile.fromBytes(bytes, filename: "face.png"),
-          },
+        image = MultipartFile.fromBytes(
+          bytes,
+          filename: "image.jpg",
+          contentType: MediaType('image', 'jpeg'),
         );
       } else {
-        formData = FormData.fromMap(
-          {
-            "image":
-                await MultipartFile.fromFile(imagePath, filename: "face.jpg"),
-          },
+        image = await MultipartFile.fromFile(
+          imagePath,
+          filename: "image.jpg",
+          contentType: MediaType('image', 'jpeg'),
         );
       }
 
       Response response = await ApiProvider.to.post(
         url,
-        data: formData,
+        data: FormData.fromMap({"image": image}),
         options: Options(
           headers: headers,
           contentType: Headers.multipartFormDataContentType,
         ),
       );
 
-      var a = [
-        for (var user in response.data["data"]["foundedUsers"])
-          User.fromJson(user)
-      ];
-      print(a);
-
-      // return List<User>.from(response.data["data"]);
-      return [
-        for (var user in response.data["data"]["foundedUsers"])
-          User.fromJson(user)
-      ];
-    } on DioException catch (e) {
-      print(e.response);
-      throw NoAccessTokenException(e.response?.data["message"]);
+      try {
+        return [
+          for (var user in response.data["data"]["foundedUsers"])
+            User.fromJson(user)
+        ];
+      } catch (e) {
+        throw NoUserFoundException();
+      }
+    } on DioException {
+      throw NoUserFoundException();
     }
   }
 }

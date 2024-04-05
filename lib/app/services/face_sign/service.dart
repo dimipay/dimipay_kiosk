@@ -6,6 +6,9 @@ import 'dart:io';
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+
+enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 
 class FaceSignService extends GetxController {
   static FaceSignService get to => Get.find<FaceSignService>();
@@ -16,16 +19,24 @@ class FaceSignService extends GetxController {
       : repository = repository ?? FaceSignRepository();
 
   final Rx<List<User>> _users = Rx([]);
+  final Rx<bool> _stop = Rx(false);
+  final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
+
+  FaceSignStatus get faceSignStatus => _faceSignStatus.value;
+  List<User> get users => _users.value;
+
+  void stop() {
+    _stop.value = true;
+  }
 
   void resetUser() {
     _users.value = [];
   }
 
-  @override
-  Future<void> onInit() async {
+  Future<FaceSignService> init() async {
     super.onInit();
-    if (kDebugMode) return;
+    if (kDebugMode) return this;
     _cameraController.value = CameraController(
         ((await availableCameras())[1]), ResolutionPreset.high,
         imageFormatGroup:
@@ -33,60 +44,49 @@ class FaceSignService extends GetxController {
         enableAudio: false);
     await _cameraController.value!.initialize();
     await _cameraController.value!.setFlashMode(FlashMode.off);
+    return this;
   }
 
   Future<void> findUser() async {
+    int attempts = 0;
+    _stop.value = false;
+    if (_faceSignStatus.value != FaceSignStatus.loading) {
+      _faceSignStatus.value = FaceSignStatus.loading;
+    }
     if (_users.value.isNotEmpty) resetUser();
+
     do {
-      if (kDebugMode) {
-        _users.value = await repository.faceSign(
-          AuthService.to.accessToken!,
-          "assets/images/single_test_face.png",
-        );
-      } else {
-        final image = await _cameraController.value!.takePicture();
-        _users.value = await repository.faceSign(
-          AuthService.to.accessToken!,
-          image.path,
-        );
+      if (_stop.value) {
+        resetUser();
+        return;
       }
-    } while (_users.value.isEmpty);
+
+      try {
+        print(attempts);
+        if (kDebugMode) {
+          _users.value = await repository.faceSign(
+            AuthService.to.accessToken!,
+            "assets/images/single_test_face.png",
+          );
+        } else {
+          final image = await _cameraController.value!.takePicture();
+          _users.value = await repository.faceSign(
+            AuthService.to.accessToken!,
+            image.path,
+          );
+        }
+        if (_users.value.length > 1) {
+          _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
+          return;
+        }
+        _faceSignStatus.value = FaceSignStatus.success;
+        return;
+      } on NoUserFoundException {
+        attempts++;
+        continue;
+      }
+    } while (_users.value.isEmpty && attempts < 10);
+    _faceSignStatus.value = FaceSignStatus.failed;
+    return;
   }
 }
-
-
-
-
-
-
-
-
-// final Rx<UserFace?> _users = Rx(null);
-
-// final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
-  // final Rx<CameraController?> _cameraController = Rx(null);
-
-// UserFace? get users => _users.value;
-  // FaceSignStatus get faceSignStatus => _faceSignStatus.value;
-
-  // Future<void> findUser() async {
-  //   if (_users.value != null) resetUser();
-  //   do {
-  //     if (kDebugMode) {
-  //       _users.value = await repository.findUserByFace(
-  //           accessToken!, "assets/images/single_test_face.png");
-  //     } else {
-  //       final image = await _cameraController.value!.takePicture();
-  //       _users.value =
-  //           await repository.findUserByFace(accessToken!, image.path);
-  //     }
-  //   } while (_users.value == null);
-  //   if (_users.value!.users.length > 1) {
-  //     _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
-  //     return;
-  //   }
-  //   _faceSignStatus.value = FaceSignStatus.success;
-  //   repository.getPaymentByFace(
-  //       accessToken!, _users.value!.code, _users.value!.users[0].id, "0221");
-  // }
-

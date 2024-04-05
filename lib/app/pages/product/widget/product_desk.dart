@@ -13,29 +13,43 @@ class ProductSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-        decoration: BoxDecoration(
-            color: DPColors.grayscale200,
-            border: Border.all(color: DPColors.grayscale300, width: 1),
-            borderRadius: BorderRadius.circular(8)),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Wrap(spacing: 24, children: [
-            const SizedBox(
-              width: 48,
-              height: 48,
-            ),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("X CHECK",
-                  style: DPTypography.header2(color: DPColors.grayscale800)),
-              const SizedBox(height: 4),
-              Text("이 카드로 결제",
-                  style: DPTypography.description(color: DPColors.grayscale600))
-            ])
-          ]),
-          Text("변경",
-              style: DPTypography.pos.underlined(color: DPColors.grayscale500)),
-        ]));
+      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+      decoration: BoxDecoration(
+        color: DPColors.grayscale200,
+        border: Border.all(color: DPColors.grayscale300, width: 1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Wrap(
+            spacing: 24,
+            children: [
+              const SizedBox(width: 48, height: 48),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "X CHECK",
+                    style: DPTypography.header2(color: DPColors.grayscale800),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "이 카드로 결제",
+                    style:
+                        DPTypography.description(color: DPColors.grayscale600),
+                  )
+                ],
+              ),
+            ],
+          ),
+          Text(
+            "변경",
+            style: DPTypography.pos.underlined(color: DPColors.grayscale500),
+          ),
+        ],
+      ),
+    );
   }
 }
 

@@ -1,3 +1,5 @@
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
@@ -37,7 +39,7 @@ class ProductService extends GetxController {
         _productList.value[barcode]!.count++;
       } else {
         var product =
-            await repository.getProduct(barcode, AuthService.to.accessToken!);
+            await repository.getProduct(AuthService.to.accessToken!, barcode);
 
         _productList.value[barcode] = ProductListItem(
             id: product.id,
@@ -55,8 +57,9 @@ class ProductService extends GetxController {
   }
 
   void resetProduct() {
-    // AuthService.to.resetUser();
+    FaceSignService.to.stop();
     Get.back();
+    HealthService.to.checkHealth();
   }
 
   void removeProduct(String barcode) {

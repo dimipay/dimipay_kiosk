@@ -32,3 +32,8 @@ class IncorrectPinException implements Exception {
     AlertModal.to.show(message);
   }
 }
+
+class NoUserFoundException implements Exception {
+  final String message;
+  NoUserFoundException({this.message = ''});
+}
