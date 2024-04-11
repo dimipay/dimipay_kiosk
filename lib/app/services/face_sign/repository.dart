@@ -9,12 +9,47 @@ import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class FaceSignRepository {
+  // final Map<String, dynamic> _testData = {
+  //   "statusCode": 200,
+  //   "code": "OK",
+  //   "data": {
+  //     "foundUsers": [
+  //       {
+  //         "id": "379638d9-e4a2-449d-9a9d-79d46fe472c5",
+  //         "name": "이*빈",
+  //         "profileImage":
+  //             "https://lh3.googleusercontent.com/a/ACg8ocKdvzrSrIAOu0uDDxVPA1KQ2ZRxjDzFKhLHk-AgAjdm=s96-c",
+  //         "paymentMethods": {
+  //           "methods": [],
+  //           "mainPaymentMethodId": null,
+  //           "paymentPinAuthURL": null
+  //         }
+  //       },
+  //       // {
+  //       //   "id": "d609dfd8-739f-4fa0-a2b5-2b9fba099b15",
+  //       //   "name": "디**페",
+  //       //   "profileImage":
+  //       //       "https://lh3.googleusercontent.com/a/ACg8ocIaNAJdQZ5kF6NgV1OMdbFSiAlTZmROoshwf7aPj_oaDJg=s96-c",
+  //       //   "paymentMethods":
+  //       //       "/kiosk/face-sign/payments/methods?t=l2qitQjQyrBFbbZQHjilm"
+  //       // }
+  //     ]
+  //   },
+  //   "timestamp": "2024-04-03T01:55:18.842Z"
+  // };
+
   Future<List<User>> faceSign(String accessToken, Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
     Map<String, dynamic> headers = {
       'Authorization': 'Bearer $accessToken',
       'Transaction-ID': await AuthService.to.transactionId
     };
+
+    // if (kDebugMode) {
+    //   return [
+    //     for (var user in _testData["data"]["foundUsers"]) User.fromJson(user)
+    //   ];
+    // }
 
     try {
       Response response = await ApiProvider.to.post(
@@ -45,55 +80,3 @@ class FaceSignRepository {
     }
   }
 }
-
-
-
-
-
-
-
-
-//  Future<UserPayment?> getPaymentByFace(
-//       String accessToken, String code, String userId, String pin) async {
-//     String url = "/auth/face/method?code=$code&userId=$userId&pin=$pin";
-//     Map<String, dynamic> headers = {'Authorization': 'Bearer$accessToken'};
-//     try {
-//       Response response =
-//           await api.get(url, options: Options(headers: headers));
-//       return UserPayment.fromJson(response.data);
-//     } on DioException catch (e) {
-//       if (e.response?.data["code"] == "ERR_FACE_NOT_FOUND") return null;
-//       AlertModal.to.show(e.response?.data["message"]);
-//       throw NoAccessTokenException(e.response?.data["message"]);
-//     }
-//   }
-
-//   Future<UserFace?> findUserByFace(String accessToken, String imagePath) async {
-//     String url = "/auth/face/find";
-//     Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
-//     try {
-//       FormData formData;
-//       if (kDebugMode) {
-//         var bytes = (await rootBundle.load(imagePath)).buffer.asUint8List();
-//         formData = FormData.fromMap({
-//           "image": MultipartFile.fromBytes(bytes, filename: "face.jpg"),
-//         });
-//       } else {
-//         formData = FormData.fromMap({
-//           "image":
-//               await MultipartFile.fromFile(imagePath, filename: "face.jpg"),
-//         });
-//       }
-
-//       Response response = await api.post(url,
-//           data: formData,
-//           options: Options(
-//               headers: headers,
-//               contentType: Headers.multipartFormDataContentType));
-//       return UserFace.fromJson(response.data);
-//     } on DioException catch (e) {
-//       if (e.response?.data["code"] == "ERR_FACE_NOT_FOUND") return null;
-//       AlertModal.to.show(e.response?.data["message"]);
-//       throw NoAccessTokenException(e.response?.data["message"]);
-//     }
-//   }

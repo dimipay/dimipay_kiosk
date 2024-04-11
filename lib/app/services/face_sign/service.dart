@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
-import 'dart:io';
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
@@ -16,7 +15,7 @@ class FaceSignService extends GetxController {
 
   final FaceSignRepository repository;
 
-  final kDebugMode = false;
+  // final kDebugMode = false;
 
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
@@ -54,47 +53,49 @@ class FaceSignService extends GetxController {
   Future<void> findUser() async {
     int attempts = 0;
     _stop.value = false;
+    // _faceSignStatus.value = _faceSignStatus.value != FaceSignStatus.loading
+    //     ? FaceSignStatus.loading
+    //     : _faceSignStatus.value;
     if (_faceSignStatus.value != FaceSignStatus.loading) {
       _faceSignStatus.value = FaceSignStatus.loading;
     }
     if (_users.value.isNotEmpty) resetUser();
 
-    await _cameraController.value!.startImageStream(
-      (image) async {
-        do {
-          if (_stop.value) {
-            resetUser();
-            return;
-          }
+    if (kDebugMode) {
+      _users.value = await repository.faceSign(
+          AuthService.to.accessToken!,
+          (await rootBundle.load("assets/images/single_test_face.png"))
+              .buffer
+              .asUint8List());
+      _faceSignStatus.value = FaceSignStatus.success;
+    } else {
+      await _cameraController.value!.startImageStream(
+        (image) async {
+          do {
+            if (_stop.value) {
+              resetUser();
+              return;
+            }
 
-          try {
-            if (kDebugMode) {
-              _users.value = await repository.faceSign(
-                AuthService.to.accessToken!,
-                (await rootBundle.load("assets/images/single_test_face.png"))
-                    .buffer
-                    .asUint8List(),
-              );
-            } else {
+            try {
               _users.value = await repository.faceSign(
                 AuthService.to.accessToken!,
                 image.planes[0].bytes,
               );
+              _faceSignStatus.value = _users.value.length > 1
+                  ? FaceSignStatus.multipleUserDetected
+                  : FaceSignStatus.success;
+              return;
+            } on NoUserFoundException {
+              attempts++;
+              continue;
             }
-            _faceSignStatus.value = _users.value.length > 1
-                ? FaceSignStatus.multipleUserDetected
-                : FaceSignStatus.success;
-            // _cameraController.value!.stopImageStream();
-            return;
-          } on NoUserFoundException {
-            attempts++;
-            continue;
-          }
-        } while (_users.value.isEmpty && attempts < 10);
-        _faceSignStatus.value = FaceSignStatus.failed;
-        return;
-      },
-    );
-    _cameraController.value!.stopImageStream();
+          } while (_users.value.isEmpty && attempts < 10);
+          _faceSignStatus.value = FaceSignStatus.failed;
+          return;
+        },
+      );
+      _cameraController.value!.stopImageStream();
+    }
   }
 }

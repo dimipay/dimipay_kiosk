@@ -12,7 +12,6 @@ class ProductPageController extends GetxController {
     super.onInit();
     resetTimer();
     FaceSignService.to.findUser();
-    // AuthService.to.findUser();
   }
 
   var timer = Timer(const Duration(minutes: 1), () {

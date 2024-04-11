@@ -2,21 +2,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:get/instance_manager.dart';
 
-// class ApiResponse {
-//   String code;
-//   int statusCode;
-//   String timestamp;
-//   String? message;
-//   Map<String, dynamic>? data;
-
-//   ApiResponse(
-//       {required this.code,
-//       required this.statusCode,
-//       required this.timestamp,
-//       this.message,
-//       this.data});
-// }
-
 abstract class ApiProvider {
   static ApiProvider get to => Get.find<ApiProvider>();
 

@@ -12,8 +12,8 @@ class PaymentMethod {
 }
 
 class PaymentMethods {
-  String mainPaymentMethodId;
-  String paymentPinAuthUrl;
+  String? mainPaymentMethodId;
+  String? paymentPinAuthUrl;
   List<PaymentMethod> methods;
 
   PaymentMethods(
