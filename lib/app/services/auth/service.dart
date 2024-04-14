@@ -23,12 +23,12 @@ class AuthService extends GetxController {
   String? get accessToken => _jwtToken.value.accessToken;
 
   Future<String?> get transactionId async {
-    _transactionId.value ??= await repository.transactionId(accessToken!);
+    _transactionId.value ??= await repository.transactionId();
     return _transactionId.value;
   }
 
   Future<String?> get encryptionKey async {
-    _encryptionKey.value ??= await repository.authEncryptionKey(accessToken!);
+    _encryptionKey.value ??= await repository.authEncryptionKey();
     return _encryptionKey.value;
   }
 

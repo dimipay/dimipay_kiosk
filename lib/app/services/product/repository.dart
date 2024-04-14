@@ -5,12 +5,10 @@ import 'package:dimipay_kiosk/app/services/product/model.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class ProductRepository {
-  Future<Product> getProduct(String accessToken, String barcode) async {
+  Future<Product> getProduct(String barcode) async {
     String url = "/kiosk/product/$barcode";
-    Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
     try {
-      Response response =
-          await ApiProvider.to.get(url, options: Options(headers: headers));
+      Response response = await ApiProvider.to.get(url);
       return Product.fromJson(response.data["data"]["product"]);
     } on DioException catch (e) {
       throw NoProductException(e.response?.data["message"]);

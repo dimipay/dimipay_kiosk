@@ -10,7 +10,7 @@ class JWTInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (options.path == '/auth/refresh') {
+    if (options.path == '/kiosk/auth/refresh') {
       return handler.next(options);
     }
 
@@ -28,7 +28,7 @@ class JWTInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.requestOptions.path == '/auth/refresh') {
+    if (err.response?.requestOptions.path == '/kiosk/auth/refresh') {
       return handler.next(err);
     }
 
@@ -58,6 +58,6 @@ class DevApiProvider extends ApiProvider {
 
   DevApiProvider() {
     dio.options.baseUrl = baseUrl;
-    dio.interceptors.add(LogInterceptor());
+    dio.interceptors.add(JWTInterceptor(dio));
   }
 }

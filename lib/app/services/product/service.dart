@@ -2,7 +2,6 @@ import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/services/product/model.dart';
 import 'package:dimipay_kiosk/app/services/product/repository.dart';
 
@@ -38,9 +37,7 @@ class ProductService extends GetxController {
       if (_productList.value.containsKey(barcode)) {
         _productList.value[barcode]!.count++;
       } else {
-        var product =
-            await repository.getProduct(AuthService.to.accessToken!, barcode);
-
+        var product = await repository.getProduct(barcode);
         _productList.value[barcode] = ProductListItem(
             id: product.id,
             name: product.name,

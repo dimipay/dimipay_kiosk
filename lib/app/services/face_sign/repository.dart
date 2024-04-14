@@ -13,7 +13,6 @@ class FaceSignRepository {
   Future<dynamic> faceSign(String accessToken, Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
     Map<String, dynamic> headers = {
-      'Authorization': 'Bearer $accessToken',
       'Transaction-ID': await AuthService.to.transactionId
     };
 
@@ -46,9 +45,9 @@ class FaceSignRepository {
 
   Future<String> faceSignPaymentsPin(
       String accessToken, String url, String pin) async {
-    Map<String, dynamic> headers = {
-      'Authorization': 'Bearer $accessToken',
-    };
+    // Map<String, dynamic> headers = {
+    //   'Authorization': 'Bearer $accessToken',
+    // };
 
     var a = encrypt.Encrypter(encrypt.AES(encrypt.Key.fromSecureRandom(12)))
         .encrypt({"pin": pin.toString()}.toString(),

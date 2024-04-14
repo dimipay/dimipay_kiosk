@@ -103,8 +103,9 @@ class FaceSignService extends GetxController {
   }
 
   Future<bool> authUser(String pin) async {
-    repository.faceSignPaymentsPin(AuthService.to.accessToken!,
-        _users.value[0].paymentMethods.paymentPinAuthURL, pin);
+    print(AuthService.to.encryptionKey);
+    // repository.faceSignPaymentsPin(AuthService.to.accessToken!,
+    //     _users.value[0].paymentMethods.paymentPinAuthURL, pin);
     return true;
   }
 }
