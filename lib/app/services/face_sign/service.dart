@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
-import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
