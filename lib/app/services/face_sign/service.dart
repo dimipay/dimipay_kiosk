@@ -20,13 +20,13 @@ class FaceSignService extends GetxController {
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
 
-  final Rx<List<User>> _users = Rx([]);
+  final Rx<List<dynamic>> _users = Rx([]);
   final Rx<bool> _stop = Rx(false);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
 
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
-  List<User> get users => _users.value;
+  List<dynamic> get users => _users.value;
 
   void stop() {
     _stop.value = true;
@@ -53,9 +53,6 @@ class FaceSignService extends GetxController {
   Future<void> findUser() async {
     int attempts = 0;
     _stop.value = false;
-    // _faceSignStatus.value = _faceSignStatus.value != FaceSignStatus.loading
-    //     ? FaceSignStatus.loading
-    //     : _faceSignStatus.value;
     if (_faceSignStatus.value != FaceSignStatus.loading) {
       _faceSignStatus.value = FaceSignStatus.loading;
     }
@@ -64,11 +61,16 @@ class FaceSignService extends GetxController {
     if (kDebugMode) {
       _users.value = await repository.faceSign(
           AuthService.to.accessToken!,
-          (await rootBundle.load("assets/images/single_test_face.png"))
+          (await rootBundle.load("assets/images/user_test_face.jpeg"))
               .buffer
               .asUint8List());
       _faceSignStatus.value = FaceSignStatus.success;
+
+      // test
+      authUser("1234");
+      // test
     } else {
+      // print("hi");
       await _cameraController.value!.startImageStream(
         (image) async {
           do {
@@ -78,6 +80,7 @@ class FaceSignService extends GetxController {
             }
 
             try {
+              // print(image.height);
               _users.value = await repository.faceSign(
                 AuthService.to.accessToken!,
                 image.planes[0].bytes,
@@ -92,10 +95,16 @@ class FaceSignService extends GetxController {
             }
           } while (_users.value.isEmpty && attempts < 10);
           _faceSignStatus.value = FaceSignStatus.failed;
+          _cameraController.value!.stopImageStream();
           return;
         },
       );
-      _cameraController.value!.stopImageStream();
     }
+  }
+
+  Future<bool> authUser(String pin) async {
+    repository.faceSignPaymentsPin(AuthService.to.accessToken!,
+        _users.value[0].paymentMethods.paymentPinAuthURL, pin);
+    return true;
   }
 }

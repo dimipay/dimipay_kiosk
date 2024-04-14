@@ -13,12 +13,12 @@ class PaymentMethod {
 
 class PaymentMethods {
   String? mainPaymentMethodId;
-  String? paymentPinAuthUrl;
+  String? paymentPinAuthURL;
   List<PaymentMethod> methods;
 
   PaymentMethods(
       {required this.mainPaymentMethodId,
-      required this.paymentPinAuthUrl,
+      required this.paymentPinAuthURL,
       required this.methods});
 }
 
@@ -41,7 +41,7 @@ class User {
         profileImage: json["profileImage"],
         paymentMethods: PaymentMethods(
             mainPaymentMethodId: json['paymentMethods']['mainPaymentMethodId'],
-            paymentPinAuthUrl: json['paymentMethods']['paymentPinAuthUrl'],
+            paymentPinAuthURL: json['paymentMethods']['paymentPinAuthURL'],
             methods: json['paymentMethods']['methods']
                 .map<PaymentMethod>((method) => PaymentMethod(
                     id: method['id'],
@@ -49,5 +49,26 @@ class User {
                     code: method['code'],
                     preview: method['preview']))
                 .toList()));
+  }
+}
+
+class AltUser {
+  String id;
+  String name;
+  String profileImage;
+  String paymentMethods;
+
+  AltUser(
+      {required this.id,
+      required this.name,
+      required this.profileImage,
+      required this.paymentMethods});
+
+  factory AltUser.fromJson(Map<String, dynamic> json) {
+    return AltUser(
+        id: json["id"],
+        name: json["name"],
+        profileImage: json["profileImage"],
+        paymentMethods: json["paymentMethods"]);
   }
 }

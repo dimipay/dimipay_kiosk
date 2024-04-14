@@ -31,6 +31,19 @@ class AuthRepository {
     }
   }
 
+  Future<String?> authEncryptionKey(String accessToken) async {
+    String url = "/kiosk/auth/encryption-key";
+    Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
+    try {
+      Response response =
+          await ApiProvider.to.get(url, options: Options(headers: headers));
+      return response.data["data"]["encryptionKey"];
+    } on DioException catch (e) {
+      AlertModal.to.show(e.response?.data["message"]);
+      throw NoAccessTokenException(e.response?.data["message"]);
+    }
+  }
+
   Future<String?> transactionId(String accessToken) async {
     String url = "/kiosk/transaction/id";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};

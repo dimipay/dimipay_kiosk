@@ -10,8 +10,9 @@ class AuthService extends GetxController {
   static AuthService get to => Get.find<AuthService>();
 
   final AuthRepository repository;
-  final Rx<String?> _transactionId = Rx(null);
   final Rx<String?> _deviceName = Rx(null);
+  final Rx<String?> _transactionId = Rx(null);
+  final Rx<String?> _encryptionKey = Rx(null);
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -20,9 +21,15 @@ class AuthService extends GetxController {
   bool get isAuthenticated => _jwtToken.value.accessToken != null;
   String? get deviceName => _deviceName.value;
   String? get accessToken => _jwtToken.value.accessToken;
+
   Future<String?> get transactionId async {
     _transactionId.value ??= await repository.transactionId(accessToken!);
     return _transactionId.value;
+  }
+
+  Future<String?> get encryptionKey async {
+    _encryptionKey.value ??= await repository.authEncryptionKey(accessToken!);
+    return _encryptionKey.value;
   }
 
   Future<AuthService> init() async {

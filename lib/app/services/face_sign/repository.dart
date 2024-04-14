@@ -1,3 +1,4 @@
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +10,7 @@ import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class FaceSignRepository {
-  Future<List<User>> faceSign(String accessToken, Uint8List imageBytes) async {
+  Future<dynamic> faceSign(String accessToken, Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
     Map<String, dynamic> headers = {
       'Authorization': 'Bearer $accessToken',
@@ -33,20 +34,44 @@ class FaceSignRepository {
           contentType: Headers.multipartFormDataContentType,
         ),
       );
-      print("wtf");
-
-      print(response.data);
-
       return [
-        for (var user in response.data["data"]["foundedUsers"])
-          User.fromJson(user)
+        User.fromJson(response.data["data"]["foundUsers"][0]),
+        AltUser.fromJson(response.data["data"]["foundUsers"]?[1]),
+        AltUser.fromJson(response.data["data"]["foundUsers"]?[2])
       ];
-    } catch (e) {
-      print(e);
+    } on DioException {
       throw NoUserFoundException();
     }
-    // on DioException {
-    //   throw NoUserFoundException();
-    // }
+  }
+
+  Future<String> faceSignPaymentsPin(
+      String accessToken, String url, String pin) async {
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $accessToken',
+    };
+
+    var a = encrypt.Encrypter(encrypt.AES(encrypt.Key.fromSecureRandom(12)))
+        .encrypt({"pin": pin.toString()}.toString(),
+            iv: encrypt.IV.fromLength(12))
+        .base64;
+
+    print(a);
+
+    try {
+      // Response response = await ApiProvider.to.post(
+      //   url,
+      //   data: encrypt.Encrypter(encrypt.AES(encrypt.Key.fromSecureRandom(12)))
+      //       .encrypt({"pin": pin.toString()}.toString(),
+      //           iv: encrypt.IV.fromLength(12))
+      //       .base64,
+      //   options: Options(
+      //     headers: headers,
+      //   ),
+      // );
+      // return response.data["data"]["otp"];
+      return "asdf";
+    } on DioException catch (e) {
+      throw IncorrectPinException(e.response?.data["message"]);
+    }
   }
 }

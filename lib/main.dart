@@ -10,7 +10,7 @@ import 'package:dimipay_kiosk/app/routes/routes.dart';
 void main() async {
   await AppLoader().load();
   runApp(GetMaterialApp(
-      title: '디미페이 POS',
+      title: '디미페이 키오스크',
       getPages: AppPages.pages,
       initialRoute:
           AuthService.to.isAuthenticated ? Routes.ONBOARD : Routes.PIN,
