@@ -53,6 +53,11 @@ class AuthService extends GetxController {
     _jwtToken.value = loginData.tokens;
   }
 
+  Future<void> refreshAccessToken() async {
+    _jwtToken.value =
+        await repository.authRefresh(_jwtToken.value.refreshToken!);
+  }
+
   Future<bool> loginKiosk(String pin) async {
     try {
       await _storeLoginData(await repository.authLogin(pin));

@@ -1,16 +1,47 @@
 import 'package:dio/dio.dart';
 
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 
-class LogInterceptor extends Interceptor {
+class JWTInterceptor extends Interceptor {
+  final Dio _dioInstance;
+
+  JWTInterceptor(this._dioInstance);
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    if (options.path == '/auth/refresh') {
+      return handler.next(options);
+    }
+
+    if (AuthService.to.isAuthenticated) {
+      options.headers['Authorization'] = 'Bearer ${AuthService.to.accessToken}';
+    }
+
+    return handler.next(options);
+  }
+
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     handler.next(response);
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    handler.next(err);
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.response?.requestOptions.path == '/auth/refresh') {
+      return handler.next(err);
+    }
+
+    if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
+      try {
+        await AuthService.to.refreshAccessToken();
+        final Response response = await _dioInstance.fetch(err.requestOptions);
+        return handler.resolve(response);
+      } catch (e) {
+        return handler.next(err);
+      }
+    }
+    return handler.next(err);
   }
 }
 
