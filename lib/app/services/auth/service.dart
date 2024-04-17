@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fast_rsa/fast_rsa.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -13,6 +14,7 @@ class AuthService extends GetxController {
   final Rx<String?> _deviceName = Rx(null);
   final Rx<String?> _transactionId = Rx(null);
   final Rx<String?> _encryptionKey = Rx(null);
+  final Rx<KeyPair> _rsaKey = Rx(KeyPair("", ""));
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -28,7 +30,13 @@ class AuthService extends GetxController {
   }
 
   Future<String?> get encryptionKey async {
-    _encryptionKey.value ??= await repository.authEncryptionKey();
+    _rsaKey.value = await RSA.generate(2048);
+    _rsaKey.value.publicKey =
+        await RSA.convertPublicKeyToPKCS1(_rsaKey.value.publicKey);
+    _rsaKey.value.privateKey =
+        await RSA.convertPrivateKeyToPKCS1(_rsaKey.value.privateKey);
+    _encryptionKey.value ??= await repository
+        .authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n'));
     return _encryptionKey.value;
   }
 

@@ -8,9 +8,13 @@ import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 class AuthRepository {
   Future<Login> authLogin(String passcode) async {
     String url = "/kiosk/auth/login";
-    Map body = {"passcode": passcode};
     try {
-      Response response = await ApiProvider.to.post(url, data: body);
+      Response response = await ApiProvider.to.post(
+        url,
+        data: {
+          "passcode": passcode,
+        },
+      );
       return Login.fromJson(response.data["data"]);
     } on DioException catch (e) {
       AlertModal.to.show(e.response?.data["message"]);
@@ -20,10 +24,15 @@ class AuthRepository {
 
   Future<JWTToken> authRefresh(String refreshToken) async {
     String url = "/kiosk/auth/refresh";
-    Map<String, dynamic> headers = {'Authorization': 'Bearer $refreshToken'};
     try {
-      Response response =
-          await ApiProvider.to.get(url, options: Options(headers: headers));
+      Response response = await ApiProvider.to.get(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $refreshToken',
+          },
+        ),
+      );
       return JWTToken.fromJson(response.data["data"]["tokens"]);
     } on DioException catch (e) {
       AlertModal.to.show(e.response?.data["message"]);
@@ -31,13 +40,20 @@ class AuthRepository {
     }
   }
 
-  Future<String?> authEncryptionKey() async {
+  Future<String?> authEncryptionKey(String rsaKey) async {
     String url = "/kiosk/auth/encryption-key";
+    print(rsaKey);
     try {
-      Response response = await ApiProvider.to.get(url);
+      Response response = await ApiProvider.to.get(
+        url,
+        options: Options(
+          headers: {
+            "Encryption-Public-Key": rsaKey,
+          },
+        ),
+      );
       return response.data["data"]["encryptionKey"];
     } on DioException catch (e) {
-      print(e.response);
       AlertModal.to.show(e.response?.data["message"]);
       throw NoAccessTokenException(e.response?.data["message"]);
     }
