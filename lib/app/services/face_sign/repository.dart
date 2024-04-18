@@ -27,7 +27,10 @@ class FaceSignRepository {
             ),
           },
         ),
-        options: Options(contentType: Headers.multipartFormDataContentType),
+        options: Options(
+          headers: {"Transaction-ID": await AuthService.to.transactionId},
+          contentType: Headers.multipartFormDataContentType,
+        ),
       );
       return [
         User.fromJson(response.data["data"]["foundUsers"][0]),
@@ -55,7 +58,10 @@ class FaceSignRepository {
             ...encrypt.cipherText,
           ],
         ),
-        options: Options(contentType: "application/octet-stream"),
+        options: Options(
+          headers: {"Transaction-ID": await AuthService.to.transactionId},
+          contentType: "application/octet-stream",
+        ),
       );
       return response.data["data"]["otp"];
     } on DioException catch (e) {

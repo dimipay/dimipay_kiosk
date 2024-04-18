@@ -19,10 +19,6 @@ class JWTInterceptor extends Interceptor {
       options.headers['Authorization'] = 'Bearer ${AuthService.to.accessToken}';
     }
 
-    if (options.path.contains("face-sign")) {
-      options.headers['Transaction-ID'] = await AuthService.to.transactionId;
-    }
-
     return handler.next(options);
   }
 
