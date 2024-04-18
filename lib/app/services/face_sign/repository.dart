@@ -1,8 +1,10 @@
-import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:cryptography/cryptography.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
+import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
@@ -44,33 +46,33 @@ class FaceSignRepository {
   }
 
   Future<String> faceSignPaymentsPin(String url, String pin) async {
-    print(await AuthService.to.encryptionKey);
-    // Map<String, dynamic> headers = {
-    //   'Authorization': 'Bearer $accessToken',
-    // };
+    Map<String, dynamic> headers = {
+      'Transaction-ID': await AuthService.to.transactionId
+    };
 
-    // encrypt
-    // var a = encrypt.Encrypter(encrypt.AES((await AuthService.to.encryptionKey)))
-    //     .encrypt({"pin": pin.toString()}.toString(),
-    //         iv: encrypt.IV.fromLength(12))
-    //     .base64;x
-
-    // print(a);
+    var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(
+        Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits),
+        secretKey: SecretKey((await AuthService.to.encryptionKey)!));
 
     try {
-      // Response response = await ApiProvider.to.post(
-      //   url,
-      //   data: encrypt.Encrypter(encrypt.AES(encrypt.Key.fromSecureRandom(12)))
-      //       .encrypt({"pin": pin.toString()}.toString(),
-      //           iv: encrypt.IV.fromLength(12))
-      //       .base64,
-      //   options: Options(
-      //     headers: headers,
-      //   ),
-      // );
-      // return response.data["data"]["otp"];
-      return "asdf";
+      Response response = await ApiProvider.to.post(
+        url,
+        data: base64.encode(
+          [
+            12,
+            ...encrypt.nonce,
+            ...encrypt.mac.bytes,
+            ...encrypt.cipherText,
+          ],
+        ),
+        options: Options(
+          headers: headers,
+          contentType: "application/octet-stream",
+        ),
+      );
+      return response.data["data"]["otp"];
     } on DioException catch (e) {
+      print(e.response);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
