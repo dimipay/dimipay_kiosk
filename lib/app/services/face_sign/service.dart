@@ -62,12 +62,7 @@ class FaceSignService extends GetxController {
               .buffer
               .asUint8List());
       _faceSignStatus.value = FaceSignStatus.success;
-
-      // test
-      authUser("1234");
-      // test
     } else {
-      // print("hi");
       await _cameraController.value!.startImageStream(
         (image) async {
           do {

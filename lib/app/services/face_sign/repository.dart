@@ -14,9 +14,6 @@ import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 class FaceSignRepository {
   Future<dynamic> faceSign(Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
-    Map<String, dynamic> headers = {
-      'Transaction-ID': await AuthService.to.transactionId
-    };
 
     try {
       Response response = await ApiProvider.to.post(
@@ -30,10 +27,7 @@ class FaceSignRepository {
             ),
           },
         ),
-        options: Options(
-          headers: headers,
-          contentType: Headers.multipartFormDataContentType,
-        ),
+        options: Options(contentType: Headers.multipartFormDataContentType),
       );
       return [
         User.fromJson(response.data["data"]["foundUsers"][0]),
@@ -46,10 +40,6 @@ class FaceSignRepository {
   }
 
   Future<String> faceSignPaymentsPin(String url, String pin) async {
-    Map<String, dynamic> headers = {
-      'Transaction-ID': await AuthService.to.transactionId
-    };
-
     var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(
         Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits),
         secretKey: SecretKey((await AuthService.to.encryptionKey)!));
@@ -65,14 +55,10 @@ class FaceSignRepository {
             ...encrypt.cipherText,
           ],
         ),
-        options: Options(
-          headers: headers,
-          contentType: "application/octet-stream",
-        ),
+        options: Options(contentType: "application/octet-stream"),
       );
       return response.data["data"]["otp"];
     } on DioException catch (e) {
-      print(e.response);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
