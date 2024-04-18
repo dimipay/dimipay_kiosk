@@ -85,7 +85,6 @@ class PaymentPage extends GetView<PaymentPageController> {
                     onTapCancel: () =>
                         PaymentPageController.to.pressedButton = "",
                     onTapUp: (_) => () {
-                      print("back");
                       PaymentPageController.to.pressedButton = "";
                       Get.back();
                     },
