@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fast_rsa/fast_rsa.dart';
 import 'package:get/get.dart';
+import 'dart:convert';
 import 'dart:async';
 
 import 'package:dimipay_kiosk/app/services/auth/repository.dart';
@@ -29,15 +32,17 @@ class AuthService extends GetxController {
     return _transactionId.value;
   }
 
-  Future<String?> get encryptionKey async {
+  Future<Uint8List?> get encryptionKey async {
     _rsaKey.value = await RSA.generate(2048);
     _rsaKey.value.publicKey =
         await RSA.convertPublicKeyToPKCS1(_rsaKey.value.publicKey);
     _rsaKey.value.privateKey =
-        await RSA.convertPrivateKeyToPKCS1(_rsaKey.value.privateKey);
+        await RSA.convertPrivateKeyToPKCS8(_rsaKey.value.privateKey);
     _encryptionKey.value ??= await repository
         .authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n'));
-    return _encryptionKey.value;
+
+    return await RSA.decryptOAEPBytes(base64.decode(_encryptionKey.value!), '',
+        Hash.SHA1, _rsaKey.value.privateKey);
   }
 
   Future<AuthService> init() async {

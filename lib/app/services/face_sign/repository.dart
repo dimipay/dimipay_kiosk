@@ -10,7 +10,7 @@ import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class FaceSignRepository {
-  Future<dynamic> faceSign(String accessToken, Uint8List imageBytes) async {
+  Future<dynamic> faceSign(Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
     Map<String, dynamic> headers = {
       'Transaction-ID': await AuthService.to.transactionId
@@ -43,18 +43,19 @@ class FaceSignRepository {
     }
   }
 
-  Future<String> faceSignPaymentsPin(
-      String accessToken, String url, String pin) async {
+  Future<String> faceSignPaymentsPin(String url, String pin) async {
+    print(await AuthService.to.encryptionKey);
     // Map<String, dynamic> headers = {
     //   'Authorization': 'Bearer $accessToken',
     // };
 
-    var a = encrypt.Encrypter(encrypt.AES(encrypt.Key.fromSecureRandom(12)))
-        .encrypt({"pin": pin.toString()}.toString(),
-            iv: encrypt.IV.fromLength(12))
-        .base64;
+    // encrypt
+    // var a = encrypt.Encrypter(encrypt.AES((await AuthService.to.encryptionKey)))
+    //     .encrypt({"pin": pin.toString()}.toString(),
+    //         iv: encrypt.IV.fromLength(12))
+    //     .base64;x
 
-    print(a);
+    // print(a);
 
     try {
       // Response response = await ApiProvider.to.post(

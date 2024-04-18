@@ -42,7 +42,6 @@ class AuthRepository {
 
   Future<String?> authEncryptionKey(String rsaKey) async {
     String url = "/kiosk/auth/encryption-key";
-    print(rsaKey);
     try {
       Response response = await ApiProvider.to.get(
         url,

@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 enum FaceSignStatus { loading, success, failed, multipleUserDetected }
@@ -59,7 +58,6 @@ class FaceSignService extends GetxController {
 
     if (kDebugMode) {
       _users.value = await repository.faceSign(
-          AuthService.to.accessToken!,
           (await rootBundle.load("assets/images/user_test_face.jpeg"))
               .buffer
               .asUint8List());
@@ -80,10 +78,7 @@ class FaceSignService extends GetxController {
 
             try {
               // print(image.height);
-              _users.value = await repository.faceSign(
-                AuthService.to.accessToken!,
-                image.planes[0].bytes,
-              );
+              _users.value = await repository.faceSign(image.planes[0].bytes);
               _faceSignStatus.value = _users.value.length > 1
                   ? FaceSignStatus.multipleUserDetected
                   : FaceSignStatus.success;
@@ -102,9 +97,8 @@ class FaceSignService extends GetxController {
   }
 
   Future<bool> authUser(String pin) async {
-    print(AuthService.to.encryptionKey);
-    // repository.faceSignPaymentsPin(AuthService.to.accessToken!,
-    //     _users.value[0].paymentMethods.paymentPinAuthURL, pin);
+    repository.faceSignPaymentsPin(
+        _users.value[0].paymentMethods.paymentPinAuthURL, pin);
     return true;
   }
 }
