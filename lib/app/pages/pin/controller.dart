@@ -1,4 +1,5 @@
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:get/get.dart';
 import 'dart:math';
 
@@ -68,11 +69,16 @@ class PinPageController extends GetxController {
     _input.add(number);
     _inputLength.value++;
     if (inputLength == 4) {
-      if (await AuthService.to.loginKiosk(_input.join().toString())) {
-        Get.offAndToNamed(Routes.ONBOARD);
+      if (AuthService.to.isAuthenticated) {
+        if (await FaceSignService.to.authUser(_input.join().toString())) {
+          Get.toNamed(Routes.PAYMENT);
+        }
       } else {
-        init();
+        if (await AuthService.to.loginKiosk(_input.join().toString())) {
+          Get.offAndToNamed(Routes.ONBOARD);
+        }
       }
+      init();
     }
   }
 }

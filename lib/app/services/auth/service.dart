@@ -36,9 +36,8 @@ class AuthService extends GetxController {
         await RSA.convertPublicKeyToPKCS1(_rsaKey.value.publicKey);
     _rsaKey.value.privateKey =
         await RSA.convertPrivateKeyToPKCS8(_rsaKey.value.privateKey);
-    _encryptionKey.value ??= await repository
+    _encryptionKey.value = await repository
         .authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n'));
-
     return await RSA.decryptOAEPBytes(base64.decode(_encryptionKey.value!), '',
         Hash.SHA1, _rsaKey.value.privateKey);
   }

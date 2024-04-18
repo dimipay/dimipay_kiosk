@@ -18,13 +18,14 @@ class FaceSignService extends GetxController {
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
 
-  final Rx<List<dynamic>> _users = Rx([]);
   final Rx<bool> _stop = Rx(false);
+  final Rx<String?> _otp = Rx(null);
+  final Rx<List<dynamic>> _users = Rx([]);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
 
-  FaceSignStatus get faceSignStatus => _faceSignStatus.value;
   List<dynamic> get users => _users.value;
+  FaceSignStatus get faceSignStatus => _faceSignStatus.value;
 
   void stop() {
     _stop.value = true;
@@ -92,8 +93,12 @@ class FaceSignService extends GetxController {
   }
 
   Future<bool> authUser(String pin) async {
-    repository.faceSignPaymentsPin(
-        _users.value[0].paymentMethods.paymentPinAuthURL, pin);
-    return true;
+    try {
+      _otp.value = await repository.faceSignPaymentsPin(
+          _users.value[0].paymentMethods.paymentPinAuthURL, pin);
+    } on IncorrectPinException {
+      return false;
+    }
+    return _otp.value != null;
   }
 }
