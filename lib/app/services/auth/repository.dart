@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 
-import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
-import 'package:dimipay_kiosk/app/core/utils/errors.dart';
-import 'package:dimipay_kiosk/app/services/auth/model.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
+import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
+import 'package:dimipay_kiosk/app/services/auth/model.dart';
+import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class AuthRepository {
   Future<Login> authLogin(String passcode) async {
