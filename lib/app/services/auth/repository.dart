@@ -57,15 +57,4 @@ class AuthRepository {
       throw NoAccessTokenException(e.response?.data["message"]);
     }
   }
-
-  Future<String?> transactionId() async {
-    String url = "/kiosk/transaction/id";
-    try {
-      Response response = await ApiProvider.to.get(url);
-      return response.data["data"]["transactionId"];
-    } on DioException catch (e) {
-      AlertModal.to.show(e.response?.data["message"]);
-      throw NoAccessTokenException(e.response?.data["message"]);
-    }
-  }
 }

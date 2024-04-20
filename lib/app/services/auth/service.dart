@@ -13,7 +13,6 @@ class AuthService extends GetxController {
 
   final AuthRepository repository;
   final Rx<String?> _deviceName = Rx(null);
-  final Rx<String?> _transactionId = Rx(null);
   final Rx<String?> _encryptionKey = Rx(null);
   final Rx<KeyPair> _rsaKey = Rx(KeyPair("", ""));
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
@@ -24,11 +23,6 @@ class AuthService extends GetxController {
   bool get isAuthenticated => _jwtToken.value.accessToken != null;
   String? get deviceName => _deviceName.value;
   String? get accessToken => _jwtToken.value.accessToken;
-
-  Future<String?> get transactionId async {
-    _transactionId.value ??= await repository.transactionId();
-    return _transactionId.value;
-  }
 
   Future<Uint8List?> get encryptionKey async {
     _rsaKey.value = await RSA.generate(2048);

@@ -28,7 +28,6 @@ class FaceSignRepository {
           },
         ),
         options: Options(
-          headers: {"Transaction-ID": await AuthService.to.transactionId},
           contentType: Headers.multipartFormDataContentType,
         ),
       );
@@ -59,7 +58,6 @@ class FaceSignRepository {
           ],
         ),
         options: Options(
-          headers: {"Transaction-ID": await AuthService.to.transactionId},
           contentType: "application/octet-stream",
         ),
       );

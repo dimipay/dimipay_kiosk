@@ -1,5 +1,5 @@
 name: dimipay_kiosk
-description: "Dimipay Kiosk"
+description: "디미페이 키오스크"
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
@@ -17,14 +17,14 @@ dependencies:
   dio: ^5.4.0
   camera: ^0.10.5+9
   lottie: ^3.1.0
+  fast_rsa: ^3.6.1
   jwt_decode: ^0.3.1
   flutter_svg: ^2.0.9
   http_parser: ^4.0.2
+  cryptography: ^2.7.0
   dimipay_design_kit: ^0.1.0
   flutter_secure_storage: ^9.0.0
   material_symbols_icons: ^4.2716.0
-  fast_rsa: ^3.6.1
-  cryptography: ^2.7.0
 
 
 dev_dependencies:

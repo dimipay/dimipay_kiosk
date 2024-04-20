@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -7,6 +6,8 @@ import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/health/model.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
+
+import 'package:dimipay_kiosk/globals.dart' as globals;
 
 class HealthService extends GetxController {
   static HealthService get to => Get.find<HealthService>();
@@ -25,8 +26,8 @@ class HealthService extends GetxController {
     _health.value = Health();
     _health.value = await repository.health(AuthService.to.accessToken!);
 
-    if (kDebugMode) {
-      await Future.delayed(const Duration(seconds: 2));
+    if (globals.isSimulator) {
+      await Future.delayed(const Duration(seconds: 1));
       if (await ProductService.to.addProduct("1202303246757")) {
         Get.toNamed(Routes.PRODUCT);
       }

@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dio/dio.dart';
 
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
@@ -17,6 +18,10 @@ class JWTInterceptor extends Interceptor {
 
     if (AuthService.to.isAuthenticated) {
       options.headers['Authorization'] = 'Bearer ${AuthService.to.accessToken}';
+      if (options.path.contains("face-sign")) {
+        options.headers['Transaction-ID'] =
+            await TransactionService.to.transactionId;
+      }
     }
 
     return handler.next(options);
