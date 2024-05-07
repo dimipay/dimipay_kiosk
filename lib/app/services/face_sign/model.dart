@@ -38,7 +38,8 @@ class User {
     return User(
         id: json["id"],
         name: json["name"],
-        profileImage: json["profileImage"],
+        profileImage:
+            json["profileImage"] ?? "https://via.placeholder.com/36x36",
         paymentMethods: PaymentMethods(
             mainPaymentMethodId: json['paymentMethods']['mainPaymentMethodId'],
             paymentPinAuthURL: json['paymentMethods']['paymentPinAuthURL'],

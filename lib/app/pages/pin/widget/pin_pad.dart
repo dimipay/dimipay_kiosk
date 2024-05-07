@@ -1,10 +1,9 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:dimipay_design_kit/utils/dimipay_typography.dart';
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 
 const double buttonHeight = 72;
@@ -74,28 +73,7 @@ class PinPad extends StatelessWidget {
             spacing: 40,
             children: [
               AuthService.to.isAuthenticated
-                  ?
-                  // GestureDetector(
-                  //     onTapDown: (_) => PinPageController.to.down(11),
-                  //     onTapUp: (_) => PinPageController.to.up(11),
-                  //     onTapCancel: () => PinPageController.to.canceled(),
-                  //     child: Obx(
-                  //       () => Container(
-                  //         height: buttonHeight,
-                  //         width: buttonWidth,
-                  //         alignment: Alignment.center,
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(12),
-                  //           color: PinPageController.to.isPressed &&
-                  //                   PinPageController.to.pressedPin.contains(11)
-                  //               ? DPColors.grayscale200
-                  //               : Colors.transparent,
-                  //         ),
-                  //         child: Text("취소", style: DPTypography.description()),
-                  //       ),
-                  //     ),
-                  //   )
-                  GestureDetector(
+                  ? GestureDetector(
                       onTapDown: (_) => PinPageController.to.down(11),
                       onTapUp: (_) => PinPageController.to.up(11),
                       onTapCancel: () => PinPageController.to.canceled(),

@@ -31,10 +31,11 @@ class FaceSignRepository {
           contentType: Headers.multipartFormDataContentType,
         ),
       );
+
       return [
         User.fromJson(response.data["data"]["foundUsers"][0]),
-        AltUser.fromJson(response.data["data"]["foundUsers"]?[1]),
-        AltUser.fromJson(response.data["data"]["foundUsers"]?[2])
+        // AltUser.fromJson(response.data["data"]["foundUsers"]?[1]),
+        // AltUser.fromJson(response.data["data"]["foundUsers"]?[2])
       ];
     } on DioException {
       throw NoUserFoundException();

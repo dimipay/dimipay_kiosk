@@ -62,7 +62,7 @@ class FaceSignService extends GetxController {
 
     if (globals.isSimulator) {
       _users.value = await repository.faceSign(
-          (await rootBundle.load("assets/images/user_test_face.jpeg"))
+          (await rootBundle.load("assets/images/test_face.jpg"))
               .buffer
               .asUint8List());
       _faceSignStatus.value = FaceSignStatus.success;
