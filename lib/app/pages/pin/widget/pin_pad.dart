@@ -74,7 +74,28 @@ class PinPad extends StatelessWidget {
             spacing: 40,
             children: [
               AuthService.to.isAuthenticated
-                  ? GestureDetector(
+                  ?
+                  // GestureDetector(
+                  //     onTapDown: (_) => PinPageController.to.down(11),
+                  //     onTapUp: (_) => PinPageController.to.up(11),
+                  //     onTapCancel: () => PinPageController.to.canceled(),
+                  //     child: Obx(
+                  //       () => Container(
+                  //         height: buttonHeight,
+                  //         width: buttonWidth,
+                  //         alignment: Alignment.center,
+                  //         decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(12),
+                  //           color: PinPageController.to.isPressed &&
+                  //                   PinPageController.to.pressedPin.contains(11)
+                  //               ? DPColors.grayscale200
+                  //               : Colors.transparent,
+                  //         ),
+                  //         child: Text("취소", style: DPTypography.description()),
+                  //       ),
+                  //     ),
+                  //   )
+                  GestureDetector(
                       onTapDown: (_) => PinPageController.to.down(11),
                       onTapUp: (_) => PinPageController.to.up(11),
                       onTapCancel: () => PinPageController.to.canceled(),
@@ -82,7 +103,6 @@ class PinPad extends StatelessWidget {
                         () => Container(
                           height: buttonHeight,
                           width: buttonWidth,
-                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             color: PinPageController.to.isPressed &&
@@ -90,7 +110,7 @@ class PinPad extends StatelessWidget {
                                 ? DPColors.grayscale200
                                 : Colors.transparent,
                           ),
-                          child: Text("취소", style: DPTypography.description()),
+                          child: const DPIcons(Symbols.undo_rounded),
                         ),
                       ),
                     )
