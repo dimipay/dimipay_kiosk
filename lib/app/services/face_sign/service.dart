@@ -12,10 +12,9 @@ enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 class FaceSignService extends GetxController {
   static FaceSignService get to => Get.find<FaceSignService>();
 
-  final FaceSignRepository repository;
-
   // final kDebugMode = false;
 
+  final FaceSignRepository repository;
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
 

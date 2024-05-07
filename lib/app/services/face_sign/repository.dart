@@ -1,4 +1,6 @@
 import 'package:cryptography/cryptography.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -72,32 +74,30 @@ class FaceSignRepository {
     String url = "/kiosk/face-sign/payments/approve";
 
     try {
-      Response response = await ApiProvider.to.get(
+      Response response = await ApiProvider.to.post(
         url,
         options: Options(
           headers: {
             "Payment-Pin-OTP": otp,
           },
         ),
+        data: {
+          "products": [
+            for (var product in ProductService.to.productList.keys)
+              {
+                "id": ProductService.to.productList[product]!.id,
+                "amount": ProductService.to.productList[product]!.count,
+              }
+          ],
+          "paymentMethodId":
+              FaceSignService.to.users[0].paymentMethods.mainPaymentMethodId,
+        },
       );
-
-      // Response response = await ApiProvider.to.post(
-      //   url,
-      //   data: FormData.fromMap(
-      //     {
-      //       "image": MultipartFile.fromBytes(
-      //         imageBytes,
-      //         filename: "image.jpeg",
-      //         contentType: MediaType('image', 'jpeg'),
-      //       ),
-      //     },
-      //   ),
-      //   options: Options(
-      //     contentType: Headers.multipartFormDataContentType,
-      //   ),
-      // );
+      print(response.data);
       return true;
+      // return response.data["data"]["status"] == "CONFIRMED";
     } on DioException catch (e) {
+      print(e.response?.requestOptions);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
