@@ -29,6 +29,7 @@ class JWTInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
+    // if(response.data["data"]["code"] == )
     handler.next(response);
   }
 

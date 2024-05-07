@@ -1,6 +1,4 @@
 import 'package:cryptography/cryptography.dart';
-import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
-import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +6,8 @@ import 'package:dio/dio.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
@@ -86,7 +86,7 @@ class FaceSignRepository {
             for (var product in ProductService.to.productList.keys)
               {
                 "id": ProductService.to.productList[product]!.id,
-                "amount": ProductService.to.productList[product]!.count,
+                "amount": ProductService.to.productList[product]!.count.value
               }
           ],
           "paymentMethodId":
@@ -94,10 +94,9 @@ class FaceSignRepository {
         },
       );
       print(response.data);
-      return true;
-      // return response.data["data"]["status"] == "CONFIRMED";
+      return response.data["data"]["status"] == "CONFIRMED";
     } on DioException catch (e) {
-      print(e.response?.requestOptions);
+      print(e.response?.data);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
