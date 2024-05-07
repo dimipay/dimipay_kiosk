@@ -67,4 +67,38 @@ class FaceSignRepository {
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
+
+  Future<bool> faceSignPaymentsApprove(String otp) async {
+    String url = "/kiosk/face-sign/payments/approve";
+
+    try {
+      Response response = await ApiProvider.to.get(
+        url,
+        options: Options(
+          headers: {
+            "Payment-Pin-OTP": otp,
+          },
+        ),
+      );
+
+      // Response response = await ApiProvider.to.post(
+      //   url,
+      //   data: FormData.fromMap(
+      //     {
+      //       "image": MultipartFile.fromBytes(
+      //         imageBytes,
+      //         filename: "image.jpeg",
+      //         contentType: MediaType('image', 'jpeg'),
+      //       ),
+      //     },
+      //   ),
+      //   options: Options(
+      //     contentType: Headers.multipartFormDataContentType,
+      //   ),
+      // );
+      return true;
+    } on DioException catch (e) {
+      throw IncorrectPinException(e.response?.data["message"]);
+    }
+  }
 }

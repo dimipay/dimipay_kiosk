@@ -20,7 +20,6 @@ class FaceSignService extends GetxController {
       : repository = repository ?? FaceSignRepository();
 
   final Rx<bool> _stop = Rx(false);
-  final Rx<String?> _otp = Rx(null);
   final Rx<List<dynamic>> _users = Rx([]);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
@@ -78,7 +77,7 @@ class FaceSignService extends GetxController {
         try {
           _users.value = await repository.faceSign(image.planes[0].bytes);
         } on NoUserFoundException {
-          print(attempts);
+          // print(attempts);
           attempts++;
         }
         _faceSignStatus.value = _users.value.length > 1
@@ -86,64 +85,16 @@ class FaceSignService extends GetxController {
             : FaceSignStatus.success;
         _cameraController.value!.stopImageStream();
       });
-
-      //   if (_stop.value) {
-      //     resetUser();
-      //     return;
-      //   }
-
-      //   try {
-      //     if (attempts > 10) {
-      //       _faceSignStatus.value = FaceSignStatus.failed;
-      //       _cameraController.value!.stopImageStream();
-      //     }
-      //     _users.value = await repository.faceSign(image.planes[0].bytes);
-      //   } on NoUserFoundException {
-      //     print(attempts);
-      //     attempts++;
-      //   }
-      //   _faceSignStatus.value = _users.value.length > 1
-      //       ? FaceSignStatus.multipleUserDetected
-      //       : FaceSignStatus.success;
-      //   _cameraController.value!.stopImageStream();
-      // });
-
-      // await _cameraController.value!.startImageStream(
-      //   (image) async {
-      //     do {
-      //       if (_stop.value) {
-      //         resetUser();
-      //         return;
-      //       }
-
-      //       try {
-      //         // print(image.height);
-      //         _users.value = await repository.faceSign(image.planes[0].bytes);
-      //         _faceSignStatus.value = _users.value.length > 1
-      //             ? FaceSignStatus.multipleUserDetected
-      //             : FaceSignStatus.success;
-      //         return;
-      //       } on NoUserFoundException {
-      //         attempts++;
-      //         continue;
-      //       }
-      //     } while (_users.value.isEmpty && attempts < 10);
-      //     _faceSignStatus.value = FaceSignStatus.failed;
-      //     _cameraController.value!.stopImageStream();
-      //     return;
-      //   },
-      // );
     }
   }
 
-  Future<bool> authUser(String pin) async {
+  Future<bool> approvePayment(String pin) async {
     try {
-      _otp.value = await repository.faceSignPaymentsPin(
-          _users.value[0].paymentMethods.paymentPinAuthURL, pin);
-      print(_otp.value);
+      return await repository.faceSignPaymentsApprove(
+          await repository.faceSignPaymentsPin(
+              _users.value[0].paymentMethods.paymentPinAuthURL, pin));
     } on IncorrectPinException {
       return false;
     }
-    return _otp.value != null;
   }
 }
