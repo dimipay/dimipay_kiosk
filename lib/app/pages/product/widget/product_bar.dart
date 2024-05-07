@@ -40,7 +40,8 @@ class ProductBar extends StatelessWidget {
                             FaceSignStatus.success
                         ? DecorationImage(
                             image: NetworkImage(
-                                FaceSignService.to.users[0].profileImage),
+                              FaceSignService.to.users[0].profileImage,
+                            ),
                           )
                         : null,
                   ),

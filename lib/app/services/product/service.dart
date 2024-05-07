@@ -37,13 +37,19 @@ class ProductService extends GetxController {
       if (_productList.value.containsKey(barcode)) {
         _productList.value[barcode]!.count++;
       } else {
-        var product = await repository.getProduct(barcode);
-        _productList.value[barcode] = ProductListItem(
-            id: product.id,
-            name: product.name,
-            alias: product.alias,
-            price: product.price,
-            barcode: barcode);
+        await repository.getProduct(barcode).then((product) =>
+            _productList.value[barcode] = ProductListItem(
+                id: product.id,
+                name: product.name,
+                alias: product.alias,
+                price: product.price,
+                barcode: barcode));
+        // _productList.value[barcode] = ProductListItem(
+        //     id: product.id,
+        //     name: product.name,
+        //     alias: product.alias,
+        //     price: product.price,
+        //     barcode: barcode);
       }
       _productTotalCount.value++;
       _productTotalPrice.value += _productList.value[barcode]!.price;
@@ -54,8 +60,8 @@ class ProductService extends GetxController {
   }
 
   void resetProduct() {
-    FaceSignService.to.stop();
     Get.back();
+    FaceSignService.to.stop();
     HealthService.to.checkHealth();
   }
 

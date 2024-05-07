@@ -29,10 +29,12 @@ class FaceSignService extends GetxController {
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
 
   void stop() {
+    resetUser();
     _stop.value = true;
   }
 
   void resetUser() {
+    _faceSignStatus.value = FaceSignStatus.loading;
     _users.value = [];
   }
 
@@ -66,10 +68,7 @@ class FaceSignService extends GetxController {
       _faceSignStatus.value = FaceSignStatus.success;
     } else {
       _cameraController.value!.startImageStream((image) async {
-        if (_stop.value) {
-          resetUser();
-          return;
-        }
+        if (_stop.value) return;
 
         if (attempts > 10) {
           _faceSignStatus.value = FaceSignStatus.failed;
