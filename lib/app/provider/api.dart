@@ -29,7 +29,7 @@ class JWTInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // if(response.data["data"]["code"] == )
+    print(response.data);
     handler.next(response);
   }
 
@@ -38,6 +38,8 @@ class JWTInterceptor extends Interceptor {
     if (err.response?.requestOptions.path == '/kiosk/auth/refresh') {
       return handler.next(err);
     }
+
+    print(err);
 
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {

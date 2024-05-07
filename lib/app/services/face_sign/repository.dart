@@ -72,6 +72,7 @@ class FaceSignRepository {
 
   Future<bool> faceSignPaymentsApprove(String otp) async {
     String url = "/kiosk/face-sign/payments/approve";
+    print("ahh");
 
     try {
       Response response = await ApiProvider.to.post(
@@ -93,10 +94,11 @@ class FaceSignRepository {
               FaceSignService.to.users[0].paymentMethods.mainPaymentMethodId,
         },
       );
-      print(response.data);
+
+      // print(response.data);
       return response.data["data"]["status"] == "CONFIRMED";
     } on DioException catch (e) {
-      print(e.response?.data);
+      // print(e.response?.data);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
