@@ -66,22 +66,22 @@ class FaceSignRepository {
       );
       return response.data["data"]["otp"];
     } on DioException catch (e) {
+      print(e.response?.data);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }
 
   Future<bool> faceSignPaymentsApprove(String otp) async {
     String url = "/kiosk/face-sign/payments/approve";
-    print("ahh");
 
     try {
       Response response = await ApiProvider.to.post(
         url,
         options: Options(
-          headers: {
-            "Payment-Pin-OTP": otp,
-          },
-        ),
+            // headers: {
+            //   "Payment-Pin-OTP": otp,
+            // },
+            ),
         data: {
           "products": [
             for (var product in ProductService.to.productList.keys)
