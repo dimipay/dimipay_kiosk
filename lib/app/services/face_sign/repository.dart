@@ -78,10 +78,10 @@ class FaceSignRepository {
       Response response = await ApiProvider.to.post(
         url,
         options: Options(
-            // headers: {
-            //   "Payment-Pin-OTP": otp,
-            // },
-            ),
+          headers: {
+            "Payment-Pin-OTP": otp,
+          },
+        ),
         data: {
           "products": [
             for (var product in ProductService.to.productList.keys)
@@ -98,7 +98,7 @@ class FaceSignRepository {
       // print(response.data);
       return response.data["data"]["status"] == "CONFIRMED";
     } on DioException catch (e) {
-      // print(e.response?.data);
+      print(e.response?.data);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }

@@ -23,13 +23,19 @@ class JWTInterceptor extends Interceptor {
             await TransactionService.to.transactionId;
       }
     }
-
+    print("----------------------------------------------------");
+    print("path : ${options.path}");
+    print("header : ${options.headers}");
+    print("data : ${options.data}");
+    print("----------------------------------------------------");
     return handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
+    print("----------------------------------------------------");
     print(response.data);
+    print("----------------------------------------------------");
     handler.next(response);
   }
 

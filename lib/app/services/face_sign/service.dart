@@ -59,8 +59,9 @@ class FaceSignService extends GetxController {
     if (_users.value.isNotEmpty) resetUser();
 
     if (globals.isSimulator) {
-      _users.value = await repository.faceSign(
-          (await rootBundle.load("assets/images/user_test_face.jpeg"))
+      _users.value = await repository
+          .faceSign((await rootBundle.load("assets/images/test_face.jpg"))
+              // (await rootBundle.load("assets/images/user_test_face.jpeg"))
               .buffer
               .asUint8List());
       _faceSignStatus.value = FaceSignStatus.success;
@@ -89,11 +90,9 @@ class FaceSignService extends GetxController {
 
   Future<bool> approvePayment(String pin) async {
     try {
-      print(_users.value[0].paymentMethods.paymentPinAuthURL);
       var otp = await repository.faceSignPaymentsPin(
           _users.value[0].paymentMethods.paymentPinAuthURL, pin);
-      print(otp);
-      // await repository.faceSignPaymentsApprove(otp);
+      await repository.faceSignPaymentsApprove(otp);
       return true;
     } catch (_) {
       return false;
