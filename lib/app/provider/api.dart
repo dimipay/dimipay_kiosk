@@ -23,19 +23,17 @@ class JWTInterceptor extends Interceptor {
             await TransactionService.to.transactionId;
       }
     }
-    print("----------------------------------------------------");
+    print("-----------------------REQUEST-----------------------");
     print("path : ${options.path}");
     print("header : ${options.headers}");
     print("data : ${options.data}");
-    print("----------------------------------------------------");
     return handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print("----------------------------------------------------");
+    print("-----------------------RESPONSE-----------------------");
     print(response.data);
-    print("----------------------------------------------------");
     handler.next(response);
   }
 
@@ -45,6 +43,7 @@ class JWTInterceptor extends Interceptor {
       return handler.next(err);
     }
 
+    print("-----------------------ERROR-----------------------");
     print(err);
 
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
@@ -56,12 +55,14 @@ class JWTInterceptor extends Interceptor {
         return handler.next(err);
       }
     }
+
     return handler.next(err);
   }
 }
 
 class ProdApiProvider extends ApiProvider {
   final baseUrl = 'http://server.dimipay.io:4002/';
+  // final baseUrl = 'https://dev.next.dimipay.io/';
 
   ProdApiProvider() {
     dio.options.baseUrl = baseUrl;
@@ -69,7 +70,7 @@ class ProdApiProvider extends ApiProvider {
 }
 
 class DevApiProvider extends ApiProvider {
-  final baseUrl = 'http://server.dimipay.io:4002/';
+  final baseUrl = 'https://dev.next.dimipay.io/';
 
   DevApiProvider() {
     dio.options.baseUrl = baseUrl;

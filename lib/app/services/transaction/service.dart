@@ -7,19 +7,22 @@ class TransactionService extends GetxController {
   static TransactionService get to => Get.find<TransactionService>();
 
   final TransactionRepository repository;
-  final Rx<String?> _transactionId = Rx(null);
+  String? _transactionId;
 
   TransactionService({TransactionRepository? repository})
       : repository = repository ?? TransactionRepository();
 
   Future<String> get transactionId async {
-    _transactionId.value =
-        _transactionId.value ?? await repository.transactionId();
-    return _transactionId.value!;
+    _transactionId = _transactionId ?? await repository.transactionId();
+    return _transactionId!;
   }
 
-  Future<String> get refreshTransactionId async {
-    _transactionId.value = null;
-    return transactionId;
+  Future<void> refreshTransactionId() async {
+    removeTransactionId();
+    await transactionId;
+  }
+
+  void removeTransactionId() {
+    _transactionId = null;
   }
 }

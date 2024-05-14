@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'dart:async';
 
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/services/health/repository.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/health/model.dart';
@@ -29,6 +30,7 @@ class HealthService extends GetxController {
     if (globals.isSimulator) {
       await Future.delayed(const Duration(seconds: 1));
       if (await ProductService.to.addProduct("1202303246757")) {
+        await TransactionService.to.refreshTransactionId();
         Get.toNamed(Routes.PRODUCT);
       }
     }

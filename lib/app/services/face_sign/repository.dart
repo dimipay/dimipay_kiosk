@@ -94,11 +94,8 @@ class FaceSignRepository {
               FaceSignService.to.users[0].paymentMethods.mainPaymentMethodId,
         },
       );
-
-      // print(response.data);
       return response.data["data"]["status"] == "CONFIRMED";
     } on DioException catch (e) {
-      print(e.response?.data);
       throw IncorrectPinException(e.response?.data["message"]);
     }
   }

@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 import 'package:dimipay_kiosk/globals.dart' as globals;
@@ -11,8 +12,6 @@ enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 
 class FaceSignService extends GetxController {
   static FaceSignService get to => Get.find<FaceSignService>();
-
-  // final kDebugMode = false;
 
   final FaceSignRepository repository;
   FaceSignService({FaceSignRepository? repository})
@@ -93,6 +92,7 @@ class FaceSignService extends GetxController {
       var otp = await repository.faceSignPaymentsPin(
           _users.value[0].paymentMethods.paymentPinAuthURL, pin);
       await repository.faceSignPaymentsApprove(otp);
+      TransactionService.to.removeTransactionId;
       return true;
     } catch (_) {
       return false;

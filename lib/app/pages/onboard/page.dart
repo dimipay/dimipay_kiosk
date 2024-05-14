@@ -1,4 +1,5 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,7 @@ class OnboardPage extends GetView<OnboardPageController> {
     return BarcodeScanner(
       onKey: (input) async {
         if (await ProductService.to.addProduct(input)) {
+          await TransactionService.to.refreshTransactionId();
           Get.toNamed(Routes.PRODUCT);
         }
       },
