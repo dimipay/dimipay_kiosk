@@ -45,6 +45,7 @@ class JWTInterceptor extends Interceptor {
 
     print("-----------------------ERROR-----------------------");
     print(err);
+    print(err.response);
 
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {
@@ -70,7 +71,7 @@ class ProdApiProvider extends ApiProvider {
 }
 
 class DevApiProvider extends ApiProvider {
-  final baseUrl = 'https://dev.next.dimipay.io/';
+  final baseUrl = 'https://dev-next.dimipay.io/';
 
   DevApiProvider() {
     dio.options.baseUrl = baseUrl;
