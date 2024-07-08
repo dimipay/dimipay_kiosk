@@ -55,36 +55,36 @@ class FaceSignService extends GetxController {
     if (_faceSignStatus.value != FaceSignStatus.loading) {
       _faceSignStatus.value = FaceSignStatus.loading;
     }
+
     if (_users.value.isNotEmpty) resetUser();
 
-    if (globals.isSimulator) {
-      _users.value = await repository
-          .faceSign((await rootBundle.load("assets/images/test_face.jpg"))
-              // (await rootBundle.load("assets/images/user_test_face.jpeg"))
-              .buffer
-              .asUint8List());
-      _faceSignStatus.value = FaceSignStatus.success;
-    } else {
-      _cameraController.value!.startImageStream((image) async {
-        if (_stop.value) return;
+    // if (globals.isSimulator) {
+    //   _users.value = await repository.faceSign(
+    //       (await rootBundle.load("assets/images/test_face.jpg"))
+    //           .buffer
+    //           .asUint8List());
+    //   _faceSignStatus.value = FaceSignStatus.success;
+    // } else {
+    _cameraController.value!.startImageStream((image) async {
+      if (_stop.value) return;
 
-        if (attempts > 10) {
-          _faceSignStatus.value = FaceSignStatus.failed;
-          _cameraController.value!.stopImageStream();
-        }
-
-        try {
-          _users.value = await repository.faceSign(image.planes[0].bytes);
-        } on NoUserFoundException {
-          // print(attempts);
-          attempts++;
-        }
-        _faceSignStatus.value = _users.value.length > 1
-            ? FaceSignStatus.multipleUserDetected
-            : FaceSignStatus.success;
+      if (attempts > 10) {
+        _faceSignStatus.value = FaceSignStatus.failed;
         _cameraController.value!.stopImageStream();
-      });
-    }
+      }
+
+      try {
+        _users.value = await repository.faceSign(image.planes[0].bytes);
+      } on NoUserFoundException {
+        // print(attempts);
+        attempts++;
+      }
+      _faceSignStatus.value = _users.value.length > 1
+          ? FaceSignStatus.multipleUserDetected
+          : FaceSignStatus.success;
+      _cameraController.value!.stopImageStream();
+    });
+    // }
   }
 
   Future<bool> approvePayment(String pin) async {

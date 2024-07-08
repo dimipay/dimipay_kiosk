@@ -47,7 +47,7 @@ class AuthRepository {
         url,
         options: Options(
           headers: {
-            "Encryption-Public-Key": rsaKey,
+            "Dp-Encryption-Public-Key": rsaKey,
           },
         ),
       );
