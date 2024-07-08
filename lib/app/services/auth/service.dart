@@ -37,9 +37,6 @@ class AuthService extends GetxController {
   }
 
   Future<AuthService> init() async {
-    if (kDebugMode) {
-      // await _storage.deleteAll();
-    }
     final String? refreshToken = await _storage.read(key: 'refreshToken');
     _deviceName.value = await _storage.read(key: 'deviceName');
     if (refreshToken == null || _deviceName.value == null) {

@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 
@@ -63,7 +62,7 @@ class FaceSignService extends GetxController {
     //       (await rootBundle.load("assets/images/test_face.jpg"))
     //           .buffer
     //           .asUint8List());
-    //   _faceSignStatus.value = FaceSignStatus.success;
+    //   _faceSignStatus.value = FaceSignStatus.suㅁccess;
     // } else {
     _cameraController.value!.startImageStream((image) async {
       if (_stop.value) return;
