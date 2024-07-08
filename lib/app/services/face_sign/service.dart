@@ -5,8 +5,6 @@ import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
-import 'package:dimipay_kiosk/globals.dart' as globals;
-
 enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 
 class FaceSignService extends GetxController {
@@ -36,7 +34,6 @@ class FaceSignService extends GetxController {
 
   Future<FaceSignService> init() async {
     super.onInit();
-    if (globals.isSimulator) return this;
     _cameraController.value = CameraController(
       ((await availableCameras())[1]),
       ResolutionPreset.medium,
@@ -57,13 +54,6 @@ class FaceSignService extends GetxController {
 
     if (_users.value.isNotEmpty) resetUser();
 
-    // if (globals.isSimulator) {
-    //   _users.value = await repository.faceSign(
-    //       (await rootBundle.load("assets/images/test_face.jpg"))
-    //           .buffer
-    //           .asUint8List());
-    //   _faceSignStatus.value = FaceSignStatus.suㅁccess;
-    // } else {
     _cameraController.value!.startImageStream((image) async {
       if (_stop.value) return;
 
@@ -75,7 +65,6 @@ class FaceSignService extends GetxController {
       try {
         _users.value = await repository.faceSign(image.planes[0].bytes);
       } on NoUserFoundException {
-        // print(attempts);
         attempts++;
       }
       _faceSignStatus.value = _users.value.length > 1
@@ -83,7 +72,6 @@ class FaceSignService extends GetxController {
           : FaceSignStatus.success;
       _cameraController.value!.stopImageStream();
     });
-    // }
   }
 
   Future<bool> approvePayment(String pin) async {

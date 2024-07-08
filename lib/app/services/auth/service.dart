@@ -42,7 +42,12 @@ class AuthService extends GetxController {
     if (refreshToken == null || _deviceName.value == null) {
       return this;
     }
-    _jwtToken.value = await repository.authRefresh(refreshToken);
+
+    try {
+      _jwtToken.value = await repository.authRefresh(refreshToken);
+    } catch (_) {
+      await _storage.deleteAll();
+    }
     return this;
   }
 
