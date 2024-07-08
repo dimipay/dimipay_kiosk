@@ -1,5 +1,6 @@
-import 'package:camera/camera.dart';
 import 'package:get/get.dart';
+import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
@@ -36,7 +37,7 @@ class FaceSignService extends GetxController {
     super.onInit();
     _cameraController.value = CameraController(
       ((await availableCameras())[1]),
-      ResolutionPreset.medium,
+      ResolutionPreset.low,
       imageFormatGroup: ImageFormatGroup.jpeg,
       enableAudio: false,
     );
@@ -45,8 +46,20 @@ class FaceSignService extends GetxController {
     return this;
   }
 
+  Future<Uint8List> _captureImage() async {
+    Uint8List? image;
+    await _cameraController.value!.startImageStream((capturedImage) async {
+      await Future.delayed(const Duration(milliseconds: 2000));
+      image = capturedImage.planes[0].bytes;
+    });
+    await Future.delayed(const Duration(milliseconds: 2500));
+    await _cameraController.value!.stopImageStream();
+    return image!;
+  }
+
   Future<void> findUser() async {
     int attempts = 0;
+
     _stop.value = false;
     if (_faceSignStatus.value != FaceSignStatus.loading) {
       _faceSignStatus.value = FaceSignStatus.loading;
@@ -54,24 +67,19 @@ class FaceSignService extends GetxController {
 
     if (_users.value.isNotEmpty) resetUser();
 
-    _cameraController.value!.startImageStream((image) async {
-      if (_stop.value) return;
-
-      if (attempts > 10) {
-        _faceSignStatus.value = FaceSignStatus.failed;
-        _cameraController.value!.stopImageStream();
-      }
-
+    while (attempts < 10) {
       try {
-        _users.value = await repository.faceSign(image.planes[0].bytes);
+        _users.value = await repository.faceSign(await _captureImage());
+        // _users.value = await repository.faceSign(
+        //     await (await _cameraController.value!.takePicture()).readAsBytes());
+
+        _faceSignStatus.value = _users.value.length > 1
+            ? FaceSignStatus.multipleUserDetected
+            : FaceSignStatus.success;
       } on NoUserFoundException {
         attempts++;
       }
-      _faceSignStatus.value = _users.value.length > 1
-          ? FaceSignStatus.multipleUserDetected
-          : FaceSignStatus.success;
-      _cameraController.value!.stopImageStream();
-    });
+    }
   }
 
   Future<bool> approvePayment(String pin) async {
