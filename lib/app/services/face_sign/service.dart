@@ -6,10 +6,14 @@ import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
+import 'package:dimipay_kiosk/globals.dart' as globals;
+
 enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 
 class FaceSignService extends GetxController {
   static FaceSignService get to => Get.find<FaceSignService>();
+
+  final Rx<Uint8List> imageSample = Rx(Uint8List(0));
 
   final FaceSignRepository repository;
   FaceSignService({FaceSignRepository? repository})
@@ -35,6 +39,7 @@ class FaceSignService extends GetxController {
 
   Future<FaceSignService> init() async {
     super.onInit();
+    if (globals.isSimulator) return this;
     _cameraController.value = CameraController(
       ((await availableCameras())[1]),
       ResolutionPreset.low,
@@ -49,10 +54,10 @@ class FaceSignService extends GetxController {
   Future<Uint8List> _captureImage() async {
     Uint8List? image;
     await _cameraController.value!.startImageStream((capturedImage) async {
-      await Future.delayed(const Duration(milliseconds: 2000));
+      await Future.delayed(const Duration(milliseconds: 2500));
       image = capturedImage.planes[0].bytes;
     });
-    await Future.delayed(const Duration(milliseconds: 2500));
+    // await Future.delayed(const Duration(milliseconds: 2500));
     await _cameraController.value!.stopImageStream();
     return image!;
   }
@@ -67,19 +72,57 @@ class FaceSignService extends GetxController {
 
     if (_users.value.isNotEmpty) resetUser();
 
-    while (attempts < 10) {
+    if (globals.isSimulator) {
       try {
-        _users.value = await repository.faceSign(await _captureImage());
-        // _users.value = await repository.faceSign(
-        //     await (await _cameraController.value!.takePicture()).readAsBytes());
+        _users.value = await repository.faceSign(
+            (await rootBundle.load('assets/images/single_test_face.jpg'))
+                .buffer
+                .asUint8List());
 
         _faceSignStatus.value = _users.value.length > 1
             ? FaceSignStatus.multipleUserDetected
             : FaceSignStatus.success;
+
+        return;
       } on NoUserFoundException {
         attempts++;
       }
     }
+
+    // Uint8List? image;
+    // await
+    _cameraController.value!.startImageStream((capturedImage) {
+      FaceSignService.to.imageSample.value = capturedImage.planes[0].bytes;
+      print(FaceSignService.to.imageSample.value);
+      // await Future.delayed(const Duration(milliseconds: 500), () {
+      // image = capturedImage.planes[0].bytes;
+      // });
+    });
+
+    if (_stop.value) {
+      return;
+    } else {
+      await Future.delayed(const Duration(milliseconds: 2500));
+    }
+
+    // while (attempts < 10) {
+    // try {
+    // print(image!);
+    // _users.value = await repository.faceSign(image);
+    // _users.value = await repository.faceSign(await _captureImage());
+
+    // _users.value = await repository.faceSign(
+    //     await (await _cameraController.value!.takePicture()).readAsBytes());
+
+    //     _faceSignStatus.value = _users.value.length > 1
+    //         ? FaceSignStatus.multipleUserDetected
+    //         : FaceSignStatus.success;
+    //   } on NoUserFoundException {
+    //     attempts++;
+    //   }
+    // }
+
+    await _cameraController.value!.stopImageStream();
   }
 
   Future<bool> approvePayment(String pin) async {

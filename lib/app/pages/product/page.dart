@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 
 import 'package:dimipay_kiosk/app/pages/product/widget/product_list.dart';
 import 'package:dimipay_kiosk/app/pages/product/widget/product_desk.dart';
@@ -24,9 +24,13 @@ class ProductPage extends GetView<ProductPageController> {
           ProductService.to.addProduct(input);
           ProductPageController.to.resetTimer();
         },
-        child: const Scaffold(
+        child: Scaffold(
             body: SafeArea(
-                child: Column(
-                    children: [ProductBar(), ProductList(), ProductDesk()]))));
+                child: Column(children: [
+          const ProductBar(),
+          const ProductList(),
+          const ProductDesk(),
+          Obx(() => Image.memory(FaceSignService.to.imageSample.value))
+        ]))));
   }
 }

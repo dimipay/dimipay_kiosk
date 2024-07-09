@@ -39,7 +39,6 @@ flutter:
   assets:
     - assets/fonts/
     - assets/images/
-    - assets/images/multi_test_face.jpeg
 
   fonts:
     - family: SUITv1

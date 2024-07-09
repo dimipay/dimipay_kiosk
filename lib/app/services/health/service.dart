@@ -27,12 +27,12 @@ class HealthService extends GetxController {
     _health.value = Health();
     _health.value = await repository.health(AuthService.to.accessToken!);
 
-    if (globals.isSimulator) {
-      await Future.delayed(const Duration(seconds: 1));
-      if (await ProductService.to.addProduct("1202303246757")) {
-        await TransactionService.to.refreshTransactionId();
-        Get.toNamed(Routes.PRODUCT);
-      }
+    // if (globals.isSimulator) {
+    await Future.delayed(const Duration(seconds: 1));
+    if (await ProductService.to.addProduct("1202303246757")) {
+      await TransactionService.to.refreshTransactionId();
+      Get.toNamed(Routes.PRODUCT);
     }
+    // }
   }
 }
