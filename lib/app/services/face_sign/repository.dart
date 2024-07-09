@@ -36,8 +36,10 @@ class FaceSignRepository {
 
       return [
         User.fromJson(response.data["data"]["foundUsers"][0]),
-        // AltUser.fromJson(response.data["data"]["foundUsers"]?[1]),
-        // AltUser.fromJson(response.data["data"]["foundUsers"]?[2])
+        // (response.data["data"]["foundUsers"] as List).length == 2 ?
+        //     AltUser.fromJson(response.data["data"]["foundUsers"][1]) : null,
+        // response.data["data"]["foundUsers"][2] ??
+        //     AltUser.fromJson(response.data["data"]["foundUsers"][2]),
       ];
     } on DioException {
       throw NoUserFoundException();
@@ -70,7 +72,7 @@ class FaceSignRepository {
     }
   }
 
-  Future<bool> faceSignPaymentsApprove(String otp) async {
+  Future<PaymentApprove?> faceSignPaymentsApprove(String otp) async {
     String url = "/kiosk/face-sign/payments/approve";
 
     try {
@@ -78,7 +80,8 @@ class FaceSignRepository {
         url,
         options: Options(
           headers: {
-            "Payment-Pin-OTP": otp,
+            "DP-PAYMENT-PIN-OTP": otp,
+            "DP-DCH-USER-ID": FaceSignService.to.users[0].id,
           },
         ),
         data: {
@@ -93,9 +96,9 @@ class FaceSignRepository {
               FaceSignService.to.users[0].paymentMethods.mainPaymentMethodId,
         },
       );
-      return response.data["data"]["status"] == "CONFIRMED";
+      return PaymentApprove.fromJson(response.data["data"]);
     } on DioException catch (e) {
-      throw IncorrectPinException(e.response?.data["message"]);
+      throw PaymentApproveFailedException(e.response?.data["message"]);
     }
   }
 }

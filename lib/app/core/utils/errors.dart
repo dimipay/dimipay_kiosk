@@ -37,3 +37,10 @@ class NoUserFoundException implements Exception {
   final String message;
   NoUserFoundException({this.message = ''});
 }
+
+class PaymentApproveFailedException implements Exception {
+  final String message;
+  PaymentApproveFailedException(this.message) {
+    AlertModal.to.show(message);
+  }
+}

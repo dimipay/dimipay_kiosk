@@ -131,11 +131,15 @@ class FaceSignService extends GetxController {
 
   Future<bool> approvePayment(String pin) async {
     try {
-      var otp = await repository.faceSignPaymentsPin(
-          _users.value[0].paymentMethods.paymentPinAuthURL, pin);
-      await repository.faceSignPaymentsApprove(otp);
+      var result = await repository.faceSignPaymentsApprove(
+          await repository.faceSignPaymentsPin(
+              _users.value[0].paymentMethods.paymentPinAuthURL, pin));
       TransactionService.to.removeTransactionId;
-      return true;
+      if (result!.status == "CONFIRMED") {
+        return true;
+      } else {
+        return false;
+      }
     } catch (_) {
       return false;
     }
