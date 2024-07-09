@@ -105,22 +105,26 @@ class FaceSignService extends GetxController {
     //   await Future.delayed(const Duration(milliseconds: 2500));
     // }
 
-    // while (attempts < 10) {
-    // try {
-    // print(image!);
-    // _users.value = await repository.faceSign(image);
-    // _users.value = await repository.faceSign(await _captureImage());
+    while (attempts < 10) {
+      try {
+        // print(image!);
+        // _users.value = await repository.faceSign(image);
+        _users.value = await repository.faceSign(await _captureImage());
 
-    // _users.value = await repository.faceSign(
-    //     await (await _cameraController.value!.takePicture()).readAsBytes());
+        // _users.value = await repository.faceSign(
+        //     await (await _cameraController.value!.takePicture()).readAsBytes());
 
-    //     _faceSignStatus.value = _users.value.length > 1
-    //         ? FaceSignStatus.multipleUserDetected
-    //         : FaceSignStatus.success;
-    //   } on NoUserFoundException {
-    //     attempts++;
-    //   }
-    // }
+        _faceSignStatus.value = _users.value.length > 1
+            ? FaceSignStatus.multipleUserDetected
+            : FaceSignStatus.success;
+
+        return;
+      } on NoUserFoundException {
+        attempts++;
+      }
+    }
+
+    _faceSignStatus.value = FaceSignStatus.failed;
 
     // await _cameraController.value!.stopImageStream();
   }
