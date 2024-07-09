@@ -76,8 +76,9 @@ class PinPageController extends GetxController {
     if (inputLength == 4) {
       if (AuthService.to.isAuthenticated) {
         if (await FaceSignService.to.approvePayment(_input.join().toString())) {
-          Get.back();
-          // Get.toNamed(Routes.PAYMENT);
+          Get.toNamed(Routes.PAYMENT_SUCCESS);
+        } else {
+          Get.toNamed(Routes.PAYMENT_FAILED);
         }
       } else {
         if (await AuthService.to.loginKiosk(_input.join().toString())) {
