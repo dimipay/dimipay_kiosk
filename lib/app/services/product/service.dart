@@ -82,11 +82,15 @@ class ProductService extends GetxController {
     if (_productList.value.isEmpty) resetProduct();
   }
 
-  void clearProduct() {
+  void clearProductList() {
     _productTotalCount.value = 0;
     _productTotalPrice.value = 0;
     _productList.value.clear();
     _productList.refresh();
+  }
+
+  void clearProduct() {
+    clearProductList();
     resetProduct();
   }
 }

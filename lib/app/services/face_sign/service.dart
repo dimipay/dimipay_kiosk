@@ -91,19 +91,19 @@ class FaceSignService extends GetxController {
 
     // Uint8List? image;
     // await
-    _cameraController.value!.startImageStream((capturedImage) {
-      FaceSignService.to.imageSample.value = capturedImage.planes[0].bytes;
-      print(FaceSignService.to.imageSample.value);
-      // await Future.delayed(const Duration(milliseconds: 500), () {
-      // image = capturedImage.planes[0].bytes;
-      // });
-    });
+    // _cameraController.value!.startImageStream((capturedImage) {
+    //   FaceSignService.to.imageSample.value = capturedImage.planes[0].bytes;
+    //   print(FaceSignService.to.imageSample.value);
+    // await Future.delayed(const Duration(milliseconds: 500), () {
+    // image = capturedImage.planes[0].bytes;
+    // });
+    // });
 
-    if (_stop.value) {
-      return;
-    } else {
-      await Future.delayed(const Duration(milliseconds: 2500));
-    }
+    // if (_stop.value) {
+    //   return;
+    // } else {
+    //   await Future.delayed(const Duration(milliseconds: 2500));
+    // }
 
     // while (attempts < 10) {
     // try {
@@ -122,7 +122,7 @@ class FaceSignService extends GetxController {
     //   }
     // }
 
-    await _cameraController.value!.stopImageStream();
+    // await _cameraController.value!.stopImageStream();
   }
 
   Future<bool> approvePayment(String pin) async {

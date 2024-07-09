@@ -24,13 +24,13 @@ class ProductPage extends GetView<ProductPageController> {
           ProductService.to.addProduct(input);
           ProductPageController.to.resetTimer();
         },
-        child: Scaffold(
+        child: const Scaffold(
             body: SafeArea(
                 child: Column(children: [
-          const ProductBar(),
-          const ProductList(),
-          const ProductDesk(),
-          Obx(() => Image.memory(FaceSignService.to.imageSample.value))
+          ProductBar(),
+          ProductList(),
+          ProductDesk(),
+          // Obx(() => Image.memory(FaceSignService.to.imageSample.value))
         ]))));
   }
 }
