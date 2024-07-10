@@ -8,21 +8,24 @@ class PaymentSuccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            body:
-                // Center(
-                // child:
-
-                Column(mainAxisSize: MainAxisSize.min, children: [
-      Lottie.network(
-          "https://assets4.lottiefiles.com/packages/lf20_pmYw5P.json",
-          width: 420,
-          height: 420),
-      Text(
-        "결제가 성공적으로 완료되었어요!",
-        style: DPTypography.title(color: DPColors.grayscale1000),
+      body: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 292),
+            Lottie.network(
+              "https://assets4.lottiefiles.com/packages/lf20_pmYw5P.json",
+              width: 420,
+              height: 420,
+              repeat: false,
+              fit: BoxFit.fill,
+            ),
+            Text(
+              "결제가 성공적으로 완료되었어요!",
+              style: DPTypography.title(color: DPColors.grayscale1000),
+            ),
+          ],
+        ),
       ),
-    ]))
-        // )
-        ;
+    );
   }
 }
