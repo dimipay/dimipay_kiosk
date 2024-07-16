@@ -16,8 +16,6 @@ class PaymentSuccess extends StatelessWidget {
               "https://assets4.lottiefiles.com/packages/lf20_pmYw5P.json",
               width: 420,
               height: 420,
-              repeat: false,
-              fit: BoxFit.fill,
             ),
             Text(
               "결제가 성공적으로 완료되었어요!",

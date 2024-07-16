@@ -15,23 +15,27 @@ import 'package:dimipay_kiosk/app/routes/routes.dart';
 class AppPages {
   static final pages = [
     GetPage(
-        name: Routes.PIN,
-        page: () => const PinPage(),
-        binding: PinPageBinding()),
+      name: Routes.PIN,
+      page: () => const PinPage(),
+      binding: PinPageBinding(),
+    ),
     GetPage(
-        name: Routes.ONBOARD,
-        page: () => const OnboardPage(),
-        binding: OnboardPageBinding(),
-        transition: Transition.cupertino),
+      name: Routes.ONBOARD,
+      page: () => const OnboardPage(),
+      binding: OnboardPageBinding(),
+      transition: Transition.cupertino,
+    ),
     GetPage(
-        name: Routes.PRODUCT,
-        page: () => const ProductPage(),
-        binding: ProductPageBinding(),
-        transition: Transition.cupertino),
+      name: Routes.PRODUCT,
+      page: () => const ProductPage(),
+      binding: ProductPageBinding(),
+      transition: Transition.cupertino,
+    ),
     GetPage(
-        name: Routes.PAYMENT,
-        page: () => const PaymentPage(),
-        binding: PaymentPageBinding()),
+      name: Routes.PAYMENT,
+      page: () => const PaymentPage(),
+      binding: PaymentPageBinding(),
+    ),
     GetPage(
       name: Routes.PAYMENT_SUCCESS,
       page: () => const PaymentSuccess(),
@@ -39,6 +43,7 @@ class AppPages {
     GetPage(
       name: Routes.PAYMENT_FAILED,
       page: () => const PaymentFailed(),
+      binding: PaymentPageBinding(),
     ),
   ];
 }
