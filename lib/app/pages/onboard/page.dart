@@ -62,6 +62,7 @@ class OnboardPage extends GetView<OnboardPageController> {
     return BarcodeScanner(
       onKey: (input) async {
         if (await ProductService.to.addProduct(input)) {
+          TransactionService.to.refreshTransactionId();
           // await TransactionService.to.refreshTransactionId();
           Get.toNamed(Routes.PRODUCT);
         }
