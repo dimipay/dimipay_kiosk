@@ -34,6 +34,11 @@ class JWTInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     print("-----------------------RESPONSE-----------------------");
     print(response.data);
+
+    if (response.requestOptions.path.contains("face-sign")) {
+      TransactionService.to.removeTransactionId();
+    }
+
     handler.next(response);
   }
 
@@ -46,6 +51,10 @@ class JWTInterceptor extends Interceptor {
     print("-----------------------ERROR-----------------------");
     print(err);
     print(err.response);
+
+    if (err.requestOptions.path.contains("face-sign")) {
+      TransactionService.to.removeTransactionId();
+    }
 
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {

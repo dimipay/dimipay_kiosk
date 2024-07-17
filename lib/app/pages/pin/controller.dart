@@ -76,16 +76,13 @@ class PinPageController extends GetxController {
     _inputLength.value++;
     if (inputLength == 4) {
       if (AuthService.to.isAuthenticated) {
-        if (await FaceSignService.to.approvePayment(_input.join().toString())) {
-          await Get.toNamed(Routes.PAYMENT_SUCCESS)!.then((_) async {
-            print("hey");
-            await Future.delayed(const Duration(seconds: 5));
-            ProductService.to.clearProductList();
-            FaceSignService.to.resetUser();
-            Get.offAllNamed(Routes.ONBOARD);
-          });
-        } else {
-          Get.toNamed(Routes.PAYMENT_FAILED);
+        var otp = await FaceSignService.to.approvePin(_input.join().toString());
+        if (otp != null) {
+          if (await FaceSignService.to.approvePayment(otp)) {
+            Get.toNamed(Routes.PAYMENT_SUCCESS);
+          } else {
+            Get.toNamed(Routes.PAYMENT_FAILED);
+          }
         }
       } else {
         if (await AuthService.to.loginKiosk(_input.join().toString())) {

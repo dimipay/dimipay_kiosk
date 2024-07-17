@@ -17,10 +17,10 @@ class TransactionService extends GetxController {
     return _transactionId!;
   }
 
-  Future<void> refreshTransactionId() async {
-    removeTransactionId();
-    await transactionId;
-  }
+  // Future<void> refreshTransactionId() async {
+  //   removeTransactionId();
+  //   await transactionId;
+  // }
 
   void removeTransactionId() {
     _transactionId = null;

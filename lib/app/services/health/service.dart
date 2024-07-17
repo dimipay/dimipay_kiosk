@@ -30,7 +30,8 @@ class HealthService extends GetxController {
     if (!globals.isProduction) {
       await Future.delayed(const Duration(seconds: 1));
       if (await ProductService.to.addProduct("1202303246757")) {
-        await TransactionService.to.refreshTransactionId();
+        TransactionService.to.removeTransactionId();
+        // await TransactionService.to.refreshTransactionId();
         Get.toNamed(Routes.PRODUCT);
       }
     }
