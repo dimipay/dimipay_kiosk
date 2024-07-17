@@ -25,12 +25,17 @@ class ProductSelection extends StatelessWidget {
           Wrap(
             spacing: 24,
             children: [
-              const SizedBox(width: 48, height: 48),
+              // const SizedBox(width: 48, height: 48),
+              SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: FaceSignService
+                      .to.users[0].paymentMethods.methods[0].image),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "X CHECK",
+                    FaceSignService.to.users[0].paymentMethods.methods[0].name,
                     style: DPTypography.header2(color: DPColors.grayscale800),
                   ),
                   const SizedBox(height: 4),

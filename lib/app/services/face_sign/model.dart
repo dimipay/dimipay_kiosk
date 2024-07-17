@@ -1,16 +1,19 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 class PaymentMethod {
   String id;
   String name;
   String type;
   String preview;
-  String cardCode;
+  Widget image;
 
   PaymentMethod({
     required this.id,
     required this.name,
     required this.type,
     required this.preview,
-    required this.cardCode,
+    required this.image,
   });
 }
 
@@ -69,12 +72,12 @@ class User {
         methods: json['paymentMethods']['methods']
             .map<PaymentMethod>(
               (method) => PaymentMethod(
-                id: method['id'],
-                name: method['name'],
-                type: method['type'],
-                preview: method['preview'],
-                cardCode: method['cardCode'],
-              ),
+                  id: method['id'],
+                  name: method['name'],
+                  type: method['type'],
+                  preview: method['preview'],
+                  image: SvgPicture.asset(
+                      "assets/images/cards/${method['cardCode']}.svg")),
             )
             .toList(),
       ),
