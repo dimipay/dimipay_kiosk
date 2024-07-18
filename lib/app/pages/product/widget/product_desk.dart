@@ -1,5 +1,6 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:popover/popover.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
@@ -48,11 +49,96 @@ class ProductSelection extends StatelessWidget {
               ),
             ],
           ),
-          Text(
-            "변경",
-            style: DPTypography.pos.underlined(color: DPColors.grayscale500),
-          ),
+          const CardSelectButton(),
         ],
+      ),
+    );
+  }
+}
+
+class CardSelectButton extends StatelessWidget {
+  const CardSelectButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTapDown: (_) => ProductPageController.to.pressedButton = "change",
+      onTapCancel: () => ProductPageController.to.pressedButton = "",
+      onTapUp: (_) {
+        ProductPageController.to.pressedButton = "";
+        showPopover(
+          radius: 12,
+          context: context,
+          direction: PopoverDirection.top,
+          bodyBuilder: (context) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: Text(
+                    "다른 결제 수단 선택하기",
+                    style: DPTypography.header1(color: DPColors.grayscale1000),
+                  ),
+                ),
+                for (int i = 0;
+                    i <
+                        FaceSignService
+                            .to.users[0].paymentMethods.methods.length;
+                    i++)
+                  Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      Container(
+                        width: 374,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 16),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            FaceSignService
+                                .to.users[0].paymentMethods.methods[i].image,
+                            const SizedBox(width: 24),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  FaceSignService.to.users[0].paymentMethods
+                                      .methods[i].name,
+                                  style: DPTypography.header2(
+                                      color: DPColors.grayscale800),
+                                ),
+                                Text(
+                                  "${FaceSignService.to.users[0].paymentMethods.methods[i].cardCode} (${FaceSignService.to.users[0].paymentMethods.methods[i].preview})",
+                                  style: DPTypography.itemTitle(
+                                      color: DPColors.grayscale600),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+      child: Obx(
+        () => Text(
+          "변경",
+          style: DPTypography.pos.underlined(
+            color: ProductPageController.to.pressedButton == "change"
+                ? DPColors.grayscale700
+                : DPColors.grayscale500,
+          ),
+        ),
       ),
     );
   }

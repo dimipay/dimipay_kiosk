@@ -25,6 +25,7 @@ dependencies:
   dimipay_design_kit: ^0.1.0
   flutter_secure_storage: ^9.0.0
   material_symbols_icons: ^4.2716.0
+  popover: ^0.3.0+1
 
 
 dev_dependencies:

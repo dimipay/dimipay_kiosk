@@ -6,6 +6,7 @@ class PaymentMethod {
   String name;
   String type;
   String preview;
+  String cardCode;
   Widget image;
 
   PaymentMethod({
@@ -13,6 +14,7 @@ class PaymentMethod {
     required this.name,
     required this.type,
     required this.preview,
+    required this.cardCode,
     required this.image,
   });
 }
@@ -76,6 +78,7 @@ class User {
                   name: method['name'],
                   type: method['type'],
                   preview: method['preview'],
+                  cardCode: method['cardCode'],
                   image: SvgPicture.asset(
                       "assets/images/cards/${method['cardCode']}.svg")),
             )
