@@ -1,5 +1,5 @@
-name: dimipay_pos_flutter
-description: "A new Flutter project."
+name: dimipay_kiosk
+description: "디미페이 키오스크"
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
@@ -12,8 +12,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
+
+  get: ^4.6.6
+  dio: ^5.4.0
+  camera: ^0.10.5+9
+  lottie: ^3.1.0
+  fast_rsa: ^3.6.1
+  jwt_decode: ^0.3.1
+  flutter_svg: ^2.0.10+1
+  http_parser: ^4.0.2
+  cryptography: ^2.7.0
+  dimipay_design_kit: ^0.1.0
+  flutter_secure_storage: ^9.0.0
+  material_symbols_icons: ^4.2716.0
+  popover: ^0.3.0+1
+
 
 dev_dependencies:
   flutter_test:
@@ -24,9 +37,29 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Enable generation of localized Strings from arb files.
-  generate: true
-
   assets:
-    # Add assets from the images directory to the application.
+    - assets/fonts/
     - assets/images/
+    - assets/images/cards/
+
+  fonts:
+    - family: SUITv1
+      fonts:
+        - asset: assets/fonts/SUITv1-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/SUITv1-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/SUITv1-Light.ttf
+          weight: 300
+        - asset: assets/fonts/SUITv1-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/SUITv1-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SUITv1-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/SUITv1-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/SUITv1-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/SUITv1-Heavy.ttf
+          weight: 900
