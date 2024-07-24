@@ -34,6 +34,8 @@ class FaceSignRepository {
         ),
       );
 
+      print(response.data["data"]["foundUsers"].length);
+
       return [
         User.fromJson(response.data["data"]["foundUsers"][0]),
         // (response.data["data"]["foundUsers"] as List).length == 2 ?
@@ -81,7 +83,7 @@ class FaceSignRepository {
         options: Options(
           headers: {
             "DP-PAYMENT-PIN-OTP": otp,
-            "DP-DCH-USER-ID": FaceSignService.to.users[0].id,
+            "DP-DCH-USER-ID": FaceSignService.to.user.id,
           },
         ),
         data: {
@@ -93,7 +95,7 @@ class FaceSignRepository {
               }
           ],
           "paymentMethodId":
-              FaceSignService.to.users[0].paymentMethods.mainPaymentMethodId,
+              FaceSignService.to.user.paymentMethods.mainPaymentMethodId,
         },
       );
       return PaymentApprove.fromJson(response.data["data"]);

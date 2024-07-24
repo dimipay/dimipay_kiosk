@@ -2,9 +2,10 @@ import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 
+import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
-import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 import 'package:dimipay_kiosk/globals.dart' as globals;
 
@@ -20,11 +21,15 @@ class FaceSignService extends GetxController {
       : repository = repository ?? FaceSignRepository();
 
   final Rx<bool> _stop = Rx(false);
-  final Rx<List<dynamic>> _users = Rx([]);
+  final Rx<User?> _user = Rx(null);
+
+  // final Rx<List<dynamic>> _users = Rx([]);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
 
-  List<dynamic> get users => _users.value;
+  User get user => _user.value!;
+
+  // List<dynamic> get users => _users.value;
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
 
   void stop() {
@@ -34,7 +39,8 @@ class FaceSignService extends GetxController {
 
   void resetUser() {
     _faceSignStatus.value = FaceSignStatus.loading;
-    _users.value = [];
+    _user.value = null;
+    // _users.value = [];
   }
 
   Future<FaceSignService> init() async {
@@ -57,7 +63,6 @@ class FaceSignService extends GetxController {
       await Future.delayed(const Duration(milliseconds: 2500));
       image = capturedImage.planes[0].bytes;
     });
-    // await Future.delayed(const Duration(milliseconds: 2500));
     await _cameraController.value!.stopImageStream();
     return image!;
   }
@@ -70,18 +75,22 @@ class FaceSignService extends GetxController {
       _faceSignStatus.value = FaceSignStatus.loading;
     }
 
-    if (_users.value.isNotEmpty) resetUser();
+    if (_user.value != null) resetUser();
 
     if (globals.isSimulator) {
       try {
-        _users.value = await repository.faceSign(
+        List<User> users = await repository.faceSign(
             (await rootBundle.load('assets/images/single_test_face.jpg'))
                 .buffer
                 .asUint8List());
 
-        _faceSignStatus.value = _users.value.length > 1
-            ? FaceSignStatus.multipleUserDetected
-            : FaceSignStatus.success;
+        if (users.length > 1) {
+          _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
+          // select user
+        } else {
+          _user.value = users[0];
+          _faceSignStatus.value = FaceSignStatus.success;
+        }
 
         return;
       } on NoUserFoundException {
@@ -105,34 +114,39 @@ class FaceSignService extends GetxController {
     //   await Future.delayed(const Duration(milliseconds: 2500));
     // }
 
-    while (attempts < 10) {
-      try {
-        // print(image!);
-        // _users.value = await repository.faceSign(image);
-        _users.value = await repository.faceSign(await _captureImage());
+    // while (attempts < 10) {
+    //   try {
+    //     // print(image!);
+    //     // _users.value = await repository.faceSign(image);
+    //     _users.value = await repository.faceSign(await _captureImage());
 
-        // _users.value = await repository.faceSign(
-        //     await (await _cameraController.value!.takePicture()).readAsBytes());
+    //     // _users.value = await repository.faceSign(
+    //     //     await (await _cameraController.value!.takePicture()).readAsBytes());
 
-        _faceSignStatus.value = _users.value.length > 1
-            ? FaceSignStatus.multipleUserDetected
-            : FaceSignStatus.success;
+    //     _faceSignStatus.value = _users.value.length > 1
+    //         ? FaceSignStatus.multipleUserDetected
+    //         : FaceSignStatus.success;
 
-        return;
-      } on NoUserFoundException {
-        attempts++;
-      }
-    }
+    //     return;
+    //   } on NoUserFoundException {
+    //     attempts++;
+    //   }
+    // }
 
-    _faceSignStatus.value = FaceSignStatus.failed;
+    // _faceSignStatus.value = FaceSignStatus.failed;
 
     // await _cameraController.value!.stopImageStream();
   }
 
   Future<String?> approvePin(String pin) async {
     try {
+      if (_user.value!.paymentMethods.paymentPinAuthURL == null) {
+        // QR 결제
+        return null;
+      }
+
       return await repository.faceSignPaymentsPin(
-          _users.value[0].paymentMethods.paymentPinAuthURL, pin);
+          _user.value!.paymentMethods.paymentPinAuthURL!, pin);
     } catch (_) {
       return null;
     }

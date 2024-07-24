@@ -40,7 +40,7 @@ class ProductBar extends StatelessWidget {
                             FaceSignStatus.success
                         ? DecorationImage(
                             image: NetworkImage(
-                              FaceSignService.to.users[0].profileImage,
+                              FaceSignService.to.user.profileImage,
                             ),
                           )
                         : null,
@@ -53,7 +53,7 @@ class ProductBar extends StatelessWidget {
                       ? "얼굴 인식 중..."
                       : FaceSignService.to.faceSignStatus ==
                               FaceSignStatus.success
-                          ? "${FaceSignService.to.users[0].name}님"
+                          ? "${FaceSignService.to.user.name}님"
                           : "얼굴 인식에 실패했습니다",
                   style: DPTypography.pos
                       .itemDescription(color: DPColors.grayscale800),

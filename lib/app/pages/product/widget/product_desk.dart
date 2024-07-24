@@ -30,13 +30,13 @@ class ProductSelection extends StatelessWidget {
               SizedBox(
                   width: 48,
                   height: 48,
-                  child: FaceSignService
-                      .to.users[0].paymentMethods.methods[0].image),
+                  child:
+                      FaceSignService.to.user.paymentMethods.methods[0].image),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    FaceSignService.to.users[0].paymentMethods.methods[0].name,
+                    FaceSignService.to.user.paymentMethods.methods[0].name,
                     style: DPTypography.header2(color: DPColors.grayscale800),
                   ),
                   const SizedBox(height: 4),
@@ -86,41 +86,51 @@ class CardSelectButton extends StatelessWidget {
                   ),
                 ),
                 for (int i = 0;
-                    i <
-                        FaceSignService
-                            .to.users[0].paymentMethods.methods.length;
+                    i < FaceSignService.to.user.paymentMethods.methods.length;
                     i++)
                   Column(
                     children: [
                       const SizedBox(height: 8),
-                      Container(
-                        width: 374,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 16),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            FaceSignService
-                                .to.users[0].paymentMethods.methods[i].image,
-                            const SizedBox(width: 24),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  FaceSignService.to.users[0].paymentMethods
-                                      .methods[i].name,
-                                  style: DPTypography.header2(
-                                      color: DPColors.grayscale800),
-                                ),
-                                Text(
-                                  "${FaceSignService.to.users[0].paymentMethods.methods[i].cardCode} (${FaceSignService.to.users[0].paymentMethods.methods[i].preview})",
-                                  style: DPTypography.itemTitle(
-                                      color: DPColors.grayscale600),
-                                )
-                              ],
-                            )
-                          ],
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTapDown: (_) => ProductPageController
+                            .to.pressedButton = "changeCard",
+                        onTapCancel: () =>
+                            ProductPageController.to.pressedButton = "",
+                        // onTapUp: (_) {
+                        //   ProductPageController.to.pressedButton = "";
+                        //   FaceSignService.to.users[0].paymentMethods.methods[0] =
+                        //       FaceSignService.to.users[0].paymentMethods.methods[i];
+                        // },
+                        child: Container(
+                          width: 374,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 16),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              FaceSignService
+                                  .to.user.paymentMethods.methods[i].image,
+                              const SizedBox(width: 24),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    FaceSignService
+                                        .to.user.paymentMethods.methods[i].name,
+                                    style: DPTypography.header2(
+                                        color: DPColors.grayscale800),
+                                  ),
+                                  Text(
+                                    "${FaceSignService.to.user.paymentMethods.methods[i].cardCode} (${FaceSignService.to.user.paymentMethods.methods[i].preview})",
+                                    style: DPTypography.itemTitle(
+                                        color: DPColors.grayscale600),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ],
