@@ -97,39 +97,48 @@ class CardSelectButton extends StatelessWidget {
                             .to.pressedButton = "changeCard",
                         onTapCancel: () =>
                             ProductPageController.to.pressedButton = "",
-                        // onTapUp: (_) {
-                        //   ProductPageController.to.pressedButton = "";
-                        //   FaceSignService.to.users[0].paymentMethods.methods[0] =
-                        //       FaceSignService.to.users[0].paymentMethods.methods[i];
-                        // },
-                        child: Container(
-                          width: 374,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 16),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              FaceSignService
-                                  .to.user.paymentMethods.methods[i].image,
-                              const SizedBox(width: 24),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    FaceSignService
-                                        .to.user.paymentMethods.methods[i].name,
-                                    style: DPTypography.header2(
-                                        color: DPColors.grayscale800),
-                                  ),
-                                  Text(
-                                    "${FaceSignService.to.user.paymentMethods.methods[i].cardCode} (${FaceSignService.to.user.paymentMethods.methods[i].preview})",
-                                    style: DPTypography.itemTitle(
-                                        color: DPColors.grayscale600),
-                                  )
-                                ],
-                              )
-                            ],
+                        onTapUp: (_) {
+                          ProductPageController.to.pressedButton = "";
+                          // FaceSignService.to.users[0].paymentMethods.methods[0] =
+                          //     FaceSignService.to.users[0].paymentMethods.methods[i];
+                        },
+                        child: Obx(
+                          () => Container(
+                            width: 374,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: ProductPageController.to.pressedButton ==
+                                      "changeCard"
+                                  ? DPColors.grayscale300
+                                  : DPColors.grayscale100,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                FaceSignService
+                                    .to.user.paymentMethods.methods[i].image,
+                                const SizedBox(width: 24),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      FaceSignService.to.user.paymentMethods
+                                          .methods[i].name,
+                                      style: DPTypography.header2(
+                                          color: DPColors.grayscale800),
+                                    ),
+                                    Text(
+                                      "${FaceSignService.to.user.paymentMethods.methods[i].cardCode} (${FaceSignService.to.user.paymentMethods.methods[i].preview})",
+                                      style: DPTypography.itemTitle(
+                                          color: DPColors.grayscale600),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
