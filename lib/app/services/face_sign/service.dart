@@ -22,14 +22,10 @@ class FaceSignService extends GetxController {
 
   final Rx<bool> _stop = Rx(false);
   final Rx<User?> _user = Rx(null);
-
-  // final Rx<List<dynamic>> _users = Rx([]);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
 
   User get user => _user.value!;
-
-  // List<dynamic> get users => _users.value;
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
 
   void stop() {
@@ -40,7 +36,6 @@ class FaceSignService extends GetxController {
   void resetUser() {
     _faceSignStatus.value = FaceSignStatus.loading;
     _user.value = null;
-    // _users.value = [];
   }
 
   Future<FaceSignService> init() async {

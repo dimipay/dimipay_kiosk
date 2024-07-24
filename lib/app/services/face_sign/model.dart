@@ -88,25 +88,25 @@ class User {
   }
 }
 
-class AltUser {
-  String id;
-  String name;
-  String profileImage;
-  String paymentMethods;
+// class AltUser {
+//   String id;
+//   String name;
+//   String profileImage;
+//   String paymentMethods;
 
-  AltUser({
-    required this.id,
-    required this.name,
-    required this.profileImage,
-    required this.paymentMethods,
-  });
+//   AltUser({
+//     required this.id,
+//     required this.name,
+//     required this.profileImage,
+//     required this.paymentMethods,
+//   });
 
-  factory AltUser.fromJson(Map<String, dynamic> json) {
-    return AltUser(
-      id: json["id"],
-      name: json["name"],
-      profileImage: json["profileImage"],
-      paymentMethods: json["paymentMethods"],
-    );
-  }
-}
+//   factory AltUser.fromJson(Map<String, dynamic> json) {
+//     return AltUser(
+//       id: json["id"],
+//       name: json["name"],
+//       profileImage: json["profileImage"],
+//       paymentMethods: json["paymentMethods"],
+//     );
+//   }
+// }

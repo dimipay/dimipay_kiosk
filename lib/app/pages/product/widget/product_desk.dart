@@ -136,7 +136,7 @@ class CardSelectButton extends StatelessWidget {
                                           color: DPColors.grayscale600),
                                     )
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           ),

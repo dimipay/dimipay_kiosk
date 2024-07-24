@@ -14,7 +14,7 @@ import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class FaceSignRepository {
-  Future<dynamic> faceSign(Uint8List imageBytes) async {
+  Future<List<User>> faceSign(Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
 
     try {
@@ -34,14 +34,12 @@ class FaceSignRepository {
         ),
       );
 
-      print(response.data["data"]["foundUsers"].length);
-
       return [
         User.fromJson(response.data["data"]["foundUsers"][0]),
-        // (response.data["data"]["foundUsers"] as List).length == 2 ?
-        //     AltUser.fromJson(response.data["data"]["foundUsers"][1]) : null,
-        // response.data["data"]["foundUsers"][2] ??
-        //     AltUser.fromJson(response.data["data"]["foundUsers"][2]),
+        if ((response.data["data"]["foundUsers"] as List).length == 2)
+          User.fromJson(response.data["data"]["foundUsers"][1]),
+        if ((response.data["data"]["foundUsers"] as List).length == 3)
+          User.fromJson(response.data["data"]["foundUsers"][2]),
       ];
     } on DioException {
       throw NoUserFoundException();
