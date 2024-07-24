@@ -1,4 +1,5 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
 import 'package:get/get.dart';
@@ -26,12 +27,11 @@ class ProductSelection extends StatelessWidget {
           Wrap(
             spacing: 24,
             children: [
-              // const SizedBox(width: 48, height: 48),
               SizedBox(
-                  width: 48,
-                  height: 48,
-                  child:
-                      FaceSignService.to.user.paymentMethods.methods[0].image),
+                width: 48,
+                height: 48,
+                child: FaceSignService.to.user.paymentMethods.methods[0].image,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -196,10 +196,11 @@ class ProductDesk extends StatelessWidget {
                 onTapDown: (_) =>
                     ProductPageController.to.pressedButton = "pay",
                 onTapCancel: () => ProductPageController.to.pressedButton = "",
-                onTapUp: (_) {
+                onTapUp: (_) async {
                   ProductPageController.to.pressedButton = "";
                   if (FaceSignService.to.faceSignStatus ==
                       FaceSignStatus.success) {
+                    // await TransactionService.to.refreshTransactionId();
                     Get.toNamed(Routes.PIN);
                   } else {
                     Get.toNamed(Routes.PAYMENT);

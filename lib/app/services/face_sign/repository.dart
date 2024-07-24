@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
@@ -96,8 +97,10 @@ class FaceSignRepository {
               FaceSignService.to.user.paymentMethods.mainPaymentMethodId,
         },
       );
+      TransactionService.to.deleteTransactionId();
       return PaymentApprove.fromJson(response.data["data"]);
     } on DioException catch (e) {
+      TransactionService.to.deleteTransactionId();
       throw PaymentApproveFailedException(e.response?.data["message"]);
     }
   }

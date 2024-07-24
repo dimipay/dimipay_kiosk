@@ -1,11 +1,10 @@
-import 'package:get/get.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
+import 'package:camera/camera.dart';
+import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/core/utils/errors.dart';
-import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
-import 'package:dimipay_kiosk/app/services/transaction/service.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
+import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 import 'package:dimipay_kiosk/globals.dart' as globals;
 
@@ -150,14 +149,12 @@ class FaceSignService extends GetxController {
   Future<bool> approvePayment(String otp) async {
     try {
       var result = await repository.faceSignPaymentsApprove(otp);
-      TransactionService.to.removeTransactionId();
       if (result!.status == "CONFIRMED") {
         return true;
       } else {
         return false;
       }
     } catch (_) {
-      TransactionService.to.removeTransactionId();
       return false;
     }
   }
