@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
@@ -133,29 +134,21 @@ class FaceSignService extends GetxController {
   }
 
   Future<String?> approvePin(String pin) async {
-    try {
-      if (_user.value!.paymentMethods.paymentPinAuthURL == null) {
-        // QR 결제
-        return null;
-      }
-
-      return await repository.faceSignPaymentsPin(
-          _user.value!.paymentMethods.paymentPinAuthURL!, pin);
-    } catch (_) {
+    if (_user.value!.paymentMethods.paymentPinAuthURL == null) {
+      // QR 결제
       return null;
     }
+
+    return await repository.faceSignPaymentsPin(
+        _user.value!.paymentMethods.paymentPinAuthURL!, pin);
   }
 
   Future<bool> approvePayment(String otp) async {
-    try {
-      var result = await repository.faceSignPaymentsApprove(otp);
-      if (result!.status == "CONFIRMED") {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (_) {
-      return false;
+    var result = await repository.faceSignPaymentsApprove(otp);
+    if (result?.status == "CONFIRMED") {
+      TransactionService.to.deleteTransactionId();
+      return true;
     }
+    return false;
   }
 }
