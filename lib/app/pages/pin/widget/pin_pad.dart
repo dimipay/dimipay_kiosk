@@ -75,7 +75,10 @@ class PinPad extends StatelessWidget {
               AuthService.to.isAuthenticated
                   ? GestureDetector(
                       onTapDown: (_) => PinPageController.to.down(11),
-                      onTapUp: (_) => PinPageController.to.up(11),
+                      onTapUp: (_) {
+                        PinPageController.to.canceled();
+                        Get.back();
+                      },
                       onTapCancel: () => PinPageController.to.canceled(),
                       child: Obx(
                         () => Container(

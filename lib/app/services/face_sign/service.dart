@@ -134,18 +134,17 @@ class FaceSignService extends GetxController {
   }
 
   Future<String?> approvePin(String pin) async {
-    if (_user.value!.paymentMethods.paymentPinAuthURL == null) {
-      // QR 결제
+    try {
+      return await repository.faceSignPaymentsPin(
+          _user.value!.paymentMethods.paymentPinAuthURL!, pin);
+    } catch (_) {
       return null;
     }
-
-    return await repository.faceSignPaymentsPin(
-        _user.value!.paymentMethods.paymentPinAuthURL!, pin);
   }
 
   Future<bool> approvePayment(String otp) async {
-    var result = await repository.faceSignPaymentsApprove(otp);
-    if (result?.status == "CONFIRMED") {
+    if ((await repository.faceSignPaymentsApprove(otp))?.status ==
+        'CONFIRMED') {
       TransactionService.to.deleteTransactionId();
       return true;
     }

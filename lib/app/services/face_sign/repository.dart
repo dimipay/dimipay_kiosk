@@ -45,7 +45,7 @@ class FaceSignRepository {
     }
   }
 
-  Future<String> faceSignPaymentsPin(String url, String pin) async {
+  Future<String?> faceSignPaymentsPin(String url, String pin) async {
     var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(
         Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits),
         secretKey: SecretKey((await AuthService.to.encryptionKey)!));

@@ -66,15 +66,13 @@ class PinPageController extends GetxController {
       return;
     }
 
-    if (number == 11) {
-      Get.back();
-      return;
-    }
-
     _input.add(number);
     _inputLength.value++;
     if (inputLength == 4) {
       if (AuthService.to.isAuthenticated) {
+        if (FaceSignService.to.user.paymentMethods.paymentPinAuthURL == null) {
+          Get.toNamed(Routes.PAYMENT);
+        }
         var otp = await FaceSignService.to.approvePin(_input.join().toString());
         if (otp != null) {
           if (await FaceSignService.to.approvePayment(otp)) {
