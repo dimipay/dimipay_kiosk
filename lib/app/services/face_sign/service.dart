@@ -63,7 +63,7 @@ class FaceSignService extends GetxController {
   }
 
   Future<void> findUser() async {
-    int attempts = 0;
+    // int attempts = 0;
 
     _stop.value = false;
     if (_faceSignStatus.value != FaceSignStatus.loading) {
@@ -89,7 +89,7 @@ class FaceSignService extends GetxController {
 
         return;
       } on NoUserFoundException {
-        attempts++;
+        // attempts++;
       }
     }
 
@@ -144,7 +144,7 @@ class FaceSignService extends GetxController {
 
   Future<bool> approvePayment(String otp) async {
     if ((await repository.faceSignPaymentsApprove(otp))?.status ==
-        'CONFIRMED') {
+        PaymentResponse.success) {
       TransactionService.to.deleteTransactionId();
       return true;
     }

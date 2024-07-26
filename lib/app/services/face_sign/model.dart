@@ -31,6 +31,10 @@ class PaymentMethods {
   });
 }
 
+class PaymentResponse {
+  static String success = "CONFIRMED";
+}
+
 class PaymentApprove {
   String status;
   String message;
