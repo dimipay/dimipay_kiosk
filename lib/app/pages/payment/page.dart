@@ -6,6 +6,7 @@ import 'package:dimipay_kiosk/app/pages/payment/controller.dart';
 import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:dimipay_kiosk/app/services/qr/service.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class BackgroundSpot extends StatelessWidget {
   const BackgroundSpot({super.key, required this.size, required this.color});
@@ -32,8 +33,12 @@ class PaymentPage extends GetView<PaymentPageController> {
   @override
   Widget build(BuildContext context) {
     return BarcodeScanner(
-      onKey: (input) {
-        // QRService.to
+      onKey: (input) async {
+        if (await QRService.to.approvePayment(input)) {
+          Get.toNamed(Routes.PAYMENT_SUCCESS);
+        } else {
+          Get.toNamed(Routes.PAYMENT_FAILED);
+        }
       },
       child: Scaffold(
         body: SizedBox.expand(
