@@ -129,27 +129,87 @@ class PaymentPage extends GetView<PaymentPageController> {
                   ],
                 ),
               ),
-              Obx(
-                () => AnimatedRotation(
-                  turns: PaymentPageController.to.turns,
-                  duration: const Duration(milliseconds: 5000),
-                  curve: Curves.easeInQuad,
-                  child: Stack(
-                    children: [
-                      ...PaymentPageController.to.backgroundSpot.map((spot) {
-                        return AnimatedPositioned(
-                          left: spot.left.value,
-                          top: spot.top.value,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOutCubic,
-                          child: BackgroundSpot(
-                              size: spot.size, color: Color(spot.color)),
-                        );
-                      }).toList(),
-                    ],
+              const Stack(
+                children: [
+                  Positioned(
+                    left: 723.54,
+                    top: 25.41 - 169.4,
+                    child: BackgroundSpot(
+                      size: 169.14,
+                      color: Color(0xFFFF0000),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    left: 693.37,
+                    top: 1023.09 - 169.14,
+                    child: BackgroundSpot(
+                      size: 169.14,
+                      color: Color(0xFFFF0000),
+                    ),
+                  ),
+                  Positioned(
+                    left: 759.52,
+                    top: 725.2 - 249.12,
+                    child: BackgroundSpot(
+                      size: 249.12,
+                      color: Color(0xFF00C2FF),
+                    ),
+                  ),
+                  Positioned(
+                    left: 544.77,
+                    top: 425.58 - 249.12,
+                    child: BackgroundSpot(
+                      size: 249.12,
+                      color: Color(0xFF00C2FF),
+                    ),
+                  ),
+                  Positioned(
+                    left: 778.22,
+                    top: 316.23 - 249.12,
+                    child: BackgroundSpot(
+                      size: 249.12,
+                      color: Color(0xFF00FF7A),
+                    ),
+                  ),
+                  Positioned(
+                    left: 361.67,
+                    top: 23.19,
+                    child: BackgroundSpot(
+                      size: 250.96,
+                      color: Color(0xFF4200FF),
+                    ),
+                  ),
+                  Positioned(
+                    left: 378.67 - 328,
+                    top: 798.71,
+                    child: BackgroundSpot(
+                      size: 328.0,
+                      color: Color(0xFFFF7A00),
+                    ),
+                  ),
+                ],
               ),
+              // Obx(
+              //   () => AnimatedRotation(
+              //     turns: PaymentPageController.to.turns,
+              //     duration: const Duration(milliseconds: 5000),
+              //     curve: Curves.easeInQuad,
+              //     child: Stack(
+              //       children: [
+              //         ...PaymentPageController.to.backgroundSpot.map((spot) {
+              //           return AnimatedPositioned(
+              //             left: spot.left.value,
+              //             top: spot.top.value,
+              //             duration: const Duration(milliseconds: 500),
+              //             curve: Curves.easeInOutCubic,
+              //             child: BackgroundSpot(
+              //                 size: spot.size, color: Color(spot.color)),
+              //           );
+              //         }).toList(),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
