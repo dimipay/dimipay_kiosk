@@ -189,27 +189,6 @@ class PaymentPage extends GetView<PaymentPageController> {
                   ),
                 ],
               ),
-              // Obx(
-              //   () => AnimatedRotation(
-              //     turns: PaymentPageController.to.turns,
-              //     duration: const Duration(milliseconds: 5000),
-              //     curve: Curves.easeInQuad,
-              //     child: Stack(
-              //       children: [
-              //         ...PaymentPageController.to.backgroundSpot.map((spot) {
-              //           return AnimatedPositioned(
-              //             left: spot.left.value,
-              //             top: spot.top.value,
-              //             duration: const Duration(milliseconds: 500),
-              //             curve: Curves.easeInOutCubic,
-              //             child: BackgroundSpot(
-              //                 size: spot.size, color: Color(spot.color)),
-              //           );
-              //         }).toList(),
-              //       ],
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
