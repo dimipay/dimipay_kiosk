@@ -1,6 +1,5 @@
 import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 
