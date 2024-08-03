@@ -105,6 +105,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  convert_native_img_stream:
+    dependency: "direct main"
+    description:
+      name: convert_native_img_stream
+      sha256: cbf8c36a1a720198d873424cdbc99ff9c04d31829650bb9c299683ec203f973a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   cross_file:
     dependency: transitive
     description:
@@ -288,6 +296,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      sha256: "2237616a36c0d69aef7549ab439b833fb7f9fb9fc861af2cc9ac3eedddd69ca8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
   js:
     dependency: transitive
     description:

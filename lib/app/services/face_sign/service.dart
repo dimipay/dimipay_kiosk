@@ -1,4 +1,6 @@
+import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +26,7 @@ class FaceSignService extends GetxController {
   final Rx<User?> _user = Rx(null);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
+  final _convertNative = ConvertNativeImgStream();
 
   User get user => _user.value!;
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
@@ -40,7 +43,7 @@ class FaceSignService extends GetxController {
 
   Future<FaceSignService> init() async {
     super.onInit();
-    if (globals.isSimulator) return this;
+    // if (globals.isSimulator) return this;
     _cameraController.value = CameraController(
       ((await availableCameras())[1]),
       ResolutionPreset.low,
@@ -53,17 +56,19 @@ class FaceSignService extends GetxController {
   }
 
   Future<Uint8List> _captureImage() async {
-    Uint8List? image;
-    await _cameraController.value!.startImageStream((capturedImage) async {
-      await Future.delayed(const Duration(milliseconds: 2500));
-      image = capturedImage.planes[0].bytes;
+    late CameraImage image;
+    _cameraController.value!.startImageStream((capturedImage) {
+      image = capturedImage;
     });
+    await Future.delayed(const Duration(milliseconds: 500));
     await _cameraController.value!.stopImageStream();
-    return image!;
+
+    return (await _convertNative.convertImgToBytes(
+        image.planes[0].bytes, image.width, image.width))!;
   }
 
   Future<void> findUser() async {
-    // int attempts = 0;
+    int attempts = 0;
 
     _stop.value = false;
     if (_faceSignStatus.value != FaceSignStatus.loading) {
@@ -72,65 +77,45 @@ class FaceSignService extends GetxController {
 
     if (_user.value != null) resetUser();
 
-    if (globals.isSimulator) {
-      try {
-        List<User> users = await repository.faceSign(
-            (await rootBundle.load('assets/images/single_test_face.jpg'))
-                .buffer
-                .asUint8List());
+    // if (globals.isSimulator) {
+    //   try {
+    //     List<User> users = await repository.faceSign(
+    //         (await rootBundle.load('assets/images/single_test_face.jpg'))
+    //             .buffer
+    //             .asUint8List());
 
-        if (users.length > 1) {
-          _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
-          // select user
-        } else {
+    //     if (users.length > 1) {
+    //       _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
+    //       // select user
+    //     } else {
+    //       _user.value = users[0];
+    //       _faceSignStatus.value = FaceSignStatus.success;
+    //     }
+
+    //     return;
+    //   } on NoUserFoundException {
+    //     // attempts++;
+    //   }
+    // }
+
+    while (attempts < 10) {
+      try {
+        List<User> users = await repository.faceSign(await _captureImage());
+
+        if (users.length == 1) {
           _user.value = users[0];
           _faceSignStatus.value = FaceSignStatus.success;
+        } else {
+          _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
         }
 
         return;
       } on NoUserFoundException {
-        // attempts++;
+        attempts++;
       }
     }
 
-    // Uint8List? image;
-    // await
-    // _cameraController.value!.startImageStream((capturedImage) {
-    //   FaceSignService.to.imageSample.value = capturedImage.planes[0].bytes;
-    //   print(FaceSignService.to.imageSample.value);
-    // await Future.delayed(const Duration(milliseconds: 500), () {
-    // image = capturedImage.planes[0].bytes;
-    // });
-    // });
-
-    // if (_stop.value) {
-    //   return;
-    // } else {
-    //   await Future.delayed(const Duration(milliseconds: 2500));
-    // }
-
-    // while (attempts < 10) {
-    //   try {
-    //     // print(image!);
-    //     // _users.value = await repository.faceSign(image);
-    //     _users.value = await repository.faceSign(await _captureImage());
-
-    //     // _users.value = await repository.faceSign(
-    //     //     await (await _cameraController.value!.takePicture()).readAsBytes());
-
-    //     _faceSignStatus.value = _users.value.length > 1
-    //         ? FaceSignStatus.multipleUserDetected
-    //         : FaceSignStatus.success;
-
-    //     return;
-    //   } on NoUserFoundException {
-    //     attempts++;
-    //   }
-    // }
-
-    // _faceSignStatus.value = FaceSignStatus.failed;
-
-    // await _cameraController.value!.stopImageStream();
+    _faceSignStatus.value = FaceSignStatus.failed;
   }
 
   Future<String?> approvePin(String pin) async {
