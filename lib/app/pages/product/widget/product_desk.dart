@@ -1,5 +1,4 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
 import 'package:get/get.dart';
@@ -98,15 +97,16 @@ class CardSelectButton extends StatelessWidget {
                         onTapCancel: () =>
                             ProductPageController.to.pressedButton = "",
                         onTapUp: (_) {
+                          FaceSignService.to.paymentIndex = i;
                           ProductPageController.to.pressedButton = "";
-                          // FaceSignService.to.users[0].paymentMethods.methods[0] =
-                          //     FaceSignService.to.users[0].paymentMethods.methods[i];
                         },
                         child: Obx(
                           () => Container(
                             width: 374,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 16),
+                              horizontal: 20,
+                              vertical: 16,
+                            ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color:
@@ -128,7 +128,8 @@ class CardSelectButton extends StatelessWidget {
                                       FaceSignService.to.user.paymentMethods
                                           .methods[i].name,
                                       style: DPTypography.header2(
-                                          color: DPColors.grayscale800),
+                                        color: DPColors.grayscale800,
+                                      ),
                                     ),
                                     Text(
                                       "${FaceSignService.to.user.paymentMethods.methods[i].cardCode} (${FaceSignService.to.user.paymentMethods.methods[i].preview})",
@@ -200,7 +201,6 @@ class ProductDesk extends StatelessWidget {
                   ProductPageController.to.pressedButton = "";
                   if (FaceSignService.to.faceSignStatus ==
                       FaceSignStatus.success) {
-                    // await TransactionService.to.refreshTransactionId();
                     Get.toNamed(Routes.PIN);
                   } else {
                     Get.toNamed(Routes.PAYMENT);

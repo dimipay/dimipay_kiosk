@@ -21,14 +21,17 @@ class FaceSignService extends GetxController {
 
   final Rx<bool> _stop = Rx(false);
   final Rx<User?> _user = Rx(null);
-  final Rx<int> _paymentMethodIndex = Rx(0);
+  final Rx<int> _paymentIndex = Rx(0);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
-  // final Rx<CameraController?> _cameraController = Rx(null);
-  late final CameraController _camera;
-  final _convertNative = ConvertNativeImgStream();
 
+  late final CameraController _camera;
+  final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
+
+  int get paymentIndex => _paymentIndex.value;
   User get user => _user.value!;
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
+
+  set paymentIndex(int index) => _paymentIndex.value = index;
 
   void stop() {
     resetUser();
@@ -49,32 +52,16 @@ class FaceSignService extends GetxController {
       imageFormatGroup: ImageFormatGroup.jpeg,
       enableAudio: false,
     );
-
     await _camera.initialize();
     await _camera.setFlashMode(FlashMode.off);
-
-    // _cameraController.value = CameraController(
-    //   ((await availableCameras())[1]),
-    //   ResolutionPreset.low,
-    //   imageFormatGroup: ImageFormatGroup.jpeg,
-    //   enableAudio: false,
-    // );
-
-    // await _cameraController.value!.initialize();
-    // await _cameraController.value!.setFlashMode(FlashMode.off);
     return this;
   }
 
   Future<Uint8List> _captureImage() async {
     late CameraImage image;
-    _camera.startImageStream((capturedImage) {
-      // _cameraController.value!.startImageStream((capturedImage) {
-      image = capturedImage;
-    });
+    _camera.startImageStream((capturedImage) => image = capturedImage);
     await Future.delayed(const Duration(milliseconds: 500));
     await _camera.stopImageStream();
-    // await _cameraController.value!.stopImageStream();
-
     return (await _convertNative.convertImgToBytes(
         image.planes[0].bytes, image.width, image.width))!;
   }
