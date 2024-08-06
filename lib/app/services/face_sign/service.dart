@@ -15,16 +15,16 @@ enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 class FaceSignService extends GetxController {
   static FaceSignService get to => Get.find<FaceSignService>();
 
-  final Rx<Uint8List> imageSample = Rx(Uint8List(0));
-
   final FaceSignRepository repository;
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
 
   final Rx<bool> _stop = Rx(false);
   final Rx<User?> _user = Rx(null);
+  final Rx<int> _paymentMethodIndex = Rx(0);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
-  final Rx<CameraController?> _cameraController = Rx(null);
+  // final Rx<CameraController?> _cameraController = Rx(null);
+  late final CameraController _camera;
   final _convertNative = ConvertNativeImgStream();
 
   User get user => _user.value!;
@@ -43,24 +43,37 @@ class FaceSignService extends GetxController {
   Future<FaceSignService> init() async {
     super.onInit();
     // if (globals.isSimulator) return this;
-    _cameraController.value = CameraController(
+    _camera = CameraController(
       ((await availableCameras())[1]),
       ResolutionPreset.low,
       imageFormatGroup: ImageFormatGroup.jpeg,
       enableAudio: false,
     );
-    await _cameraController.value!.initialize();
-    await _cameraController.value!.setFlashMode(FlashMode.off);
+
+    await _camera.initialize();
+    await _camera.setFlashMode(FlashMode.off);
+
+    // _cameraController.value = CameraController(
+    //   ((await availableCameras())[1]),
+    //   ResolutionPreset.low,
+    //   imageFormatGroup: ImageFormatGroup.jpeg,
+    //   enableAudio: false,
+    // );
+
+    // await _cameraController.value!.initialize();
+    // await _cameraController.value!.setFlashMode(FlashMode.off);
     return this;
   }
 
   Future<Uint8List> _captureImage() async {
     late CameraImage image;
-    _cameraController.value!.startImageStream((capturedImage) {
+    _camera.startImageStream((capturedImage) {
+      // _cameraController.value!.startImageStream((capturedImage) {
       image = capturedImage;
     });
     await Future.delayed(const Duration(milliseconds: 500));
-    await _cameraController.value!.stopImageStream();
+    await _camera.stopImageStream();
+    // await _cameraController.value!.stopImageStream();
 
     return (await _convertNative.convertImgToBytes(
         image.planes[0].bytes, image.width, image.width))!;

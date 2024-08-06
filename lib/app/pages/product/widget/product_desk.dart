@@ -93,8 +93,8 @@ class CardSelectButton extends StatelessWidget {
                       const SizedBox(height: 8),
                       GestureDetector(
                         behavior: HitTestBehavior.translucent,
-                        onTapDown: (_) => ProductPageController
-                            .to.pressedButton = "changeCard",
+                        onTapDown: (_) =>
+                            ProductPageController.to.pressedButton = "$i",
                         onTapCancel: () =>
                             ProductPageController.to.pressedButton = "",
                         onTapUp: (_) {
@@ -109,10 +109,10 @@ class CardSelectButton extends StatelessWidget {
                                 horizontal: 20, vertical: 16),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              color: ProductPageController.to.pressedButton ==
-                                      "changeCard"
-                                  ? DPColors.grayscale300
-                                  : DPColors.grayscale100,
+                              color:
+                                  ProductPageController.to.pressedButton == "$i"
+                                      ? DPColors.grayscale300
+                                      : DPColors.grayscale100,
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
