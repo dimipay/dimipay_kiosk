@@ -21,6 +21,8 @@ class FaceSignService extends GetxController {
 
   final Rx<bool> _stop = Rx(false);
   final Rx<User?> _user = Rx(null);
+  // final Rx<
+
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
   final Rx<CameraController?> _cameraController = Rx(null);
   final _convertNative = ConvertNativeImgStream();
