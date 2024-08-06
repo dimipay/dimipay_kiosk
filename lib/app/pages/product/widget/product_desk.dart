@@ -26,11 +26,7 @@ class ProductSelection extends StatelessWidget {
           Wrap(
             spacing: 24,
             children: [
-              SizedBox(
-                width: 48,
-                height: 48,
-                child: Obx(() => FaceSignService.to.user.paymentMethods.methods[FaceSignService.to.paymentIndex.value].image),
-              ),
+              SizedBox(width: 48, height: 48, child: Obx(() => FaceSignService.to.user.paymentMethods.methods[FaceSignService.to.paymentIndex.value].image)),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -166,16 +162,8 @@ class ProductDesk extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     decoration: ShapeDecoration(
                       color: ProductPageController.to.pressedButton == "pay" ? Color.alphaBlend(DPColors.grayscale600.withOpacity(0.5), DPColors.primaryBrand) : DPColors.primaryBrand,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      shadows: const [
-                        BoxShadow(
-                          color: Color(0x332EA4AB),
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        )
-                      ],
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shadows: const [BoxShadow(color: Color(0x332EA4AB), blurRadius: 10, offset: Offset(0, 4))],
                     ),
                     child: Text("결제하기", style: DPTypography.pos.itemTitle(color: DPColors.grayscale100)),
                   ),
