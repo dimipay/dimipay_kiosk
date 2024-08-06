@@ -21,8 +21,7 @@ class ProductService extends GetxController {
   static ProductService get to => Get.find<ProductService>();
 
   final ProductRepository repository;
-  ProductService({ProductRepository? repository})
-      : repository = repository ?? ProductRepository();
+  ProductService({ProductRepository? repository}) : repository = repository ?? ProductRepository();
 
   final Rx<Map<String, ProductListItem>> _productList = Rx({});
   final RxInt _productTotalCount = 0.obs;
@@ -75,8 +74,7 @@ class ProductService extends GetxController {
 
   void deleteProduct(String barcode) {
     _productTotalCount.value -= _productList.value[barcode]!.count.value;
-    _productTotalPrice.value -= _productList.value[barcode]!.price *
-        _productList.value[barcode]!.count.value;
+    _productTotalPrice.value -= _productList.value[barcode]!.price * _productList.value[barcode]!.count.value;
     _productList.value.remove(barcode);
     _productList.refresh();
     if (_productList.value.isEmpty) resetProduct();

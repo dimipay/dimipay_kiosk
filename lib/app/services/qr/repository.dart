@@ -19,11 +19,7 @@ class QRRepository {
         ),
         data: {
           "products": [
-            for (var product in ProductService.to.productList.keys)
-              {
-                "id": ProductService.to.productList[product]!.id,
-                "amount": ProductService.to.productList[product]!.count.value
-              }
+            for (var product in ProductService.to.productList.keys) {"id": ProductService.to.productList[product]!.id, "amount": ProductService.to.productList[product]!.count.value}
           ],
         },
       );

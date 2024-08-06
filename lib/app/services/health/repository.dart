@@ -9,8 +9,7 @@ class HealthRepository {
     String url = "/kiosk/health";
     Map<String, dynamic> headers = {'Authorization': 'Bearer $accessToken'};
     try {
-      Response response =
-          await ApiProvider.to.get(url, options: Options(headers: headers));
+      Response response = await ApiProvider.to.get(url, options: Options(headers: headers));
       return Health.fromJson(response.data["data"]);
     } on DioException catch (e) {
       throw NoAccessTokenException(e.response?.data["message"]);

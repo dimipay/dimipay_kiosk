@@ -24,9 +24,6 @@ class ProductPage extends GetView<ProductPageController> {
           ProductService.to.addProduct(input);
           ProductPageController.to.resetTimer();
         },
-        child: const Scaffold(
-            body: SafeArea(
-                child: Column(
-                    children: [ProductBar(), ProductList(), ProductDesk()]))));
+        child: const Scaffold(body: SafeArea(child: Column(children: [ProductBar(), ProductList(), ProductDesk()]))));
   }
 }

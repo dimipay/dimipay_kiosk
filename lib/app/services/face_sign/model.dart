@@ -61,11 +61,7 @@ class User {
   String profileImage;
   PaymentMethods paymentMethods;
 
-  User(
-      {required this.id,
-      required this.name,
-      required this.profileImage,
-      required this.paymentMethods});
+  User({required this.id, required this.name, required this.profileImage, required this.paymentMethods});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -83,8 +79,7 @@ class User {
                   type: method['type'],
                   preview: method['preview'],
                   cardCode: method['cardCode'],
-                  image: SvgPicture.asset(
-                      "assets/images/cards/${method['cardCode']}.svg")),
+                  image: SvgPicture.asset("assets/images/cards/${method['cardCode']}.svg")),
             )
             .toList(),
       ),

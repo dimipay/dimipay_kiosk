@@ -3,16 +3,16 @@ import 'dart:math';
 
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
-import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class PinPageController extends GetxController {
   static PinPageController get to => Get.find<PinPageController>();
 
-  final numbers = List.generate(10, (index) => index).obs;
-  final pressedPin = <int>[].obs;
-  final _input = <int>[].obs;
-  final _inputLength = 0.obs;
-  final _isPressed = false.obs;
+  final RxList<int> numbers = List.generate(10, (index) => index).obs;
+  final RxList<int> pressedPin = <int>[].obs;
+  final RxList<int> _input = <int>[].obs;
+  final RxInt _inputLength = 0.obs;
+  final RxBool _isPressed = false.obs;
+
   final _dimension = [
     [0, 3, 6],
     [1, 4, 7, 9],
@@ -56,9 +56,7 @@ class PinPageController extends GetxController {
 
   void up(int number) async {
     _isPressed.value = !isPressed;
-
     if (inputLength == 4) return;
-
     if (number == 10) {
       if (inputLength == 0) return;
       _input.removeLast();
@@ -70,21 +68,9 @@ class PinPageController extends GetxController {
     _inputLength.value++;
     if (inputLength == 4) {
       if (AuthService.to.isAuthenticated) {
-        if (FaceSignService.to.user.paymentMethods.paymentPinAuthURL == null) {
-          Get.toNamed(Routes.PAYMENT);
-        }
-        var otp = await FaceSignService.to.approvePin(_input.join().toString());
-        if (otp != null) {
-          if (await FaceSignService.to.approvePayment(otp)) {
-            Get.toNamed(Routes.PAYMENT_SUCCESS);
-          } else {
-            Get.toNamed(Routes.PAYMENT_FAILED);
-          }
-        }
+        await FaceSignService.to.approvePin(_input.join().toString());
       } else {
-        if (await AuthService.to.loginKiosk(_input.join().toString())) {
-          Get.offAndToNamed(Routes.ONBOARD);
-        }
+        await AuthService.to.loginKiosk(_input.join().toString());
       }
       init();
     }
