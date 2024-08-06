@@ -9,8 +9,7 @@ class AlertModal extends GetxController {
   Future<void> show(String message, {int duration = 2}) async {
     if (Get.isSnackbarOpen) Get.closeCurrentSnackbar();
     Get.rawSnackbar(
-        messageText: Text(message,
-            style: DPTypography.header1(color: DPColors.grayscale100)),
+        messageText: Text(message, style: DPTypography.header1(color: DPColors.grayscale100)),
         icon: const DPIcons(Symbols.info_rounded, color: DPColors.grayscale100),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

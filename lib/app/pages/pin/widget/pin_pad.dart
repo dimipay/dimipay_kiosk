@@ -16,10 +16,8 @@ class PinPadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTapDown: (_) =>
-            PinPageController.to.down(PinPageController.to.numbers[index]),
-        onTapUp: (_) =>
-            PinPageController.to.up(PinPageController.to.numbers[index]),
+        onTapDown: (_) => PinPageController.to.down(PinPageController.to.numbers[index]),
+        onTapUp: (_) => PinPageController.to.up(PinPageController.to.numbers[index]),
         onTapCancel: () => PinPageController.to.canceled(),
         behavior: HitTestBehavior.translucent,
         child: Obx(
@@ -29,11 +27,7 @@ class PinPadButton extends StatelessWidget {
               width: 72,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: PinPageController.to.isPressed &&
-                        PinPageController.to.pressedPin
-                            .contains(PinPageController.to.numbers[index])
-                    ? DPColors.grayscale200
-                    : Colors.transparent,
+                color: PinPageController.to.isPressed && PinPageController.to.pressedPin.contains(PinPageController.to.numbers[index]) ? DPColors.grayscale200 : Colors.transparent,
               ),
               alignment: Alignment.center,
               child: Text(
@@ -65,9 +59,7 @@ class PinPad extends StatelessWidget {
           for (int i = 0; i < PinPageController.to.numbers.length - 1; i += 3)
             Wrap(
               spacing: 40,
-              children: [
-                for (int j = i; j < i + 3; j++) PinPadButton(index: j)
-              ],
+              children: [for (int j = i; j < i + 3; j++) PinPadButton(index: j)],
             ),
           Wrap(
             spacing: 40,
@@ -75,7 +67,10 @@ class PinPad extends StatelessWidget {
               AuthService.to.isAuthenticated
                   ? GestureDetector(
                       onTapDown: (_) => PinPageController.to.down(11),
-                      onTapUp: (_) => PinPageController.to.up(11),
+                      onTapUp: (_) {
+                        PinPageController.to.canceled();
+                        Get.back();
+                      },
                       onTapCancel: () => PinPageController.to.canceled(),
                       child: Obx(
                         () => Container(
@@ -83,10 +78,7 @@ class PinPad extends StatelessWidget {
                           width: buttonWidth,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: PinPageController.to.isPressed &&
-                                    PinPageController.to.pressedPin.contains(11)
-                                ? DPColors.grayscale200
-                                : Colors.transparent,
+                            color: PinPageController.to.isPressed && PinPageController.to.pressedPin.contains(11) ? DPColors.grayscale200 : Colors.transparent,
                           ),
                           child: const DPIcons(Symbols.undo_rounded),
                         ),
@@ -104,10 +96,7 @@ class PinPad extends StatelessWidget {
                     width: buttonWidth,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: PinPageController.to.isPressed &&
-                              PinPageController.to.pressedPin.contains(10)
-                          ? DPColors.grayscale200
-                          : Colors.transparent,
+                      color: PinPageController.to.isPressed && PinPageController.to.pressedPin.contains(10) ? DPColors.grayscale200 : Colors.transparent,
                     ),
                     child: const DPIcons(Symbols.backspace_rounded),
                   ),

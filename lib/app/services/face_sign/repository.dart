@@ -14,7 +14,7 @@ import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
 class FaceSignRepository {
-  Future<dynamic> faceSign(Uint8List imageBytes) async {
+  Future<List<User>> faceSign(Uint8List imageBytes) async {
     String url = "/kiosk/face-sign";
 
     try {
@@ -34,22 +34,14 @@ class FaceSignRepository {
         ),
       );
 
-      return [
-        User.fromJson(response.data["data"]["foundUsers"][0]),
-        // (response.data["data"]["foundUsers"] as List).length == 2 ?
-        //     AltUser.fromJson(response.data["data"]["foundUsers"][1]) : null,
-        // response.data["data"]["foundUsers"][2] ??
-        //     AltUser.fromJson(response.data["data"]["foundUsers"][2]),
-      ];
+      return [for (int i = 0; i < (response.data["data"]["foundUsers"] as List).length; i++) User.fromJson(response.data["data"]["foundUsers"][i])];
     } on DioException {
       throw NoUserFoundException();
     }
   }
 
-  Future<String> faceSignPaymentsPin(String url, String pin) async {
-    var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(
-        Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits),
-        secretKey: SecretKey((await AuthService.to.encryptionKey)!));
+  Future<String?> faceSignPaymentsPin(String url, String pin) async {
+    var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits), secretKey: SecretKey((await AuthService.to.encryptionKey)!));
 
     try {
       Response response = await ApiProvider.to.post(
@@ -81,21 +73,17 @@ class FaceSignRepository {
         options: Options(
           headers: {
             "DP-PAYMENT-PIN-OTP": otp,
-            "DP-DCH-USER-ID": FaceSignService.to.users[0].id,
+            "DP-DCH-USER-ID": FaceSignService.to.user.id,
           },
         ),
         data: {
           "products": [
-            for (var product in ProductService.to.productList.keys)
-              {
-                "id": ProductService.to.productList[product]!.id,
-                "amount": ProductService.to.productList[product]!.count.value
-              }
+            for (var product in ProductService.to.productList.keys) {"id": ProductService.to.productList[product]!.id, "amount": ProductService.to.productList[product]!.count.value}
           ],
-          "paymentMethodId":
-              FaceSignService.to.users[0].paymentMethods.mainPaymentMethodId,
+          "paymentMethodId": FaceSignService.to.user.paymentMethods.methods[FaceSignService.to.paymentIndex.value].id,
         },
       );
+
       return PaymentApprove.fromJson(response.data["data"]);
     } on DioException catch (e) {
       throw PaymentApproveFailedException(e.response?.data["message"]);

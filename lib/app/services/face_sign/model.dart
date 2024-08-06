@@ -31,6 +31,10 @@ class PaymentMethods {
   });
 }
 
+class PaymentResponse {
+  static String success = "CONFIRMED";
+}
+
 class PaymentApprove {
   String status;
   String message;
@@ -57,11 +61,7 @@ class User {
   String profileImage;
   PaymentMethods paymentMethods;
 
-  User(
-      {required this.id,
-      required this.name,
-      required this.profileImage,
-      required this.paymentMethods});
+  User({required this.id, required this.name, required this.profileImage, required this.paymentMethods});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -79,8 +79,7 @@ class User {
                   type: method['type'],
                   preview: method['preview'],
                   cardCode: method['cardCode'],
-                  image: SvgPicture.asset(
-                      "assets/images/cards/${method['cardCode']}.svg")),
+                  image: SvgPicture.asset("assets/images/cards/${method['cardCode']}.svg")),
             )
             .toList(),
       ),
@@ -88,25 +87,25 @@ class User {
   }
 }
 
-class AltUser {
-  String id;
-  String name;
-  String profileImage;
-  String paymentMethods;
+// class AltUser {
+//   String id;
+//   String name;
+//   String profileImage;
+//   String paymentMethods;
 
-  AltUser({
-    required this.id,
-    required this.name,
-    required this.profileImage,
-    required this.paymentMethods,
-  });
+//   AltUser({
+//     required this.id,
+//     required this.name,
+//     required this.profileImage,
+//     required this.paymentMethods,
+//   });
 
-  factory AltUser.fromJson(Map<String, dynamic> json) {
-    return AltUser(
-      id: json["id"],
-      name: json["name"],
-      profileImage: json["profileImage"],
-      paymentMethods: json["paymentMethods"],
-    );
-  }
-}
+//   factory AltUser.fromJson(Map<String, dynamic> json) {
+//     return AltUser(
+//       id: json["id"],
+//       name: json["name"],
+//       profileImage: json["profileImage"],
+//       paymentMethods: json["paymentMethods"],
+//     );
+//   }
+// }

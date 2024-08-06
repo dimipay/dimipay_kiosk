@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
-import 'dart:async';
+// import 'dart:async';
 
-import 'package:dimipay_kiosk/app/services/product/service.dart';
+// import 'package:dimipay_kiosk/app/services/product/service.dart';
 
 class ProductPageController extends GetxController {
   static ProductPageController get to => Get.find<ProductPageController>();
 
-  var timer = Timer(const Duration(minutes: 1), () {
-    ProductService.to.clearProduct();
-    Get.back();
-  });
+  // var timer = Timer(const Duration(minutes: 1), () {
+  //   ProductService.to.clearProduct();
+  //   Get.back();
+  // });
 
   void resetTimer() {
-    timer.cancel();
+    // timer.cancel();
     // timer = Timer(const Duration(minutes: 1), () {
     //   ProductService.to.clearProduct();
     //   Get.back();
