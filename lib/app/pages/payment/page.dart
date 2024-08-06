@@ -59,10 +59,7 @@ class PaymentPage extends GetView<PaymentPageController> {
                           width: 420.0 - 14 * (30 - PaymentPageController.to.timer),
                           height: 8,
                           duration: const Duration(seconds: 1),
-                          decoration: BoxDecoration(
-                            color: DPColors.grayscale900.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          decoration: BoxDecoration(color: DPColors.grayscale900.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
                     ),

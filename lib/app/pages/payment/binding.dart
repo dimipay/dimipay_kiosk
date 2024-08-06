@@ -6,7 +6,7 @@ import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
 class PaymentPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => AlertModal());
     Get.lazyPut(() => PaymentPageController());
+    Get.lazyPut(() => AlertModal());
   }
 }

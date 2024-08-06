@@ -1,5 +1,6 @@
 import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:dimipay_kiosk/app/services/health/service.dart';
+import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
@@ -22,8 +23,6 @@ class FaceSignService extends GetxController {
   final Rx<int> paymentIndex = Rx(0);
   final Rx<bool> _stop = Rx(false);
   final Rx<User?> _user = Rx(null);
-  // final Rx<
-
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
 
   bool isRetry = false;
@@ -100,7 +99,9 @@ class FaceSignService extends GetxController {
   Future<void> approvePayment() async {
     if (_otp == null) return;
 
-    if ((await repository.faceSignPaymentsApprove(_otp!))?.status == PaymentResponse.success) {
+    var response = await repository.faceSignPaymentsApprove(_otp!);
+
+    if (response!.status == PaymentResponse.success) {
       isRetry = false;
       _otp = null;
       Get.toNamed(Routes.PAYMENT_SUCCESS);
@@ -113,6 +114,7 @@ class FaceSignService extends GetxController {
 
     isRetry = true;
     Get.toNamed(Routes.PAYMENT_FAILED);
+    AlertModal.to.show(response.message);
     return;
   }
 }

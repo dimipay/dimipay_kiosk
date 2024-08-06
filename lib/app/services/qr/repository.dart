@@ -25,8 +25,8 @@ class QRRepository {
       );
 
       return PaymentApprove.fromJson(response.data["data"]);
-    } on DioException catch (e) {
-      throw PaymentApproveFailedException(e.response?.data["message"]);
+    } on DioException catch (_) {
+      throw PaymentApproveFailedException();
     }
   }
 }
