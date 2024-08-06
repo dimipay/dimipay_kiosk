@@ -8,12 +8,10 @@ class QRService extends GetxController {
   static QRService get to => Get.find<QRService>();
 
   final QRRepository repository;
-  QRService({QRRepository? repository})
-      : repository = repository ?? QRRepository();
+  QRService({QRRepository? repository}) : repository = repository ?? QRRepository();
 
   Future<bool> approvePayment(String token) async {
-    if ((await repository.qrPaymentsApprove(token))?.status ==
-        PaymentResponse.success) {
+    if ((await repository.qrPaymentsApprove(token))?.status == PaymentResponse.success) {
       TransactionService.to.deleteTransactionId();
       return true;
     }

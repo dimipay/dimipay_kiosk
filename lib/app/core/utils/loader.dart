@@ -20,8 +20,6 @@ class AppLoader {
     ]);
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    // await dotenv.load(fileName: "env/.env", isOptional: true);
-
     Get.lazyPut(() => AlertModal());
     Get.lazyPut(() => HealthService());
     Get.lazyPut(() => ProductService());

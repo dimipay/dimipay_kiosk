@@ -10,8 +10,7 @@ class JWTInterceptor extends Interceptor {
   JWTInterceptor(this._dioInstance);
 
   @override
-  Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     if (options.path == '/kiosk/auth/refresh') {
       return handler.next(options);
     }
@@ -19,8 +18,7 @@ class JWTInterceptor extends Interceptor {
     if (AuthService.to.isAuthenticated) {
       options.headers['Authorization'] = 'Bearer ${AuthService.to.accessToken}';
       if (options.path.contains("face-sign")) {
-        options.headers['Transaction-ID'] =
-            await TransactionService.to.transactionId;
+        options.headers['Transaction-ID'] = await TransactionService.to.transactionId;
       }
     }
     print("-----------------------REQUEST-----------------------");

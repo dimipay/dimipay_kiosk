@@ -11,11 +11,7 @@ import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class OnboardStatus extends StatelessWidget {
-  const OnboardStatus(
-      {super.key,
-      required this.title,
-      required this.icon,
-      required this.color});
+  const OnboardStatus({super.key, required this.title, required this.icon, required this.color});
 
   final String title;
   final IconData icon;
@@ -27,10 +23,7 @@ class OnboardStatus extends StatelessWidget {
       children: [
         DPIcons(icon, fill: 0, size: 20, color: color),
         const SizedBox(width: 6),
-        Text(
-          title,
-          style: DPTypography.itemTitle(color: color),
-        ),
+        Text(title, style: DPTypography.itemTitle(color: color)),
       ],
     );
   }
@@ -41,14 +34,7 @@ class OnboardDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 4,
-      height: 4,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: DPColors.grayscale500,
-      ),
-    );
+    return Container(width: 4, height: 4, decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: DPColors.grayscale500));
   }
 }
 
@@ -78,43 +64,29 @@ class OnboardPage extends GetView<OnboardPageController> {
                         children: [
                           SvgPicture.asset("assets/images/dimipay_logo.svg"),
                           const SizedBox(width: 24),
-                          SvgPicture.asset(
-                              "assets/images/dimipay_typography.svg"),
+                          SvgPicture.asset("assets/images/dimipay_typography.svg"),
                         ],
                       ),
                       const SizedBox(height: 64),
-                      Text(
-                        "매점에 오신 것을 환영합니다!",
-                        style:
-                            DPTypography.title(color: DPColors.grayscale1000),
-                      ),
+                      Text("매점에 오신 것을 환영합니다!", style: DPTypography.title(color: DPColors.grayscale1000)),
                       const SizedBox(height: 16),
-                      Text(
-                        "물건의 바코드를 스캔하여 결제를 시작해주세요",
-                        style:
-                            DPTypography.header2(color: DPColors.grayscale700),
-                      ),
+                      Text("물건의 바코드를 스캔하여 결제를 시작해주세요", style: DPTypography.header2(color: DPColors.grayscale700)),
                     ],
                   ),
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                   child: Row(
                     children: [
                       Obx(
                         () => OnboardStatus(
-                          icon: HealthService.to.status == null
-                              ? Symbols.hourglass_rounded
-                              : Symbols.dns_rounded,
+                          icon: HealthService.to.status == null ? Symbols.hourglass_rounded : Symbols.dns_rounded,
                           title: HealthService.to.status == null
                               ? "서버 연결 중"
                               : HealthService.to.status == "healthy"
                                   ? "서버 연결 완료"
                                   : "서버 연결 실패",
-                          color: HealthService.to.status == null
-                              ? DPColors.primaryNegative
-                              : DPColors.grayscale500,
+                          color: HealthService.to.status == null ? DPColors.primaryNegative : DPColors.grayscale500,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -125,19 +97,11 @@ class OnboardPage extends GetView<OnboardPageController> {
                                 children: [
                                   const OnboardDivider(),
                                   const SizedBox(width: 16),
-                                  OnboardStatus(
-                                    icon: Symbols.browse_activity_rounded,
-                                    title: HealthService.to.name!,
-                                    color: DPColors.grayscale500,
-                                  ),
+                                  OnboardStatus(icon: Symbols.browse_activity_rounded, title: HealthService.to.name!, color: DPColors.grayscale500),
                                   const SizedBox(width: 16),
                                   const OnboardDivider(),
                                   const SizedBox(width: 16),
-                                  const OnboardStatus(
-                                    icon: Symbols.school_rounded,
-                                    title: "한국디지털미디어고등학교",
-                                    color: DPColors.grayscale500,
-                                  ),
+                                  const OnboardStatus(icon: Symbols.school_rounded, title: "한국디지털미디어고등학교", color: DPColors.grayscale500),
                                 ],
                               ),
                       ),

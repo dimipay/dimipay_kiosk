@@ -15,8 +15,7 @@ class FaceSignService extends GetxController {
   static FaceSignService get to => Get.find<FaceSignService>();
 
   final FaceSignRepository repository;
-  FaceSignService({FaceSignRepository? repository})
-      : repository = repository ?? FaceSignRepository();
+  FaceSignService({FaceSignRepository? repository}) : repository = repository ?? FaceSignRepository();
 
   final Rx<int> paymentIndex = Rx(0);
   final Rx<bool> _stop = Rx(false);
@@ -24,7 +23,7 @@ class FaceSignService extends GetxController {
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
 
   bool isRetry = false;
-  late String? _otp;
+  String? _otp;
   late CameraController _camera;
   final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
 
@@ -59,8 +58,7 @@ class FaceSignService extends GetxController {
     _camera.startImageStream((capturedImage) => image = capturedImage);
     await Future.delayed(const Duration(milliseconds: 500));
     await _camera.stopImageStream();
-    return (await _convertNative.convertImgToBytes(
-        image.planes[0].bytes, image.width, image.width))!;
+    return (await _convertNative.convertImgToBytes(image.planes[0].bytes, image.width, image.width))!;
   }
 
   Future<void> findUser() async {
@@ -91,16 +89,14 @@ class FaceSignService extends GetxController {
   }
 
   Future<void> approvePin(String pin) async {
-    _otp = await repository.faceSignPaymentsPin(
-        _user.value!.paymentMethods.paymentPinAuthURL!, pin);
+    _otp = await repository.faceSignPaymentsPin(_user.value!.paymentMethods.paymentPinAuthURL!, pin);
     return approvePayment();
   }
 
   Future<void> approvePayment() async {
     if (_otp == null) return;
 
-    if ((await repository.faceSignPaymentsApprove(_otp!))?.status ==
-        PaymentResponse.success) {
+    if ((await repository.faceSignPaymentsApprove(_otp!))?.status == PaymentResponse.success) {
       TransactionService.to.deleteTransactionId();
       isRetry = false;
       _otp = null;

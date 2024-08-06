@@ -17,8 +17,7 @@ class HealthService extends GetxController {
   String? get status => _health.value.status;
   String? get message => _health.value.message;
 
-  HealthService({HealthRepository? repository})
-      : repository = repository ?? HealthRepository();
+  HealthService({HealthRepository? repository}) : repository = repository ?? HealthRepository();
 
   Future<void> checkHealth() async {
     _health.value = Health();

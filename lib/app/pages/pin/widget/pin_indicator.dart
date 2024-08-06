@@ -19,12 +19,7 @@ class PinIndicator extends StatelessWidget {
               Container(
                 height: 28,
                 width: 28,
-                decoration: BoxDecoration(
-                  color: i < PinPageController.to.inputLength
-                      ? DPColors.grayscale800
-                      : DPColors.grayscale300,
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                decoration: BoxDecoration(color: i < PinPageController.to.inputLength ? DPColors.grayscale800 : DPColors.grayscale300, borderRadius: BorderRadius.circular(14)),
               ),
           ],
         );

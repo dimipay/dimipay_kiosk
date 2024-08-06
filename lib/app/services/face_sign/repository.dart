@@ -34,21 +34,14 @@ class FaceSignRepository {
         ),
       );
 
-      return [
-        for (int i = 0;
-            i < (response.data["data"]["foundUsers"] as List).length;
-            i++)
-          User.fromJson(response.data["data"]["foundUsers"][i])
-      ];
+      return [for (int i = 0; i < (response.data["data"]["foundUsers"] as List).length; i++) User.fromJson(response.data["data"]["foundUsers"][i])];
     } on DioException {
       throw NoUserFoundException();
     }
   }
 
   Future<String?> faceSignPaymentsPin(String url, String pin) async {
-    var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(
-        Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits),
-        secretKey: SecretKey((await AuthService.to.encryptionKey)!));
+    var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits), secretKey: SecretKey((await AuthService.to.encryptionKey)!));
 
     try {
       Response response = await ApiProvider.to.post(
@@ -85,14 +78,9 @@ class FaceSignRepository {
         ),
         data: {
           "products": [
-            for (var product in ProductService.to.productList.keys)
-              {
-                "id": ProductService.to.productList[product]!.id,
-                "amount": ProductService.to.productList[product]!.count.value
-              }
+            for (var product in ProductService.to.productList.keys) {"id": ProductService.to.productList[product]!.id, "amount": ProductService.to.productList[product]!.count.value}
           ],
-          "paymentMethodId":
-              FaceSignService.to.user.paymentMethods.mainPaymentMethodId,
+          "paymentMethodId": FaceSignService.to.user.paymentMethods.mainPaymentMethodId,
         },
       );
 
