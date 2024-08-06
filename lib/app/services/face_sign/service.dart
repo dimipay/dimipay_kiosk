@@ -7,6 +7,7 @@ import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 
@@ -17,19 +18,18 @@ class FaceSignService extends GetxController {
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
 
+  final Rx<int> paymentIndex = Rx(0);
   final Rx<bool> _stop = Rx(false);
   final Rx<User?> _user = Rx(null);
-  final Rx<int> _paymentIndex = Rx(0);
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
 
-  late final CameraController _camera;
+  bool isRetry = false;
+  late String? _otp;
+  late CameraController _camera;
   final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
 
-  int get paymentIndex => _paymentIndex.value;
   User get user => _user.value!;
   FaceSignStatus get faceSignStatus => _faceSignStatus.value;
-
-  set paymentIndex(int index) => _paymentIndex.value = index;
 
   void stop() {
     resetUser();
@@ -70,20 +70,17 @@ class FaceSignService extends GetxController {
     if (_faceSignStatus.value != FaceSignStatus.loading) {
       _faceSignStatus.value = FaceSignStatus.loading;
     }
-
     if (_user.value != null) resetUser();
 
     while (attempts < 10) {
       try {
         List<User> users = await repository.faceSign(await _captureImage());
-
         if (users.length == 1) {
           _user.value = users[0];
           _faceSignStatus.value = FaceSignStatus.success;
         } else {
           _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
         }
-
         return;
       } on NoUserFoundException {
         attempts++;
@@ -93,21 +90,26 @@ class FaceSignService extends GetxController {
     _faceSignStatus.value = FaceSignStatus.failed;
   }
 
-  Future<String?> approvePin(String pin) async {
-    try {
-      return await repository.faceSignPaymentsPin(
-          _user.value!.paymentMethods.paymentPinAuthURL!, pin);
-    } catch (_) {
-      return null;
-    }
+  Future<void> approvePin(String pin) async {
+    _otp = await repository.faceSignPaymentsPin(
+        _user.value!.paymentMethods.paymentPinAuthURL!, pin);
+    return approvePayment();
   }
 
-  Future<bool> approvePayment(String otp) async {
-    if ((await repository.faceSignPaymentsApprove(otp))?.status ==
+  Future<void> approvePayment() async {
+    if (_otp == null) return;
+
+    if ((await repository.faceSignPaymentsApprove(_otp!))?.status ==
         PaymentResponse.success) {
       TransactionService.to.deleteTransactionId();
-      return true;
+      isRetry = false;
+      _otp = null;
+      Get.toNamed(Routes.PAYMENT_SUCCESS);
+      return;
     }
-    return false;
+
+    isRetry = true;
+    Get.toNamed(Routes.PAYMENT_FAILED);
+    return;
   }
 }

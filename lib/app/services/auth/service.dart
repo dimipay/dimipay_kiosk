@@ -7,6 +7,7 @@ import 'dart:async';
 
 import 'package:dimipay_kiosk/app/services/auth/repository.dart';
 import 'package:dimipay_kiosk/app/services/auth/model.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class AuthService extends GetxController {
   static AuthService get to => Get.find<AuthService>();
@@ -64,12 +65,12 @@ class AuthService extends GetxController {
         await repository.authRefresh(_jwtToken.value.refreshToken!);
   }
 
-  Future<bool> loginKiosk(String pin) async {
+  Future<void> loginKiosk(String pin) async {
     try {
       await _storeLoginData(await repository.authLogin(pin));
-      return true;
+      Get.offAndToNamed(Routes.ONBOARD);
     } catch (_) {
-      return false;
+      return;
     }
   }
 }

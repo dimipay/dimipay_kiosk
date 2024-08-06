@@ -30,7 +30,7 @@ class ProductSelection extends StatelessWidget {
                 width: 48,
                 height: 48,
                 child: Obx(() => FaceSignService.to.user.paymentMethods
-                    .methods[FaceSignService.to.paymentIndex].image),
+                    .methods[FaceSignService.to.paymentIndex.value].image),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class ProductSelection extends StatelessWidget {
                   Obx(
                     () => Text(
                       FaceSignService.to.user.paymentMethods
-                          .methods[FaceSignService.to.paymentIndex].name,
+                          .methods[FaceSignService.to.paymentIndex.value].name,
                       style: DPTypography.header2(color: DPColors.grayscale800),
                     ),
                   ),
@@ -101,7 +101,7 @@ class CardSelectButton extends StatelessWidget {
                         onTapCancel: () =>
                             ProductPageController.to.pressedButton = "",
                         onTapUp: (_) {
-                          FaceSignService.to.paymentIndex = i;
+                          FaceSignService.to.paymentIndex.value = i;
                           ProductPageController.to.pressedButton = "";
                           Navigator.of(context).pop();
                         },
@@ -206,6 +206,9 @@ class ProductDesk extends StatelessWidget {
                   ProductPageController.to.pressedButton = "";
                   if (FaceSignService.to.faceSignStatus ==
                       FaceSignStatus.success) {
+                    if (FaceSignService.to.isRetry) {
+                      await FaceSignService.to.approvePayment();
+                    }
                     Get.toNamed(Routes.PIN);
                   } else {
                     Get.toNamed(Routes.PAYMENT);
