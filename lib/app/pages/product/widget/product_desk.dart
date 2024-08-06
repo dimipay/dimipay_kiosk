@@ -29,14 +29,18 @@ class ProductSelection extends StatelessWidget {
               SizedBox(
                 width: 48,
                 height: 48,
-                child: FaceSignService.to.user.paymentMethods.methods[0].image,
+                child: Obx(() => FaceSignService.to.user.paymentMethods
+                    .methods[FaceSignService.to.paymentIndex].image),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    FaceSignService.to.user.paymentMethods.methods[0].name,
-                    style: DPTypography.header2(color: DPColors.grayscale800),
+                  Obx(
+                    () => Text(
+                      FaceSignService.to.user.paymentMethods
+                          .methods[FaceSignService.to.paymentIndex].name,
+                      style: DPTypography.header2(color: DPColors.grayscale800),
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -99,6 +103,7 @@ class CardSelectButton extends StatelessWidget {
                         onTapUp: (_) {
                           FaceSignService.to.paymentIndex = i;
                           ProductPageController.to.pressedButton = "";
+                          Navigator.of(context).pop();
                         },
                         child: Obx(
                           () => Container(
