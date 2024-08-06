@@ -8,8 +8,6 @@ import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 
-import 'package:dimipay_kiosk/globals.dart' as globals;
-
 enum FaceSignStatus { loading, success, failed, multipleUserDetected }
 
 class FaceSignService extends GetxController {
@@ -45,7 +43,6 @@ class FaceSignService extends GetxController {
 
   Future<FaceSignService> init() async {
     super.onInit();
-    // if (globals.isSimulator) return this;
     _camera = CameraController(
       ((await availableCameras())[1]),
       ResolutionPreset.low,
@@ -75,27 +72,6 @@ class FaceSignService extends GetxController {
     }
 
     if (_user.value != null) resetUser();
-
-    // if (globals.isSimulator) {
-    //   try {
-    //     List<User> users = await repository.faceSign(
-    //         (await rootBundle.load('assets/images/single_test_face.jpg'))
-    //             .buffer
-    //             .asUint8List());
-
-    //     if (users.length > 1) {
-    //       _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
-    //       // select user
-    //     } else {
-    //       _user.value = users[0];
-    //       _faceSignStatus.value = FaceSignStatus.success;
-    //     }
-
-    //     return;
-    //   } on NoUserFoundException {
-    //     // attempts++;
-    //   }
-    // }
 
     while (attempts < 10) {
       try {
