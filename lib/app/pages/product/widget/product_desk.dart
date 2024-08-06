@@ -34,9 +34,7 @@ class ProductSelection extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Obx(
-                    () => Text(FaceSignService.to.user.paymentMethods.methods[FaceSignService.to.paymentIndex.value].name, style: DPTypography.header2(color: DPColors.grayscale800)),
-                  ),
+                  Obx(() => Text(FaceSignService.to.user.paymentMethods.methods[FaceSignService.to.paymentIndex.value].name, style: DPTypography.header2(color: DPColors.grayscale800))),
                   const SizedBox(height: 4),
                   Text("이 카드로 결제", style: DPTypography.description(color: DPColors.grayscale600))
                 ],
@@ -122,14 +120,7 @@ class CardSelectButton extends StatelessWidget {
           ),
         );
       },
-      child: Obx(
-        () => Text(
-          "변경",
-          style: DPTypography.pos.underlined(
-            color: ProductPageController.to.pressedButton == "change" ? DPColors.grayscale700 : DPColors.grayscale500,
-          ),
-        ),
-      ),
+      child: Obx(() => Text("변경", style: DPTypography.pos.underlined(color: ProductPageController.to.pressedButton == "change" ? DPColors.grayscale700 : DPColors.grayscale500))),
     );
   }
 }
@@ -151,14 +142,7 @@ class ProductDesk extends StatelessWidget {
                 children: [
                   Obx(() => Text("${ProductService.to.productTotalCount}개 상품", style: DPTypography.pos.itemDescription())),
                   const SizedBox(height: 8),
-                  Obx(
-                    () => Text(
-                      "${ProductService.to.productTotalPrice}원",
-                      style: DPTypography.pos.title(
-                        color: DPColors.primaryBrand,
-                      ),
-                    ),
-                  ),
+                  Obx(() => Text("${ProductService.to.productTotalPrice}원", style: DPTypography.pos.title(color: DPColors.primaryBrand))),
                 ],
               ),
               GestureDetector(
@@ -170,8 +154,9 @@ class ProductDesk extends StatelessWidget {
                   if (FaceSignService.to.faceSignStatus == FaceSignStatus.success) {
                     if (FaceSignService.to.isRetry) {
                       await FaceSignService.to.approvePayment();
+                    } else {
+                      Get.toNamed(Routes.PIN);
                     }
-                    Get.toNamed(Routes.PIN);
                   } else {
                     Get.toNamed(Routes.PAYMENT);
                   }
@@ -192,22 +177,13 @@ class ProductDesk extends StatelessWidget {
                         )
                       ],
                     ),
-                    child: Text(
-                      "결제하기",
-                      style: DPTypography.pos.itemTitle(
-                        color: DPColors.grayscale100,
-                      ),
-                    ),
+                    child: Text("결제하기", style: DPTypography.pos.itemTitle(color: DPColors.grayscale100)),
                   ),
                 ),
               ),
             ],
           ),
-          Obx(
-            () {
-              return FaceSignService.to.faceSignStatus == FaceSignStatus.success ? const Column(children: [SizedBox(height: 36), ProductSelection()]) : const SizedBox(height: 0);
-            },
-          ),
+          Obx(() => FaceSignService.to.faceSignStatus == FaceSignStatus.success ? const Column(children: [SizedBox(height: 36), ProductSelection()]) : const SizedBox(height: 0)),
         ],
       ),
     );

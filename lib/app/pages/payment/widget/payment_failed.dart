@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/pages/payment/controller.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class PaymentFailed extends GetView<PaymentPageController> {
   const PaymentFailed({super.key});
@@ -34,8 +35,7 @@ class PaymentFailed extends GetView<PaymentPageController> {
                   onTapCancel: () => PaymentPageController.to.pressedButton = "",
                   onTapUp: (_) {
                     PaymentPageController.to.pressedButton = "";
-                    Get.back();
-                    Get.back();
+                    Get.until((route) => route.settings.name == Routes.PRODUCT);
                   },
                   child: Text("상품 스캔 화면으로 돌아가기", style: DPTypography.header2(color: PaymentPageController.to.pressedButton == "failed_back" ? DPColors.grayscale900 : DPColors.grayscale700)),
                 ),
