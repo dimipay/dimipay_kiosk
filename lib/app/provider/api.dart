@@ -17,26 +17,16 @@ class JWTInterceptor extends Interceptor {
 
     if (AuthService.to.isAuthenticated) {
       options.headers['Authorization'] = 'Bearer ${AuthService.to.accessToken}';
-      if (options.path.contains("face-sign")) {
+      if (options.path.contains("face-sign") || options.path.contains("qr")) {
         options.headers['Transaction-ID'] = await TransactionService.to.transactionId;
       }
     }
-    print("-----------------------REQUEST-----------------------");
-    print("path : ${options.path}");
-    print("header : ${options.headers}");
-    print("data : ${options.data}");
+
     return handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print("-----------------------RESPONSE-----------------------");
-    print(response.data);
-
-    // if (response.requestOptions.path.contains("face-sign")) {
-    //   TransactionService.to.removeTransactionId();
-    // }
-
     handler.next(response);
   }
 
@@ -45,14 +35,6 @@ class JWTInterceptor extends Interceptor {
     if (err.response?.requestOptions.path == '/kiosk/auth/refresh') {
       return handler.next(err);
     }
-
-    print("-----------------------ERROR-----------------------");
-    print(err);
-    print(err.response);
-
-    // if (err.requestOptions.path.contains("face-sign")) {
-    //   TransactionService.to.removeTransactionId();
-    // }
 
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {
@@ -63,17 +45,16 @@ class JWTInterceptor extends Interceptor {
         return handler.next(err);
       }
     }
-
     return handler.next(err);
   }
 }
 
 class ProdApiProvider extends ApiProvider {
-  final baseUrl = 'http://server.dimipay.io:4002/';
-  // final baseUrl = 'https://dev.next.dimipay.io/';
+  final baseUrl = 'https://prod-next.dimipay.io/';
 
   ProdApiProvider() {
     dio.options.baseUrl = baseUrl;
+    dio.interceptors.add(JWTInterceptor(dio));
   }
 }
 

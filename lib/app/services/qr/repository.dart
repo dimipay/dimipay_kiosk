@@ -7,7 +7,7 @@ import 'package:dimipay_kiosk/app/services/qr/model.dart';
 
 class QRRepository {
   Future<PaymentApprove?> qrPaymentsApprove(String token) async {
-    String url = "/kiosk/face-sign/payments/approve";
+    String url = "/kiosk/qr";
 
     try {
       Response response = await ApiProvider.to.post(
@@ -25,8 +25,8 @@ class QRRepository {
       );
 
       return PaymentApprove.fromJson(response.data["data"]);
-    } on DioException catch (e) {
-      throw PaymentApproveFailedException(e.response?.data["message"]);
+    } on DioException catch (_) {
+      throw PaymentApproveFailedException();
     }
   }
 }

@@ -1,5 +1,6 @@
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:get/get.dart';
-// import 'dart:async';
+import 'dart:async';
 
 class PaymentPageController extends GetxController {
   static PaymentPageController get to => Get.find<PaymentPageController>();
@@ -20,16 +21,18 @@ class PaymentPageController extends GetxController {
   }
 
   void startTimer() {
-    // Timer(
-    //   const Duration(seconds: 1),
-    //   () {
-    //     if (_timer.value > 0) {
-    //       _timer.value--;
-    //       startTimer();
-    //     } else {
-    //       Get.back();
-    //     }
-    //   },
-    // );
+    Timer(
+      const Duration(seconds: 1),
+      () {
+        if (_timer.value > 0) {
+          _timer.value--;
+          startTimer();
+        } else {
+          if (Get.currentRoute == Routes.PAYMENT) {
+            Get.back();
+          }
+        }
+      },
+    );
   }
 }
