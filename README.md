@@ -13,7 +13,7 @@ This project is held with<br/>
             <li>이재빈( @SnowMarble ) 개발자님
                 <ul>
                     <li>Dimipay Backend Developer</li>
-                    <li>Dimipay V2 Project Manager & Backend Developer</li>
+                    <li>Dimipay V2 Project Manager</li>
                 </ul>
             </li>
             <br/>
