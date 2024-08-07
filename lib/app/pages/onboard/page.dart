@@ -43,7 +43,10 @@ class OnboardPage extends GetView<OnboardPageController> {
 
   @override
   Widget build(BuildContext context) {
-    HealthService.to.checkHealth();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      HealthService.to.checkHealth();
+    });
+
     return BarcodeScanner(
       onKey: (input) async {
         if (await ProductService.to.addProduct(input)) {
