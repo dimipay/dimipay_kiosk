@@ -92,8 +92,10 @@ class FaceSignService extends GetxController {
   }
 
   Future<void> approvePin(String pin) async {
-    _otp = await repository.faceSignPaymentsPin(_user.value!.paymentMethods.paymentPinAuthURL!, pin);
-    return approvePayment();
+    try {
+      _otp = await repository.faceSignPaymentsPin(_user.value!.paymentMethods.paymentPinAuthURL!, pin);
+      return approvePayment();
+    } catch (_) {}
   }
 
   Future<void> approvePayment() async {
