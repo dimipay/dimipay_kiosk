@@ -8,6 +8,7 @@ import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
 
 class ProductPage extends GetView<ProductPageController> {
   const ProductPage({super.key});
@@ -16,6 +17,7 @@ class ProductPage extends GetView<ProductPageController> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ProductPageController.to.resetTimer();
+      AuthService.to.createEncryptionKey();
       FaceSignService.to.findUser();
     });
 

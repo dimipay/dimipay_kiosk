@@ -14,7 +14,7 @@ class AuthService extends GetxController {
 
   final AuthRepository repository;
   final Rx<String?> _deviceName = Rx(null);
-  final Rx<String?> _encryptionKey = Rx(null);
+  final Rx<Uint8List?> _encryptionKey = Rx(null);
   final Rx<KeyPair> _rsaKey = Rx(KeyPair("", ""));
   final Rx<JWTToken> _jwtToken = Rx(JWTToken());
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
@@ -24,12 +24,17 @@ class AuthService extends GetxController {
   String? get deviceName => _deviceName.value;
   String? get accessToken => _jwtToken.value.accessToken;
 
-  Future<Uint8List?> get encryptionKey async {
+  Future<Uint8List?> createEncryptionKey() async {
     _rsaKey.value = await RSA.generate(2048);
     _rsaKey.value.publicKey = await RSA.convertPublicKeyToPKCS1(_rsaKey.value.publicKey);
     _rsaKey.value.privateKey = await RSA.convertPrivateKeyToPKCS8(_rsaKey.value.privateKey);
-    _encryptionKey.value = await repository.authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n'));
-    return await RSA.decryptOAEPBytes(base64.decode(_encryptionKey.value!), '', Hash.SHA1, _rsaKey.value.privateKey);
+    _encryptionKey.value =
+        (await RSA.decryptOAEPBytes(base64.decode((await repository.authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n')))!), '', Hash.SHA1, _rsaKey.value.privateKey));
+    return _encryptionKey.value;
+  }
+
+  Future<Uint8List?> get encryptionKey async {
+    return _encryptionKey.value ?? await createEncryptionKey();
   }
 
   Future<AuthService> init() async {
