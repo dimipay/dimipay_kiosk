@@ -22,7 +22,7 @@ class AppLoader {
     Get.lazyPut(() => AlertModal());
     Get.lazyPut(() => HealthService());
     Get.lazyPut(() => ProductService());
-    Get.lazyPut<ApiProvider>(() => DevApiProvider());
+    Get.lazyPut<ApiProvider>(() => ProdApiProvider());
 
     await Get.putAsync(() => FaceSignService().init());
     await Get.putAsync(() => AuthService().init());
