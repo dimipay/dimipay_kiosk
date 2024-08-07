@@ -42,7 +42,7 @@ This project is held with<br/>
         </td>
         <td>
             <br/><br/>
-            <li>서승표( @dhalsdyd ) 개발자님
+            <li>서승표( @sspzoa ) 개발자님
                 <ul>
                     <li>Dimipay Frontend Developer</li>
                     <li>Dimipay V2 App & Admin Developer</li>
