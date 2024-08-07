@@ -9,6 +9,7 @@ import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/qr/service.dart';
 
 class ProductPage extends GetView<ProductPageController> {
   const ProductPage({super.key});
@@ -17,12 +18,15 @@ class ProductPage extends GetView<ProductPageController> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ProductPageController.to.resetTimer();
-      AuthService.to.createEncryptionKey();
       FaceSignService.to.findUser();
+      AuthService.to.createEncryptionKey();
     });
 
     return BarcodeScanner(
-        onKey: (input) {
+        onKey: (input) async {
+          if (input.substring(0, 3) == "_DP") {
+            await QRService.to.approvePayment(input);
+          }
           ProductService.to.addProduct(input);
           ProductPageController.to.resetTimer();
         },

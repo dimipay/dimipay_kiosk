@@ -1,6 +1,4 @@
 import 'package:convert_native_img_stream/convert_native_img_stream.dart';
-import 'package:dimipay_kiosk/app/services/health/service.dart';
-import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
@@ -9,6 +7,8 @@ import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
+import 'package:dimipay_kiosk/app/services/health/service.dart';
+import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 
@@ -104,6 +104,7 @@ class FaceSignService extends GetxController {
     var response = await repository.faceSignPaymentsApprove(_otp!);
 
     if (response!.status == PaymentResponse.success) {
+      paymentIndex.value = 0;
       isRetry = false;
       _otp = null;
       Get.toNamed(Routes.PAYMENT_SUCCESS);

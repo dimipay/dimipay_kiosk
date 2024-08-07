@@ -23,16 +23,6 @@ class AuthService extends GetxController {
   bool get isAuthenticated => _jwtToken.value.accessToken != null;
   String? get deviceName => _deviceName.value;
   String? get accessToken => _jwtToken.value.accessToken;
-
-  Future<Uint8List?> createEncryptionKey() async {
-    _rsaKey.value = await RSA.generate(2048);
-    _rsaKey.value.publicKey = await RSA.convertPublicKeyToPKCS1(_rsaKey.value.publicKey);
-    _rsaKey.value.privateKey = await RSA.convertPrivateKeyToPKCS8(_rsaKey.value.privateKey);
-    _encryptionKey.value =
-        (await RSA.decryptOAEPBytes(base64.decode((await repository.authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n')))!), '', Hash.SHA1, _rsaKey.value.privateKey));
-    return _encryptionKey.value;
-  }
-
   Future<Uint8List?> get encryptionKey async {
     return _encryptionKey.value ?? await createEncryptionKey();
   }
@@ -43,7 +33,6 @@ class AuthService extends GetxController {
     if (refreshToken == null || _deviceName.value == null) {
       return this;
     }
-
     try {
       _jwtToken.value = await repository.authRefresh(refreshToken);
     } catch (_) {
@@ -70,5 +59,14 @@ class AuthService extends GetxController {
     } catch (_) {
       return;
     }
+  }
+
+  Future<Uint8List?> createEncryptionKey() async {
+    _rsaKey.value = await RSA.generate(2048);
+    _rsaKey.value.publicKey = await RSA.convertPublicKeyToPKCS1(_rsaKey.value.publicKey);
+    _rsaKey.value.privateKey = await RSA.convertPrivateKeyToPKCS8(_rsaKey.value.privateKey);
+    _encryptionKey.value =
+        (await RSA.decryptOAEPBytes(base64.decode((await repository.authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n')))!), '', Hash.SHA1, _rsaKey.value.privateKey));
+    return _encryptionKey.value;
   }
 }
