@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -27,7 +28,9 @@ class PaymentPageController extends GetxController {
           _timer.value--;
           startTimer();
         } else {
-          // Get.back();
+          if (Get.currentRoute == Routes.PAYMENT) {
+            Get.back();
+          }
         }
       },
     );

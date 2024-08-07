@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:async';
 
 import 'package:dimipay_kiosk/app/pages/product/widget/product_list.dart';
 import 'package:dimipay_kiosk/app/pages/product/widget/product_desk.dart';
@@ -18,9 +17,8 @@ class ProductPage extends GetView<ProductPageController> {
 
   @override
   Widget build(BuildContext context) {
-    var timer = Timer(const Duration(minutes: 1), () => ProductService.to.clearProduct());
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ProductPageController.to.resetTimer();
       FaceSignService.to.findUser();
       TransactionService.to.transactionId;
       AuthService.to.createEncryptionKey();
@@ -28,6 +26,7 @@ class ProductPage extends GetView<ProductPageController> {
 
     return BarcodeScanner(
       onKey: (input) async {
+        ProductPageController.to.resetTimer();
         if (input.substring(0, 3) == "_DP") {
           await QRService.to.approvePayment(input);
         } else {
@@ -36,10 +35,7 @@ class ProductPage extends GetView<ProductPageController> {
       },
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () {
-          timer.cancel();
-          timer = Timer(const Duration(minutes: 1), () => ProductService.to.clearProduct());
-        },
+        onTap: () => ProductPageController.to.resetTimer(),
         child: const Scaffold(
           body: SafeArea(
             child: Column(children: [ProductBar(), ProductList(), ProductDesk()]),
