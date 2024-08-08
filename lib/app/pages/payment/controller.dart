@@ -1,6 +1,7 @@
-import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class PaymentPageController extends GetxController {
   static PaymentPageController get to => Get.find<PaymentPageController>();

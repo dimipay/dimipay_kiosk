@@ -110,12 +110,13 @@ class FaceSignService extends GetxController {
       Get.toNamed(Routes.PAYMENT_SUCCESS);
       ProductService.to.clearProductList();
       TransactionService.to.deleteTransactionId();
-      await Future.delayed(const Duration(seconds: 5), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
+      await Future.delayed(const Duration(seconds: 3), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
       HealthService.to.checkHealth();
       return;
     }
 
     isRetry = true;
+    TransactionService.to.refreshTransactionId();
     Get.toNamed(Routes.PAYMENT_FAILED);
     AlertModal.to.show(response.message);
     return;
