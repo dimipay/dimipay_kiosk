@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 mixin Press {
   final RxString _pressedButton = "".obs;
 
-  String get pressedButton => _pressedButton.value;
+  // String get pressedButton => _pressedButton.value;
 
   pressButton(String button) {
     _pressedButton.value = button;
