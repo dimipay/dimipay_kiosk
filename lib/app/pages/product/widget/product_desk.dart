@@ -45,11 +45,59 @@ class ProductSelection extends StatelessWidget {
   }
 }
 
+class Card extends StatelessWidget {
+  const Card({super.key, required this.name, required this.cardCode, required this.preview, required this.image, required this.index});
+
+  final String name;
+  final String cardCode;
+  final String preview;
+  final Widget image;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTapDown: (_) => ProductPageController.to.pressButton("$index"),
+      onTapCancel: () => ProductPageController.to.pressButton(""),
+      onTapUp: (_) {
+        FaceSignService.to.paymentIndex.value = index;
+        ProductPageController.to.pressButton("");
+        Navigator.of(context).pop();
+      },
+      child: Obx(
+        () => Container(
+          width: 374,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: ProductPageController.to.isPressed("$index") ? DPColors.grayscale300 : DPColors.grayscale100,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              image,
+              const SizedBox(width: 24),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text(name, style: DPTypography.header2(color: DPColors.grayscale800)), Text("$cardCode ($preview)", style: DPTypography.itemTitle(color: DPColors.grayscale600))],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CardSelectButton extends StatelessWidget {
   const CardSelectButton({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var mainPaymentIndex = FaceSignService.to.user.paymentMethods.methods.firstWhere((element) => element.id == FaceSignService.to.user.paymentMethods.mainPaymentMethodId);
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTapDown: (_) => ProductPageController.to.pressButton("change"),
@@ -70,48 +118,22 @@ class CardSelectButton extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                   child: Text("다른 결제 수단 선택하기", style: DPTypography.header1(color: DPColors.grayscale1000)),
                 ),
-                for (int i = 0; i < FaceSignService.to.user.paymentMethods.methods.length; i++)
-                  Column(
-                    children: [
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTapDown: (_) => ProductPageController.to.pressButton("$i"),
-                        onTapCancel: () => ProductPageController.to.pressButton(""),
-                        onTapUp: (_) {
-                          FaceSignService.to.paymentIndex.value = i;
-                          ProductPageController.to.pressButton("");
-                          Navigator.of(context).pop();
-                        },
-                        child: Obx(
-                          () => Container(
-                            width: 374,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: ProductPageController.to.isPressed("$i") ? DPColors.grayscale300 : DPColors.grayscale100,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                FaceSignService.to.user.paymentMethods.methods[i].image,
-                                const SizedBox(width: 24),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(FaceSignService.to.user.paymentMethods.methods[i].name, style: DPTypography.header2(color: DPColors.grayscale800)),
-                                    Text("${FaceSignService.to.user.paymentMethods.methods[i].cardCode} (${FaceSignService.to.user.paymentMethods.methods[i].preview})",
-                                        style: DPTypography.itemTitle(color: DPColors.grayscale600))
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                const SizedBox(height: 8),
+                Card(name: mainPaymentIndex.name, cardCode: mainPaymentIndex.cardCode, preview: mainPaymentIndex.preview, image: mainPaymentIndex.image, index: 0),
+                for (int i = 1; i < FaceSignService.to.user.paymentMethods.methods.length; i++)
+                  if (FaceSignService.to.user.paymentMethods.methods[i].name != mainPaymentIndex.id)
+                    Column(
+                      children: [
+                        const SizedBox(height: 8),
+                        Card(
+                          name: FaceSignService.to.user.paymentMethods.methods[i].name,
+                          cardCode: FaceSignService.to.user.paymentMethods.methods[i].cardCode,
+                          preview: FaceSignService.to.user.paymentMethods.methods[i].preview,
+                          image: FaceSignService.to.user.paymentMethods.methods[i].image,
+                          index: i,
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
               ],
             ),
           ),
