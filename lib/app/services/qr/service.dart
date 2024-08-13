@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:dimipay_kiosk/app/services/qr/repository.dart';
@@ -15,11 +16,14 @@ class QRService extends GetxController {
   QRService({QRRepository? repository}) : repository = repository ?? QRRepository();
 
   Future<void> approvePayment(String token) async {
+    FaceSignService.to.stop();
+
     var response = await repository.qrPaymentsApprove(token);
+
     if (response!.status == PaymentResponse.success) {
       Get.toNamed(Routes.PAYMENT_SUCCESS);
       ProductService.to.clearProductList();
-      await Future.delayed(const Duration(seconds: 3), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
+      await Future.delayed(const Duration(seconds: 2), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
       HealthService.to.checkHealth();
       return;
     }

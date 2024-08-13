@@ -45,12 +45,7 @@ class FaceSignService extends GetxController {
 
   Future<FaceSignService> init() async {
     super.onInit();
-    _camera = CameraController(
-      ((await availableCameras())[1]),
-      ResolutionPreset.low,
-      imageFormatGroup: ImageFormatGroup.jpeg,
-      enableAudio: false,
-    );
+    _camera = CameraController(((await availableCameras())[1]), ResolutionPreset.low, imageFormatGroup: ImageFormatGroup.jpeg, enableAudio: false);
     await _camera.initialize();
     await _camera.setFlashMode(FlashMode.off);
     return this;
@@ -58,10 +53,14 @@ class FaceSignService extends GetxController {
 
   Future<Uint8List> _captureImage() async {
     late CameraImage image;
-    _camera.startImageStream((capturedImage) => image = capturedImage);
-    await Future.delayed(const Duration(milliseconds: 500));
-    await _camera.stopImageStream();
-    return (await _convertNative.convertImgToBytes(image.planes[0].bytes, image.width, image.width))!;
+    try {
+      _camera.startImageStream((capturedImage) => image = capturedImage);
+      await Future.delayed(const Duration(milliseconds: 500));
+      await _camera.stopImageStream();
+      return (await _convertNative.convertImgToBytes(image.planes[0].bytes, image.width, image.width))!;
+    } catch (_) {
+      return _captureImage();
+    }
   }
 
   Future<void> findUser() async {
