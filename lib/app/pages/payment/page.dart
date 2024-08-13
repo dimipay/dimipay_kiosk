@@ -27,10 +27,6 @@ class PaymentPage extends GetView<PaymentPageController> {
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   await QRService.to.approvePayment("_DPTcedxENGdTYxaccKy_38q");
-    // });
-
     return BarcodeScanner(
       onKey: (input) async => await QRService.to.approvePayment(input),
       child: Scaffold(

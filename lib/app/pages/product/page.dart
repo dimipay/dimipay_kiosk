@@ -25,7 +25,7 @@ class ProductPage extends GetView<ProductPageController> {
     return BarcodeScanner(
       onKey: (input) async {
         ProductPageController.to.resetTimer();
-        if (input.substring(0, 3) == "_DP") {
+        if (input.substring(0, 3) == "-DP") {
           await QRService.to.approvePayment(input);
         } else {
           ProductService.to.addProduct(input);

@@ -18,7 +18,13 @@ class QRService extends GetxController {
   Future<void> approvePayment(String token) async {
     FaceSignService.to.stop();
 
-    var response = await repository.qrPaymentsApprove(token);
+    // Get.defaultDialog(title: token);
+
+    PaymentApprove? response;
+
+    try {
+      response = await repository.qrPaymentsApprove(token);
+    } catch (_) {}
 
     if (response!.status == PaymentResponse.success) {
       Get.toNamed(Routes.PAYMENT_SUCCESS);
