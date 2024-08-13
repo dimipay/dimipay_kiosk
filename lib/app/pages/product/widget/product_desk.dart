@@ -148,7 +148,7 @@ class ProductDesk extends StatelessWidget {
                 onTapCancel: () => ProductPageController.to.pressButton(""),
                 onTapUp: (_) async {
                   ProductPageController.to.pressButton("");
-                  if (FaceSignService.to.faceSignStatus == FaceSignStatus.success) {
+                  if (FaceSignService.to.faceSignStatus == FaceSignStatus.success && FaceSignService.to.user.paymentMethods.methods.isNotEmpty) {
                     if (FaceSignService.to.isRetry) {
                       Get.lazyPut(() => AlertModal());
                       await FaceSignService.to.approvePayment();
@@ -173,7 +173,9 @@ class ProductDesk extends StatelessWidget {
               ),
             ],
           ),
-          Obx(() => FaceSignService.to.faceSignStatus == FaceSignStatus.success ? const Column(children: [SizedBox(height: 36), ProductSelection()]) : const SizedBox(height: 0)),
+          Obx(() => FaceSignService.to.faceSignStatus == FaceSignStatus.success && FaceSignService.to.user.paymentMethods.methods.isNotEmpty
+              ? const Column(children: [SizedBox(height: 36), ProductSelection()])
+              : const SizedBox(height: 0)),
         ],
       ),
     );
