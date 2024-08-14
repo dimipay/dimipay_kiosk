@@ -9,22 +9,22 @@ import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 import 'gesture_detector.dart';
 
 class PinPadButton extends GetView<PinPageController> {
-  const PinPadButton({required this.index, this.child, super.key});
+  const PinPadButton({required this.number, this.child, super.key});
 
-  final int index;
+  final int number;
   final Widget? child;
 
   @override
   Widget build(BuildContext context) => DPGestureDetectorWithOpacityInteraction(
-    onTap: () => controller.up(index),
+    onTap: () => controller.up(number),
     child: Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Colors.transparent,
       ),
       alignment: Alignment.center,
-      child: child ?? Obx(() => Text(
-        controller.numbers[index].toString(),
+      child: child ?? Text(
+        number.toString(),
         style: TextStyle(
           fontFamily: 'SUITv1',
           fontSize: 28,
@@ -32,7 +32,7 @@ class PinPadButton extends GetView<PinPageController> {
           color: DPColors.grayscale800,
           height: 32 / 28,
         ),
-      )),
+      ),
     ),
   );
 }
@@ -41,34 +41,34 @@ class PinPad extends GetView<PinPageController> {
   const PinPad({super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: 300,
+  Widget build(BuildContext context) => SizedBox(
+    width: 340,
     height: 480,
     child: LayoutBuilder(
       builder: (context, constraints) {
-        return GridView.count(
+        return Obx(() => GridView.count(
           crossAxisCount: 3,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           childAspectRatio: (constraints.maxWidth / 3) / (constraints.maxHeight / 4),
           children: [
-            for (int i = 0; i < 9; i++) PinPadButton(index: i),
+            for (int i = 1; i <= 9; i++) PinPadButton(number: controller.numbers[i - 1]),
             Obx(() => AuthService.to.isAuthenticated
                 ? const PinPadButton(
-              index: 11,
+              number: -1,
               child: DPIcons(Symbols.undo_rounded),
             )
                 : const SizedBox()),
-            const PinPadButton(index: 9),
-            Obx(() => PinPadButton(
-              index: 10,
+            PinPadButton(number: controller.numbers[9]),
+            PinPadButton(
+              number: -2,
               child: DPIcons(
                 Symbols.backspace_rounded,
                 color: controller.canDelete ? DPColors.grayscale800 : DPColors.grayscale500,
               ),
-            )),
+            ),
           ],
-        );
+        ));
       },
     ),
   );
