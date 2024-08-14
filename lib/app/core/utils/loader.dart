@@ -23,7 +23,7 @@ class AppLoader {
     Get.lazyPut(() => ProductService());
     Get.lazyPut<ApiProvider>(() => DevApiProvider());
 
-    // await Get.putAsync(() => FaceSignService().init());
+    await Get.putAsync(() => FaceSignService().init());
     await Get.putAsync(() => AuthService().init());
   }
 }
