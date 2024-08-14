@@ -60,10 +60,13 @@ class PinPad extends GetView<PinPageController> {
             )
                 : const SizedBox()),
             const PinPadButton(index: 9),
-            const PinPadButton(
+            Obx(() => PinPadButton(
               index: 10,
-              child: DPIcons(Symbols.backspace_rounded),
-            ),
+              child: DPIcons(
+                Symbols.backspace_rounded,
+                color: controller.canDelete ? DPColors.grayscale800 : DPColors.grayscale500,
+              ),
+            )),
           ],
         );
       },

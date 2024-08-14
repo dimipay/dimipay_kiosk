@@ -21,6 +21,7 @@ class PinPageController extends GetxController {
 
   int get inputLength => _inputLength.value;
   bool get isPressed => _isPressed.value;
+  bool get canDelete => _inputLength.value > 0;
 
   set pressedPin(List<int> value) => pressedPin.value = value;
 
