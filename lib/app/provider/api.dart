@@ -21,17 +21,17 @@ class JWTInterceptor extends Interceptor {
         options.headers['Transaction-ID'] = await TransactionService.to.transactionId;
       }
     }
-    print("-----------------------REQUEST-----------------------");
-    print("path : ${options.path}");
-    print("header : ${options.headers}");
-    print("data : ${options.data}");
+    // print("-----------------------REQUEST-----------------------");
+    // print("path : ${options.path}");
+    // print("header : ${options.headers}");
+    // print("data : ${options.data}");
     return handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print("-----------------------RESPONSE-----------------------");
-    print(response.data);
+    // print("-----------------------RESPONSE-----------------------");
+    // print(response.data);
     handler.next(response);
   }
 
@@ -41,19 +41,19 @@ class JWTInterceptor extends Interceptor {
       return handler.next(err);
     }
 
-    if (err.response?.data["code"] == "ERR_NO_TRANSACTION_ID_FOUND") {
-      try {
-        TransactionService.to.refreshTransactionId();
-        final Response response = await _dioInstance.fetch(err.requestOptions);
-        return handler.resolve(response);
-      } catch (e) {
-        return handler.next(err);
-      }
-    }
+    // if (err.response?.data["code"] == "ERR_NO_TRANSACTION_ID_FOUND") {
+    //   try {
+    //     TransactionService.to.refreshTransactionId();
+    //     final Response response = await _dioInstance.fetch(err.requestOptions);
+    //     return handler.resolve(response);
+    //   } catch (e) {
+    //     return handler.next(err);
+    //   }
+    // }
 
-    print("-----------------------ERROR-----------------------");
-    print(err);
-    print(err.response);
+    // print("-----------------------ERROR-----------------------");
+    // print(err);
+    // print(err.response);
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {
         await AuthService.to.refreshAccessToken();
@@ -68,8 +68,8 @@ class JWTInterceptor extends Interceptor {
 }
 
 class ProdApiProvider extends ApiProvider {
-  final baseUrl = 'http://server.dimipay.io:4002/';
-  // final baseUrl = 'https://dev.next.dimipay.io/';
+  final baseUrl = 'https://prod-next.dimipay.io/';
+
   ProdApiProvider() {
     dio.options.baseUrl = baseUrl;
   }
