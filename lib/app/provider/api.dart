@@ -22,11 +22,19 @@ class JWTInterceptor extends Interceptor {
       }
     }
 
+    // print("-----------------------REQUEST-----------------------");
+    // print("path : ${options.path}");
+    // print("header : ${options.headers}");
+    // print("data : ${options.data}");
+
     return handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
+    // print("-----------------------RESPONSE-----------------------");
+    // print(response.data);
+
     handler.next(response);
   }
 
@@ -35,6 +43,20 @@ class JWTInterceptor extends Interceptor {
     if (err.response?.requestOptions.path == '/kiosk/auth/refresh') {
       return handler.next(err);
     }
+
+    // if (err.response?.data["code"] == "ERR_NO_TRANSACTION_ID_FOUND") {
+    //   try {
+    //     TransactionService.to.refreshTransactionId();
+    //     final Response response = await _dioInstance.fetch(err.requestOptions);
+    //     return handler.resolve(response);
+    //   } catch (e) {
+    //     return handler.next(err);
+    //   }
+    // }
+
+    // print("-----------------------ERROR-----------------------");
+    // print(err);
+    // print(err.response);
 
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {

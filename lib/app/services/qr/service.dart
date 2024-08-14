@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:dimipay_kiosk/app/services/qr/repository.dart';
@@ -15,16 +16,25 @@ class QRService extends GetxController {
   QRService({QRRepository? repository}) : repository = repository ?? QRRepository();
 
   Future<void> approvePayment(String token) async {
-    var response = await repository.qrPaymentsApprove(token);
+    FaceSignService.to.stop();
+
+    // Get.defaultDialog(title: token);
+
+    PaymentApprove? response;
+
+    try {
+      response = await repository.qrPaymentsApprove(token);
+    } catch (_) {}
+
     if (response!.status == PaymentResponse.success) {
       Get.toNamed(Routes.PAYMENT_SUCCESS);
       ProductService.to.clearProductList();
-      TransactionService.to.deleteTransactionId();
-      await Future.delayed(const Duration(seconds: 5), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
+      await Future.delayed(const Duration(seconds: 2), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
       HealthService.to.checkHealth();
       return;
     }
 
+    TransactionService.to.refreshTransactionId();
     Get.toNamed(Routes.PAYMENT_FAILED);
     AlertModal.to.show(response.message);
     return;

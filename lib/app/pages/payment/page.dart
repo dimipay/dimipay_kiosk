@@ -68,7 +68,7 @@ class PaymentPage extends GetView<PaymentPageController> {
                       onTap: () => Get.back(),
                       onTapDown: (_) => PaymentPageController.to.pressedButton = "back",
                       onTapCancel: () => PaymentPageController.to.pressedButton = "",
-                      onTapUp: (_) => () {
+                      onTapUp: (_) => () async {
                         PaymentPageController.to.pressedButton = "";
                         Get.back();
                       },

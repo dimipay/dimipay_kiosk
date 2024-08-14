@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/health/service.dart';
+import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
-import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 import 'package:dimipay_kiosk/app/provider/api.dart';
 
 class AppLoader {

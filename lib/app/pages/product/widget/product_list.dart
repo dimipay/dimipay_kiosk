@@ -22,19 +22,17 @@ class ProductListItem extends StatelessWidget {
         const SizedBox(height: 36),
         GestureDetector(
           onTapDown: (_) {
-            if (ProductPageController.to.pressedButton == "") {
-              ProductPageController.to.pressedButton = "${barcode}box";
-            }
+            if (ProductPageController.to.isPressed("")) ProductPageController.to.pressButton("${barcode}box");
           },
-          onTapCancel: () => ProductPageController.to.pressedButton = "",
+          onTapCancel: () => ProductPageController.to.resetButton(),
           onTapUp: (_) {
-            ProductPageController.to.pressedButton = "";
+            ProductPageController.to.resetButton();
             ProductService.to.deleteProduct(barcode);
           },
           child: Obx(
             () => Container(
               decoration: BoxDecoration(
-                color: ProductPageController.to.pressedButton == "${barcode}box" ? DPColors.grayscale300 : DPColors.grayscale100,
+                color: ProductPageController.to.isPressed("${barcode}box") ? DPColors.grayscale300 : DPColors.grayscale100,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   width: 2,
@@ -78,24 +76,20 @@ class ProductListItem extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTapDown: (_) => ProductPageController.to.pressedButton = barcode,
-                        onTapCancel: () => ProductPageController.to.pressedButton = "",
+                        onTapDown: (_) => ProductPageController.to.pressButton(barcode),
+                        onTapCancel: () => ProductPageController.to.resetButton(),
                         onTapUp: (_) {
-                          ProductPageController.to.pressedButton = "";
+                          ProductPageController.to.resetButton();
                           ProductService.to.removeProduct(barcode);
                         },
                         child: Obx(
                           () => Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: ProductPageController.to.pressedButton == barcode ? DPColors.grayscale800 : DPColors.grayscale600,
+                              color: ProductPageController.to.isPressed(barcode) ? DPColors.grayscale800 : DPColors.grayscale600,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const DPIcons(
-                              Symbols.remove,
-                              size: 24,
-                              color: DPColors.grayscale200,
-                            ),
+                            child: const DPIcons(Symbols.remove, size: 24, color: DPColors.grayscale200),
                           ),
                         ),
                       ),
@@ -128,17 +122,17 @@ class ProductList extends StatelessWidget {
                 children: [
                   Text("상품을 터치해서 삭제할 수 있어요", style: DPTypography.pos.itemDescription(color: DPColors.grayscale500)),
                   GestureDetector(
-                    onTapDown: (_) => ProductPageController.to.pressedButton = "clean",
-                    onTapCancel: () => ProductPageController.to.pressedButton = "",
+                    onTapDown: (_) => ProductPageController.to.pressButton("clean"),
+                    onTapCancel: () => ProductPageController.to.resetButton(),
                     onTapUp: (_) {
-                      ProductPageController.to.pressedButton = "";
+                      ProductPageController.to.resetButton();
                       ProductService.to.clearProduct();
                     },
                     child: Obx(
                       () => Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                         decoration: BoxDecoration(
-                          color: ProductPageController.to.pressedButton == "clean" ? DPColors.grayscale800 : DPColors.grayscale600,
+                          color: ProductPageController.to.isPressed("clean") ? DPColors.grayscale800 : DPColors.grayscale600,
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: Text(
