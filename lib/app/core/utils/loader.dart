@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/services/health/service.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
@@ -24,7 +23,7 @@ class AppLoader {
     Get.lazyPut(() => ProductService());
     Get.lazyPut<ApiProvider>(() => DevApiProvider());
 
-    await Get.putAsync(() => FaceSignService().init());
+    // await Get.putAsync(() => FaceSignService().init());
     await Get.putAsync(() => AuthService().init());
   }
 }
