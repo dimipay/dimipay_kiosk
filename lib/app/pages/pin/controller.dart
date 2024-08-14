@@ -65,6 +65,7 @@ class PinPageController extends GetxController {
       return;
     }
     if (number == -1) {
+      Get.back();
       return;
     }
 
