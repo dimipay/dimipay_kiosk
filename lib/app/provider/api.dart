@@ -21,17 +21,18 @@ class JWTInterceptor extends Interceptor {
         options.headers['Transaction-ID'] = await TransactionService.to.transactionId;
       }
     }
-    // print("-----------------------REQUEST-----------------------");
-    // print("path : ${options.path}");
-    // print("header : ${options.headers}");
-    // print("data : ${options.data}");
+    print("-----------------------REQUEST-----------------------");
+    print("path : ${options.path}");
+    print("header : ${options.headers}");
+    print("data : ${options.data}");
+
     return handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // print("-----------------------RESPONSE-----------------------");
-    // print(response.data);
+    print("-----------------------RESPONSE-----------------------");
+    print(response.data);
     handler.next(response);
   }
 
@@ -51,9 +52,10 @@ class JWTInterceptor extends Interceptor {
     //   }
     // }
 
-    // print("-----------------------ERROR-----------------------");
-    // print(err);
-    // print(err.response);
+    print("-----------------------ERROR-----------------------");
+    print(err);
+    print(err.response);
+
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {
         await AuthService.to.refreshAccessToken();
