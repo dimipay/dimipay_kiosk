@@ -54,7 +54,7 @@ This project is held with<br/>
 <table>
   <p align="center">
   <br/><br/><br/>
-    email : hayward_kim@dimigo.hs.kr
+    email : hayward_kim@dimigo.hs.kr<br/>
     phone : +821097063115
 </p>
 <br/>
