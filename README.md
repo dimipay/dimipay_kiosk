@@ -52,6 +52,11 @@ This project is held with<br/>
         </td>
     </tr>
 <table>
+  <p align="center">
+  <br/><br/><br/>
+    email : hayward_kim@dimigo.hs.kr
+    phone : +821097063115
+</p>
 <br/>
 <br/>
 <p align="center">Thanks to all teammates of Dimipay.</p>
