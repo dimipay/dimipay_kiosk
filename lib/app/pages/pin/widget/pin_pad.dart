@@ -6,43 +6,38 @@ import 'package:get/get.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 
-class PinPadButton extends StatelessWidget {
+import 'gesture_detector.dart';
+
+class PinPadButton extends GetView<PinPageController> {
   const PinPadButton({required this.index, this.child, super.key});
 
   final int index;
   final Widget? child;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTapDown: (_) => PinPageController.to.down(index),
-    onTapUp: (_) => PinPageController.to.up(index),
-    onTapCancel: () => PinPageController.to.canceled(),
-    behavior: HitTestBehavior.translucent,
-    child: Obx(
-          () {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: PinPageController.to.isPressed && PinPageController.to.pressedPin.contains(index) ? DPColors.grayscale200 : Colors.transparent,
-          ),
-          alignment: Alignment.center,
-          child: child ?? Text(
-            PinPageController.to.numbers[index].toString(),
-            style: TextStyle(
-              fontFamily: 'SUITv1',
-              fontSize: 28,
-              fontWeight: DPTypography.weight.medium,
-              color: DPColors.grayscale800,
-              height: 32 / 28,
-            ),
-          ),
-        );
-      },
+  Widget build(BuildContext context) => DPGestureDetectorWithOpacityInteraction(
+    onTap: () => controller.up(index),
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.transparent,
+      ),
+      alignment: Alignment.center,
+      child: child ?? Obx(() => Text(
+        controller.numbers[index].toString(),
+        style: TextStyle(
+          fontFamily: 'SUITv1',
+          fontSize: 28,
+          fontWeight: DPTypography.weight.medium,
+          color: DPColors.grayscale800,
+          height: 32 / 28,
+        ),
+      )),
     ),
   );
 }
 
-class PinPad extends StatelessWidget {
+class PinPad extends GetView<PinPageController> {
   const PinPad({super.key});
 
   @override
@@ -58,12 +53,12 @@ class PinPad extends StatelessWidget {
           childAspectRatio: (constraints.maxWidth / 3) / (constraints.maxHeight / 4),
           children: [
             for (int i = 0; i < 9; i++) PinPadButton(index: i),
-            AuthService.to.isAuthenticated
+            Obx(() => AuthService.to.isAuthenticated
                 ? const PinPadButton(
               index: 11,
               child: DPIcons(Symbols.undo_rounded),
             )
-                : const SizedBox(),
+                : const SizedBox()),
             const PinPadButton(index: 9),
             const PinPadButton(
               index: 10,
