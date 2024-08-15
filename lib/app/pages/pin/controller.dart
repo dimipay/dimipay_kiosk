@@ -45,7 +45,7 @@ class PinPageController extends GetxController {
   }
 
   void down(int number) {
-    _isPressed.value = !isPressed;
+    _isPressed.value = true;
     if (number >= 10) {
       pressedPin = [number];
       return;
@@ -53,10 +53,14 @@ class PinPageController extends GetxController {
     pressedPin = _random(number);
   }
 
-  void canceled() => _isPressed.value = !isPressed;
+  void canceled() {
+    _isPressed.value = false;
+    pressedPin.clear();
+  }
 
   void up(int number) async {
-    _isPressed.value = !isPressed;
+    _isPressed.value = false;
+    pressedPin.clear();
     if (inputLength == 4) return;
     if (number == -2) {
       if (inputLength == 0) return;
