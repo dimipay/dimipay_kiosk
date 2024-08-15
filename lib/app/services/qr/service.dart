@@ -29,6 +29,7 @@ class QRService extends GetxController {
     if (response!.status == PaymentResponse.success) {
       Get.toNamed(Routes.PAYMENT_SUCCESS);
       ProductService.to.clearProductList();
+      FaceSignService.to.resetUser();
       await Future.delayed(const Duration(seconds: 2), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
       HealthService.to.checkHealth();
       return;
