@@ -15,11 +15,14 @@ class QRService extends GetxController {
   final QRRepository repository;
   QRService({QRRepository? repository}) : repository = repository ?? QRRepository();
 
+  bool _isPaying = false;
+
   Future<void> approvePayment(String token) async {
+    if (_isPaying) return;
+
+    _isPaying = true;
+
     FaceSignService.to.stop();
-
-    // Get.defaultDialog(title: token);
-
     PaymentApprove? response;
 
     try {
@@ -32,12 +35,14 @@ class QRService extends GetxController {
       FaceSignService.to.resetUser();
       await Future.delayed(const Duration(seconds: 2), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
       HealthService.to.checkHealth();
+      _isPaying = false;
       return;
     }
 
     TransactionService.to.refreshTransactionId();
     Get.toNamed(Routes.PAYMENT_FAILED);
     AlertModal.to.show(response.message);
+    _isPaying = false;
     return;
   }
 }

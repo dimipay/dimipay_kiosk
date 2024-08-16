@@ -49,6 +49,7 @@ class OnboardPage extends GetView<OnboardPageController> {
 
     return BarcodeScanner(
       onKey: (input) async {
+        print(input);
         if (await ProductService.to.addProduct(input)) {
           Get.toNamed(Routes.PRODUCT);
         }
