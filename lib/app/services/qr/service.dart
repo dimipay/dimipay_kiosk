@@ -21,7 +21,6 @@ class QRService extends GetxController {
     if (_isPaying) return;
 
     _isPaying = true;
-
     FaceSignService.to.stop();
     PaymentApprove? response;
 
