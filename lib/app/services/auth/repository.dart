@@ -34,8 +34,7 @@ class AuthRepository {
         ),
       );
       return JWTToken.fromJson(response.data["data"]["tokens"]);
-    } on DioException catch (e) {
-      AlertModal.to.show(e.response?.data["message"]);
+    } on DioException catch (_) {
       throw NoRefreshTokenException();
     }
   }

@@ -36,6 +36,7 @@ class JWTInterceptor extends Interceptor {
       return handler.next(err);
     }
 
+<<<<<<< HEAD
     // if (err.response?.data["code"] == "ERR_NO_TRANSACTION_ID_FOUND") {
     //   try {
     //     TransactionService.to.refreshTransactionId();
@@ -45,6 +46,11 @@ class JWTInterceptor extends Interceptor {
     //     return handler.next(err);
     //   }
     // }
+=======
+    print("-----------------------ERROR-----------------------");
+    print(err);
+    print(err.response);
+>>>>>>> develop
 
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {
