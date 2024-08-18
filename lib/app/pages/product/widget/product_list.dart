@@ -126,7 +126,6 @@ class ProductList extends StatelessWidget {
                     onTapCancel: () => ProductPageController.to.resetButton(),
                     onTapUp: (_) {
                       ProductPageController.to.resetButton();
-                      // ProductPageController.to.cancelTimer();
                       ProductService.to.clearProduct();
                     },
                     child: Obx(
