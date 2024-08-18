@@ -23,7 +23,7 @@ class ProductPage extends GetView<ProductPageController> {
 
     return BarcodeScanner(
       onKey: (input) async {
-        ProductPageController.to.resetTimer();
+        // ProductPageController.to.resetTimer();
         if (input.substring(0, 3) == "-DP") {
           await QRService.to.approvePayment(input);
         } else {
@@ -32,7 +32,7 @@ class ProductPage extends GetView<ProductPageController> {
       },
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => ProductPageController.to.resetTimer(),
+        // onTap: () => ProductPageController.to.resetTimer(),
         child: const Scaffold(
           body: SafeArea(
             child: Column(children: [ProductBar(), ProductList(), ProductDesk()]),

@@ -64,6 +64,7 @@ class ProdApiProvider extends ApiProvider {
 
   ProdApiProvider() {
     dio.options.baseUrl = baseUrl;
+    dio.interceptors.add(JWTInterceptor(dio));
   }
 }
 
