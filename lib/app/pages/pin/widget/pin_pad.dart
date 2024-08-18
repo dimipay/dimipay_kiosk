@@ -15,8 +15,11 @@ class PinPadButton extends GetView<PinPageController> {
   final Widget? child;
 
   @override
-  Widget build(BuildContext context) => DPGestureDetectorWithOpacityInteraction(
+  Widget build(BuildContext context) => Obx(() => DPGestureDetectorWithOpacityInteraction(
     onTap: () => controller.up(number),
+    onTapDown: (_) => controller.down(number),
+    onTapCancel: controller.canceled,
+    isPressed: controller.isPressed && controller.pressedPin.contains(number),
     child: Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -34,7 +37,7 @@ class PinPadButton extends GetView<PinPageController> {
         ),
       ),
     ),
-  );
+  ));
 }
 
 class PinPad extends GetView<PinPageController> {

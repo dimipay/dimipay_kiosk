@@ -1,53 +1,34 @@
 import 'package:flutter/material.dart';
 
-class DPGestureDetectorWithOpacityInteraction extends StatefulWidget {
+class DPGestureDetectorWithOpacityInteraction extends StatelessWidget {
   final void Function()? onTap;
+  final void Function(TapDownDetails)? onTapDown;
+  final void Function()? onTapCancel;
   final Duration duration;
   final Widget child;
-  const DPGestureDetectorWithOpacityInteraction({super.key, this.onTap, required this.child, this.duration = const Duration(milliseconds: 100)});
+  final bool isPressed;
 
-  @override
-  State<DPGestureDetectorWithOpacityInteraction> createState() => _DPGestureDetectorWithOpacityInteractionState();
-}
-
-class _DPGestureDetectorWithOpacityInteractionState extends State<DPGestureDetectorWithOpacityInteraction> {
-  bool isPressed = false;
-
-  void pressUp() {
-    if (widget.onTap == null) {
-      return;
-    }
-    setState(() {
-      isPressed = false;
-    });
-  }
-
-  void pressDown() {
-    if (widget.onTap == null) {
-      return;
-    }
-    setState(() {
-      isPressed = true;
-    });
-  }
+  const DPGestureDetectorWithOpacityInteraction({
+    super.key,
+    this.onTap,
+    this.onTapDown,
+    this.onTapCancel,
+    required this.child,
+    this.duration = const Duration(milliseconds: 100),
+    required this.isPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
-      onTapCancel: pressUp,
-      child: Listener(
-        onPointerDown: (_) => pressDown(),
-        onPointerUp: (_) => pressUp(),
-        child: Container(
-          color: Colors.transparent,
-          child: AnimatedOpacity(
-            duration: widget.duration,
-            curve: Curves.easeOut,
-            opacity: isPressed ? 0.6 : 1,
-            child: widget.child,
-          ),
-        ),
+      onTap: onTap,
+      onTapDown: onTapDown,
+      onTapCancel: onTapCancel,
+      child: AnimatedOpacity(
+        duration: duration,
+        curve: Curves.easeOut,
+        opacity: isPressed ? 0.6 : 1,
+        child: child,
       ),
     );
   }
