@@ -35,9 +35,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  camera_avfoundation: 759172d1a77ae7be0de08fc104cfb79738b8a59e
+  camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
   convert_native_img_stream: 4da7b467afdcc2c48ae0fcd4dc19e48738b0f8d2
-  fast_rsa: a175d11ab839486fcd531ab6d8bc06eb428df5e0
+  fast_rsa: 9fbea7434bbe5ac1725f11138bcd88242db2b701
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
