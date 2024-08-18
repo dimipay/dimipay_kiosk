@@ -2,6 +2,7 @@ import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
@@ -45,12 +46,7 @@ class FaceSignService extends GetxController {
 
   Future<FaceSignService> init() async {
     super.onInit();
-    _camera = CameraController(
-      ((await availableCameras())[1]),
-      ResolutionPreset.low,
-      imageFormatGroup: ImageFormatGroup.jpeg,
-      enableAudio: false,
-    );
+    _camera = CameraController(((await availableCameras())[1]), ResolutionPreset.low, imageFormatGroup: ImageFormatGroup.jpeg, enableAudio: false);
     await _camera.initialize();
     await _camera.setFlashMode(FlashMode.off);
     return this;
@@ -58,10 +54,14 @@ class FaceSignService extends GetxController {
 
   Future<Uint8List> _captureImage() async {
     late CameraImage image;
-    _camera.startImageStream((capturedImage) => image = capturedImage);
-    await Future.delayed(const Duration(milliseconds: 500));
-    await _camera.stopImageStream();
-    return (await _convertNative.convertImgToBytes(image.planes[0].bytes, image.width, image.width))!;
+    try {
+      _camera.startImageStream((capturedImage) => image = capturedImage);
+      await Future.delayed(const Duration(milliseconds: 500));
+      await _camera.stopImageStream();
+      return (await _convertNative.convertImgToBytes(image.planes[0].bytes, image.width, image.width))!;
+    } catch (_) {
+      return _captureImage();
+    }
   }
 
   Future<void> findUser() async {
@@ -79,6 +79,7 @@ class FaceSignService extends GetxController {
         if (users.length == 1) {
           _user.value = users[0];
           _faceSignStatus.value = FaceSignStatus.success;
+          setMainPaymentMethod();
         } else {
           _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
         }
@@ -89,6 +90,35 @@ class FaceSignService extends GetxController {
     }
 
     _faceSignStatus.value = FaceSignStatus.failed;
+  }
+
+  void setMainPaymentMethod() {
+    if (_user.value != null) {
+      String? mainMethodId = _user.value!.paymentMethods.mainPaymentMethodId;
+      if (mainMethodId != null) {
+        int index = _user.value!.paymentMethods.methods.indexWhere((method) => method.id == mainMethodId);
+        if (index != -1) {
+          paymentIndex.value = index;
+        } else {
+          paymentIndex.value = 0; // mainMethodId가 없으면 첫 번째 방법을 선택
+        }
+      } else {
+        paymentIndex.value = 0; // mainMethodId가 null이면 첫 번째 방법을 선택
+      }
+    }
+  }
+
+  PaymentMethod? getMainPaymentMethod() {
+    if (_user.value != null) {
+      String? mainMethodId = _user.value!.paymentMethods.mainPaymentMethodId;
+      if (mainMethodId != null) {
+        return _user.value!.paymentMethods.methods.firstWhere(
+              (method) => method.id == mainMethodId,
+          orElse: () => _user.value!.paymentMethods.methods.first,
+        );
+      }
+    }
+    return null;
   }
 
   Future<void> approvePin(String pin) async {
@@ -110,12 +140,13 @@ class FaceSignService extends GetxController {
       Get.toNamed(Routes.PAYMENT_SUCCESS);
       ProductService.to.clearProductList();
       TransactionService.to.deleteTransactionId();
-      await Future.delayed(const Duration(seconds: 5), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
+      await Future.delayed(const Duration(seconds: 3), () => Get.until((route) => route.settings.name == Routes.ONBOARD));
       HealthService.to.checkHealth();
       return;
     }
 
     isRetry = true;
+    TransactionService.to.refreshTransactionId();
     Get.toNamed(Routes.PAYMENT_FAILED);
     AlertModal.to.show(response.message);
     return;

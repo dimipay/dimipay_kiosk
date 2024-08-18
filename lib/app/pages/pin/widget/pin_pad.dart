@@ -6,104 +6,73 @@ import 'package:get/get.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 
-const double buttonHeight = 72;
-const double buttonWidth = 72;
+import 'gesture_detector.dart';
 
-class PinPadButton extends StatelessWidget {
-  const PinPadButton({required this.index, super.key});
+class PinPadButton extends GetView<PinPageController> {
+  const PinPadButton({required this.number, this.child, super.key});
 
-  final int index;
+  final int number;
+  final Widget? child;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTapDown: (_) => PinPageController.to.down(PinPageController.to.numbers[index]),
-        onTapUp: (_) => PinPageController.to.up(PinPageController.to.numbers[index]),
-        onTapCancel: () => PinPageController.to.canceled(),
-        behavior: HitTestBehavior.translucent,
-        child: Obx(
-          () {
-            return Container(
-              height: 72,
-              width: 72,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: PinPageController.to.isPressed && PinPageController.to.pressedPin.contains(PinPageController.to.numbers[index]) ? DPColors.grayscale200 : Colors.transparent,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                PinPageController.to.numbers[index].toString(),
-                style: TextStyle(
-                  fontFamily: 'SUITv1',
-                  fontSize: 28,
-                  fontWeight: DPTypography.weight.medium,
-                  color: DPColors.grayscale800,
-                  height: 32 / 28,
-                ),
-              ),
-            );
-          },
+  Widget build(BuildContext context) => Obx(() => DPGestureDetectorWithOpacityInteraction(
+    onTap: () => controller.up(number),
+    onTapDown: (_) => controller.down(number),
+    onTapCancel: controller.canceled,
+    isPressed: controller.isPressed && controller.pressedPin.contains(number),
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.transparent,
+      ),
+      alignment: Alignment.center,
+      child: child ?? Text(
+        number.toString(),
+        style: TextStyle(
+          fontFamily: 'SUITv1',
+          fontSize: 28,
+          fontWeight: DPTypography.weight.medium,
+          color: DPColors.grayscale800,
+          height: 32 / 28,
         ),
-      );
+      ),
+    ),
+  ));
 }
 
-class PinPad extends StatelessWidget {
+class PinPad extends GetView<PinPageController> {
   const PinPad({super.key});
 
   @override
-  Widget build(BuildContext context) => Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        direction: Axis.vertical,
-        spacing: 64,
-        children: [
-          for (int i = 0; i < PinPageController.to.numbers.length - 1; i += 3)
-            Wrap(
-              spacing: 40,
-              children: [for (int j = i; j < i + 3; j++) PinPadButton(index: j)],
-            ),
-          Wrap(
-            spacing: 40,
-            children: [
-              AuthService.to.isAuthenticated
-                  ? GestureDetector(
-                      onTapDown: (_) => PinPageController.to.down(11),
-                      onTapUp: (_) {
-                        PinPageController.to.canceled();
-                        Get.back();
-                      },
-                      onTapCancel: () => PinPageController.to.canceled(),
-                      child: Obx(
-                        () => Container(
-                          height: buttonHeight,
-                          width: buttonWidth,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: PinPageController.to.isPressed && PinPageController.to.pressedPin.contains(11) ? DPColors.grayscale200 : Colors.transparent,
-                          ),
-                          child: const DPIcons(Symbols.undo_rounded),
-                        ),
-                      ),
-                    )
-                  : const SizedBox(width: buttonWidth, height: buttonHeight),
-              const PinPadButton(index: 9),
-              GestureDetector(
-                onTapDown: (_) => PinPageController.to.down(10),
-                onTapUp: (_) => PinPageController.to.up(10),
-                onTapCancel: () => PinPageController.to.canceled(),
-                child: Obx(
-                  () => Container(
-                    height: buttonHeight,
-                    width: buttonWidth,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: PinPageController.to.isPressed && PinPageController.to.pressedPin.contains(10) ? DPColors.grayscale200 : Colors.transparent,
-                    ),
-                    child: const DPIcons(Symbols.backspace_rounded),
-                  ),
-                ),
+  Widget build(BuildContext context) => SizedBox(
+    width: 340,
+    height: 480,
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        return Obx(() => GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          childAspectRatio: (constraints.maxWidth / 3) / (constraints.maxHeight / 4),
+          children: [
+            for (int i = 1; i <= 9; i++) PinPadButton(number: controller.numbers[i - 1]),
+            Obx(() => AuthService.to.isAuthenticated
+                ? const PinPadButton(
+              number: -1,
+              child: DPIcons(Symbols.undo_rounded),
+            )
+                : const SizedBox()),
+            PinPadButton(number: controller.numbers[9]),
+            PinPadButton(
+              number: -2,
+              child: DPIcons(
+                Symbols.backspace_rounded,
+                color: controller.canDelete ? DPColors.grayscale800 : DPColors.grayscale500,
               ),
-            ],
-          ),
-        ],
-      );
+            ),
+          ],
+        ));
+      },
+    ),
+  );
 }

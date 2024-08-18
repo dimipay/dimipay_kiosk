@@ -17,8 +17,8 @@ class BarcodeScanner extends StatelessWidget {
             if (event.logicalKey == LogicalKeyboardKey.enter && _input != "") {
               onKey(_input);
               _input = "";
-            } else if (event.logicalKey.keyLabel.length == 1) {
-              _input += event.logicalKey.keyLabel;
+            } else if (event.character != null && event.character!.isNotEmpty) {
+              _input += event.character!;
             }
           }
         },

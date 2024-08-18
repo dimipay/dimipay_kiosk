@@ -48,6 +48,7 @@ class ProductService extends GetxController {
       }
       _productTotalCount.value++;
       _productTotalPrice.value += _productList.value[barcode]!.price;
+      _productList.refresh();
       return true;
     } catch (_) {
       return false;

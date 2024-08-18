@@ -21,6 +21,7 @@ class PinPageController extends GetxController {
 
   int get inputLength => _inputLength.value;
   bool get isPressed => _isPressed.value;
+  bool get canDelete => _inputLength.value > 0;
 
   set pressedPin(List<int> value) => pressedPin.value = value;
 
@@ -44,7 +45,7 @@ class PinPageController extends GetxController {
   }
 
   void down(int number) {
-    _isPressed.value = !isPressed;
+    _isPressed.value = true;
     if (number >= 10) {
       pressedPin = [number];
       return;
@@ -52,15 +53,23 @@ class PinPageController extends GetxController {
     pressedPin = _random(number);
   }
 
-  void canceled() => _isPressed.value = !isPressed;
+  void canceled() {
+    _isPressed.value = false;
+    pressedPin.clear();
+  }
 
   void up(int number) async {
-    _isPressed.value = !isPressed;
+    _isPressed.value = false;
+    pressedPin.clear();
     if (inputLength == 4) return;
-    if (number == 10) {
+    if (number == -2) {
       if (inputLength == 0) return;
       _input.removeLast();
       _inputLength.value--;
+      return;
+    }
+    if (number == -1) {
+      Get.back();
       return;
     }
 

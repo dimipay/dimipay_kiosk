@@ -37,7 +37,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   camera_avfoundation: 759172d1a77ae7be0de08fc104cfb79738b8a59e
   convert_native_img_stream: 4da7b467afdcc2c48ae0fcd4dc19e48738b0f8d2
-  fast_rsa: 81ad35a32704c36f3b797fa2ec0b5bb9805d1fe7
+  fast_rsa: a175d11ab839486fcd531ab6d8bc06eb428df5e0
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c

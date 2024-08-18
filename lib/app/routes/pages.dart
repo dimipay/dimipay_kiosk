@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/pages/test/page.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/pages/payment/widget/payment_success.dart';
@@ -14,6 +15,7 @@ import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class AppPages {
   static final pages = [
+    GetPage(name: Routes.TEST, page: () => const TestPage()),
     GetPage(
       name: Routes.PIN,
       page: () => const PinPage(),
