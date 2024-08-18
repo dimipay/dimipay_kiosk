@@ -66,7 +66,7 @@ class Card extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: Obx(
-        () => Container(
+            () => Container(
           width: 374,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
@@ -96,8 +96,6 @@ class CardSelectButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var mainPaymentIndex = FaceSignService.to.user.paymentMethods.methods.firstWhere((element) => element.id == FaceSignService.to.user.paymentMethods.mainPaymentMethodId);
-
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTapDown: (_) => ProductPageController.to.pressButton("change"),
@@ -119,21 +117,19 @@ class CardSelectButton extends StatelessWidget {
                   child: Text("다른 결제 수단 선택하기", style: DPTypography.header1(color: DPColors.grayscale1000)),
                 ),
                 const SizedBox(height: 8),
-                Card(name: mainPaymentIndex.name, cardCode: mainPaymentIndex.cardCode, preview: mainPaymentIndex.preview, image: mainPaymentIndex.image, index: 0),
-                for (int i = 1; i < FaceSignService.to.user.paymentMethods.methods.length; i++)
-                  if (FaceSignService.to.user.paymentMethods.methods[i].name != mainPaymentIndex.id)
-                    Column(
-                      children: [
-                        const SizedBox(height: 8),
-                        Card(
-                          name: FaceSignService.to.user.paymentMethods.methods[i].name,
-                          cardCode: FaceSignService.to.user.paymentMethods.methods[i].cardCode,
-                          preview: FaceSignService.to.user.paymentMethods.methods[i].preview,
-                          image: FaceSignService.to.user.paymentMethods.methods[i].image,
-                          index: i,
-                        ),
-                      ],
-                    ),
+                for (int i = 0; i < FaceSignService.to.user.paymentMethods.methods.length; i++)
+                  Column(
+                    children: [
+                      if (i > 0) const SizedBox(height: 8),
+                      Card(
+                        name: FaceSignService.to.user.paymentMethods.methods[i].name,
+                        cardCode: FaceSignService.to.user.paymentMethods.methods[i].cardCode,
+                        preview: FaceSignService.to.user.paymentMethods.methods[i].preview,
+                        image: FaceSignService.to.user.paymentMethods.methods[i].image,
+                        index: i,
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -182,7 +178,7 @@ class ProductDesk extends StatelessWidget {
                   }
                 },
                 child: Obx(
-                  () => Container(
+                      () => Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     decoration: ShapeDecoration(
                       color: ProductPageController.to.isPressed("pay") ? Color.alphaBlend(DPColors.grayscale600.withOpacity(0.5), DPColors.primaryBrand) : DPColors.primaryBrand,

@@ -2,6 +2,7 @@ import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
@@ -78,6 +79,7 @@ class FaceSignService extends GetxController {
         if (users.length == 1) {
           _user.value = users[0];
           _faceSignStatus.value = FaceSignStatus.success;
+          setMainPaymentMethod();
         } else {
           _faceSignStatus.value = FaceSignStatus.multipleUserDetected;
         }
@@ -88,6 +90,35 @@ class FaceSignService extends GetxController {
     }
 
     _faceSignStatus.value = FaceSignStatus.failed;
+  }
+
+  void setMainPaymentMethod() {
+    if (_user.value != null) {
+      String? mainMethodId = _user.value!.paymentMethods.mainPaymentMethodId;
+      if (mainMethodId != null) {
+        int index = _user.value!.paymentMethods.methods.indexWhere((method) => method.id == mainMethodId);
+        if (index != -1) {
+          paymentIndex.value = index;
+        } else {
+          paymentIndex.value = 0; // mainMethodId가 없으면 첫 번째 방법을 선택
+        }
+      } else {
+        paymentIndex.value = 0; // mainMethodId가 null이면 첫 번째 방법을 선택
+      }
+    }
+  }
+
+  PaymentMethod? getMainPaymentMethod() {
+    if (_user.value != null) {
+      String? mainMethodId = _user.value!.paymentMethods.mainPaymentMethodId;
+      if (mainMethodId != null) {
+        return _user.value!.paymentMethods.methods.firstWhere(
+              (method) => method.id == mainMethodId,
+          orElse: () => _user.value!.paymentMethods.methods.first,
+        );
+      }
+    }
+    return null;
   }
 
   Future<void> approvePin(String pin) async {

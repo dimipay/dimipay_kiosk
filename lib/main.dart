@@ -13,8 +13,7 @@ void main() async {
     GetMaterialApp(
       title: '디미페이 키오스크',
       getPages: AppPages.pages,
-      // initialRoute: AuthService.to.isAuthenticated ? Routes.ONBOARD : Routes.PIN,
-      initialRoute: Routes.TEST,
+      initialRoute: AuthService.to.isAuthenticated ? Routes.ONBOARD : Routes.PIN,
       theme: ThemeData(fontFamily: 'SUITv1', primaryColor: DPColors.primaryBrand, scaffoldBackgroundColor: DPColors.grayscale100),
       debugShowCheckedModeBanner: false,
     ),
