@@ -27,6 +27,7 @@ class FaceSignService extends GetxController {
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
 
   bool isRetry = false;
+  bool _isStreaming = false;
   String? _otp;
   late CameraController _camera;
   final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
@@ -55,8 +56,13 @@ class FaceSignService extends GetxController {
   Future<Uint8List> _captureImage() async {
     late CameraImage image;
     try {
-      _camera.startImageStream((capturedImage) => image = capturedImage);
-      await Future.delayed(const Duration(milliseconds: 500));
+      if (!_isStreaming) {
+        _camera.startImageStream((capturedImage) {
+          _isStreaming = true;
+          image = capturedImage;
+        });
+      }
+      await Future.delayed(const Duration(milliseconds: 250));
       await _camera.stopImageStream();
       return (await _convertNative.convertImgToBytes(image.planes[0].bytes, image.width, image.width))!;
     } catch (_) {
@@ -113,7 +119,7 @@ class FaceSignService extends GetxController {
       String? mainMethodId = _user.value!.paymentMethods.mainPaymentMethodId;
       if (mainMethodId != null) {
         return _user.value!.paymentMethods.methods.firstWhere(
-              (method) => method.id == mainMethodId,
+          (method) => method.id == mainMethodId,
           orElse: () => _user.value!.paymentMethods.methods.first,
         );
       }

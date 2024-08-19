@@ -66,7 +66,7 @@ class Card extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: Obx(
-            () => Container(
+        () => Container(
           width: 374,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
@@ -178,7 +178,7 @@ class ProductDesk extends StatelessWidget {
                   }
                 },
                 child: Obx(
-                      () => Container(
+                  () => Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     decoration: ShapeDecoration(
                       color: ProductPageController.to.isPressed("pay") ? Color.alphaBlend(DPColors.grayscale600.withOpacity(0.5), DPColors.primaryBrand) : DPColors.primaryBrand,
