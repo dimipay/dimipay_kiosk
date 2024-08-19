@@ -2,7 +2,6 @@ import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
@@ -27,7 +26,6 @@ class FaceSignService extends GetxController {
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
 
   bool isRetry = false;
-  bool _isStreaming = false;
   String? _otp;
   late CameraController _camera;
   final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
@@ -56,12 +54,7 @@ class FaceSignService extends GetxController {
   Future<Uint8List> _captureImage() async {
     late CameraImage image;
     try {
-      if (!_isStreaming) {
-        _camera.startImageStream((capturedImage) {
-          _isStreaming = true;
-          image = capturedImage;
-        });
-      }
+      _camera.startImageStream((capturedImage) => image = capturedImage);
       await Future.delayed(const Duration(milliseconds: 250));
       await _camera.stopImageStream();
       return (await _convertNative.convertImgToBytes(image.planes[0].bytes, image.width, image.width))!;
