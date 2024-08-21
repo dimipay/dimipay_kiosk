@@ -21,6 +21,8 @@ class TransactionService extends GetxController {
     return _transactionId!;
   }
 
+  get hasTransactionId => _transactionId != null;
+
   void deleteTransactionId() {
     _transactionId = null;
   }

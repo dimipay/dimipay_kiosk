@@ -22,6 +22,7 @@ class QRService extends GetxController {
 
     _isPaying = true;
     FaceSignService.to.stop();
+
     PaymentApprove? response;
 
     try {
@@ -38,9 +39,10 @@ class QRService extends GetxController {
       return;
     }
 
-    TransactionService.to.refreshTransactionId();
     Get.toNamed(Routes.PAYMENT_FAILED);
+    FaceSignService.to.failStatus();
     AlertModal.to.show(response.message);
+    TransactionService.to.deleteTransactionId();
     _isPaying = false;
     return;
   }

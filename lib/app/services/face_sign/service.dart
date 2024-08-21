@@ -40,6 +40,13 @@ class FaceSignService extends GetxController {
   void resetUser() {
     _faceSignStatus.value = FaceSignStatus.loading;
     _user.value = null;
+    _otp = null;
+    isRetry = false;
+  }
+
+  void failStatus() {
+    resetUser();
+    _faceSignStatus.value = FaceSignStatus.failed;
   }
 
   Future<FaceSignService> init() async {

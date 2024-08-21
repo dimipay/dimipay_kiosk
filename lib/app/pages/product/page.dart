@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:dimipay_kiosk/app/pages/product/widget/product_list.dart';
 import 'package:dimipay_kiosk/app/pages/product/widget/product_desk.dart';
 import 'package:dimipay_kiosk/app/pages/product/widget/product_bar.dart';
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
@@ -17,6 +18,7 @@ class ProductPage extends GetView<ProductPageController> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      TransactionService.to.refreshTransactionId();
       FaceSignService.to.findUser();
       AuthService.to.createEncryptionKey();
     });

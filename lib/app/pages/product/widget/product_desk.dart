@@ -1,4 +1,5 @@
 import 'package:dimipay_design_kit/dimipay_design_kit.dart';
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
+import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class ProductSelection extends StatelessWidget {
@@ -167,6 +169,7 @@ class ProductDesk extends StatelessWidget {
                   ProductPageController.to.pressButton("");
                   if (FaceSignService.to.faceSignStatus == FaceSignStatus.success && FaceSignService.to.user.paymentMethods.methods.isNotEmpty) {
                     if (FaceSignService.to.isRetry) {
+                      Get.lazyPut(() => AlertModal());
                       await FaceSignService.to.approvePayment();
                     } else {
                       Get.toNamed(Routes.PIN);
