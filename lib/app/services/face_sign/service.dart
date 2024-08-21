@@ -25,6 +25,7 @@ class FaceSignService extends GetxController {
   final Rx<FaceSignStatus> _faceSignStatus = Rx(FaceSignStatus.loading);
 
   bool isRetry = false;
+  bool _isPaying = false;
   String? _otp;
   late CameraController _camera;
   final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
@@ -134,7 +135,8 @@ class FaceSignService extends GetxController {
   }
 
   Future<void> approvePayment() async {
-    if (_otp == null) return;
+    if (_otp == null || _isPaying == true) return;
+    _isPaying = true;
 
     PaymentApprove? response;
 
@@ -145,6 +147,7 @@ class FaceSignService extends GetxController {
     if (response?.status == PaymentResponse.success) {
       paymentIndex.value = 0;
       isRetry = false;
+      _isPaying = false;
       _otp = null;
       Get.toNamed(Routes.PAYMENT_SUCCESS);
       ProductService.to.clearProductList();
@@ -155,6 +158,7 @@ class FaceSignService extends GetxController {
     }
 
     isRetry = true;
+    _isPaying = false;
     Get.toNamed(Routes.PAYMENT_FAILED);
     return;
   }

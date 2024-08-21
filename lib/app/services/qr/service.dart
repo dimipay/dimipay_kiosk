@@ -22,6 +22,7 @@ class QRService extends GetxController {
 
     _isPaying = true;
     FaceSignService.to.stop();
+    Get.lazyPut(() => AlertModal());
 
     PaymentApprove? response;
 
