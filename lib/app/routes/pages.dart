@@ -20,32 +20,38 @@ class AppPages {
       name: Routes.PIN,
       page: () => const PinPage(),
       binding: PinPageBinding(),
+      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.ONBOARD,
       page: () => const OnboardPage(),
       binding: OnboardPageBinding(),
       transition: Transition.cupertino,
+      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PRODUCT,
       page: () => const ProductPage(),
       binding: ProductPageBinding(),
       transition: Transition.cupertino,
+      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT,
       page: () => const PaymentPage(),
       binding: PaymentPageBinding(),
+      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT_SUCCESS,
       page: () => const PaymentSuccess(),
+      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT_FAILED,
       page: () => const PaymentFailed(),
       binding: PaymentPageBinding(),
+      gestureWidth: (_) => 0,
     ),
   ];
 }

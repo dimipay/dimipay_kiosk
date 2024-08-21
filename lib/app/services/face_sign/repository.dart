@@ -84,9 +84,13 @@ class FaceSignRepository {
         },
       );
 
+      if (response.data["data"]["status"] != PaymentResponse.success) {
+        throw PaymentApproveFailedException(response.data["data"]["message"]);
+      }
+
       return PaymentApprove.fromJson(response.data["data"]);
-    } on DioException catch (_) {
-      throw PaymentApproveFailedException();
+    } on DioException catch (e) {
+      throw PaymentApproveFailedException(e.response?.data["message"]);
     }
   }
 }

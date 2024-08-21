@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
-import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class ProductSelection extends StatelessWidget {
@@ -66,7 +65,7 @@ class Card extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: Obx(
-            () => Container(
+        () => Container(
           width: 374,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
@@ -168,7 +167,6 @@ class ProductDesk extends StatelessWidget {
                   ProductPageController.to.pressButton("");
                   if (FaceSignService.to.faceSignStatus == FaceSignStatus.success && FaceSignService.to.user.paymentMethods.methods.isNotEmpty) {
                     if (FaceSignService.to.isRetry) {
-                      Get.lazyPut(() => AlertModal());
                       await FaceSignService.to.approvePayment();
                     } else {
                       Get.toNamed(Routes.PIN);
@@ -178,7 +176,7 @@ class ProductDesk extends StatelessWidget {
                   }
                 },
                 child: Obx(
-                      () => Container(
+                  () => Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     decoration: ShapeDecoration(
                       color: ProductPageController.to.isPressed("pay") ? Color.alphaBlend(DPColors.grayscale600.withOpacity(0.5), DPColors.primaryBrand) : DPColors.primaryBrand,
