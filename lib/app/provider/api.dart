@@ -32,10 +32,49 @@ class JWTInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
+    return handler.next(err);
+  }
+}
+
+class DevJWTInterceptor extends Interceptor {
+  final Dio _dioInstance;
+
+  DevJWTInterceptor(this._dioInstance);
+
+  @override
+  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    if (options.path == '/kiosk/auth/refresh') {
+      return handler.next(options);
+    }
+    if (AuthService.to.isAuthenticated) {
+      options.headers['Authorization'] = 'Bearer ${AuthService.to.accessToken}';
+      if (options.path.contains("face-sign") || options.path.contains("qr")) {
+        options.headers['Transaction-ID'] = await TransactionService.to.transactionId;
+      }
+    }
+    print("-----------------------REQUEST-----------------------");
+    print("path : ${options.path}");
+    print("header : ${options.headers}");
+    print("data : ${options.data}");
+    return handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    print("-----------------------RESPONSE-----------------------");
+    print(response.data);
+    handler.next(response);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.requestOptions.path == '/kiosk/auth/refresh') {
       return handler.next(err);
     }
 
+    print("-----------------------ERROR-----------------------");
+    print(err);
+    print(err.response);
     if (err.response?.statusCode == 401 && AuthService.to.accessToken != null) {
       try {
         await AuthService.to.refreshAccessToken();
@@ -63,6 +102,6 @@ class DevApiProvider extends ApiProvider {
 
   DevApiProvider() {
     dio.options.baseUrl = baseUrl;
-    dio.interceptors.add(JWTInterceptor(dio));
+    dio.interceptors.add(DevJWTInterceptor(dio));
   }
 }

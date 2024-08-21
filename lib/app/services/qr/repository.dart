@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 
 import 'package:dimipay_kiosk/app/services/product/service.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
-import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/services/qr/model.dart';
 
@@ -27,8 +26,7 @@ class QRRepository {
 
       return PaymentApprove.fromJson(response.data["data"]);
     } on DioException catch (e) {
-      AlertModal.to.show(e.response?.data["message"]);
-      throw PaymentApproveFailedException();
+      throw PaymentApproveFailedException(e.response?.data["message"]);
     }
   }
 }
