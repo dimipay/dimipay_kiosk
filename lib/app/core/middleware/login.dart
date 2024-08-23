@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,9 @@ class LoginMiddleware extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     return authService.isPasscodeLoginSuccess || authService.isAuthenticated
         ? null
-        : RouteSettings(name: Routes.PIN, arguments: {'redirect': route});
+        : RouteSettings(
+            name: Routes.PIN,
+            arguments: {'redirect': route, 'pinPageType': PinPageType.login},
+          );
   }
 }
