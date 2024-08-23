@@ -29,7 +29,7 @@ class LoginPinPage extends GetView<PinPageController> {
   @override
   Widget build(BuildContext context) {
     return PinPageBase(
-      headerText: '결재 단말기 활성화 코드 입력',
+      headerText: '결제 단말기 활성화 코드 입력',
       subText: '관리자 페이지에서 단말기 활성화 코드를 발급하여 입력해주세요',
       onPinComplete: controller.loginWithPasscode,
     );
