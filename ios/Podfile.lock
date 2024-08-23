@@ -1,46 +1,21 @@
 PODS:
   - camera_avfoundation (0.0.1):
     - Flutter
-  - convert_native_img_stream (0.0.1):
-    - Flutter
-  - fast_rsa (0.6.0):
-    - Flutter
   - Flutter (1.0.0)
-  - flutter_secure_storage (6.0.0):
-    - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
 
 DEPENDENCIES:
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
-  - convert_native_img_stream (from `.symlinks/plugins/convert_native_img_stream/ios`)
-  - fast_rsa (from `.symlinks/plugins/fast_rsa/ios`)
   - Flutter (from `Flutter`)
-  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
 EXTERNAL SOURCES:
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
-  convert_native_img_stream:
-    :path: ".symlinks/plugins/convert_native_img_stream/ios"
-  fast_rsa:
-    :path: ".symlinks/plugins/fast_rsa/ios"
   Flutter:
     :path: Flutter
-  flutter_secure_storage:
-    :path: ".symlinks/plugins/flutter_secure_storage/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
   camera_avfoundation: 759172d1a77ae7be0de08fc104cfb79738b8a59e
-  convert_native_img_stream: 4da7b467afdcc2c48ae0fcd4dc19e48738b0f8d2
-  fast_rsa: a175d11ab839486fcd531ab6d8bc06eb428df5e0
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 

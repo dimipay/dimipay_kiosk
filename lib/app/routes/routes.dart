@@ -3,7 +3,7 @@
 abstract class Routes {
   static const TEST = '/test';
   static const PIN = '/pin';
-  static const ONBOARD = '/onboard';
+  static const ONBOARDING = '/onboarding';
   static const PRODUCT = '/product';
   static const PAYMENT = '/payment';
   static const PAYMENT_SUCCESS = '/payment/success';

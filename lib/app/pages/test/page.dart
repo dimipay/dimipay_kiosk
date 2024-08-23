@@ -34,7 +34,7 @@ class TestPage extends StatelessWidget {
       body: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
-          linkToRoute(Routes.ONBOARD),
+          linkToRoute(Routes.ONBOARDING),
           linkToRoute(Routes.PIN),
           linkToRoute(Routes.PAYMENT),
           linkToRoute(Routes.PRODUCT),

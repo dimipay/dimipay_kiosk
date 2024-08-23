@@ -1,8 +1,8 @@
+import 'package:dimipay_kiosk/app/pages/payment/payment_failed/page.dart';
+import 'package:dimipay_kiosk/app/pages/payment/payment_success/page.dart';
 import 'package:dimipay_kiosk/app/pages/test/page.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/pages/payment/widget/payment_success.dart';
-import 'package:dimipay_kiosk/app/pages/payment/widget/payment_failed.dart';
 import 'package:dimipay_kiosk/app/pages/onboard/binding.dart';
 import 'package:dimipay_kiosk/app/pages/product/binding.dart';
 import 'package:dimipay_kiosk/app/pages/payment/binding.dart';
@@ -23,8 +23,8 @@ class AppPages {
       gestureWidth: (_) => 0,
     ),
     GetPage(
-      name: Routes.ONBOARD,
-      page: () => const OnboardPage(),
+      name: Routes.ONBOARDING,
+      page: () => const OnboardingPage(),
       binding: OnboardPageBinding(),
       transition: Transition.cupertino,
       gestureWidth: (_) => 0,
@@ -44,12 +44,12 @@ class AppPages {
     ),
     GetPage(
       name: Routes.PAYMENT_SUCCESS,
-      page: () => const PaymentSuccess(),
+      page: () => const PaymentSuccessPage(),
       gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT_FAILED,
-      page: () => const PaymentFailed(),
+      page: () => const PaymentFailedPage(),
       binding: PaymentPageBinding(),
       gestureWidth: (_) => 0,
     ),
