@@ -1,5 +1,6 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
@@ -17,9 +18,7 @@ class PinPageController extends GetxController {
       await authService.loginWithPasscode(passcode: passcode);
       Get.offNamed(Routes.ONBOARDING);
     } on PasscodeNotFoundException catch (e) {
-      print(e.message);
-    } catch (e) {
-      print(e);
+      DPAlertModal.open(e.message);
     } finally {
       _isLoginInProgress.value = false;
     }

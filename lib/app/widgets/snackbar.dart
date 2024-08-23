@@ -2,34 +2,23 @@ import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class DPSnackBar {
-  static void open(String title, {Color? borderColor, Color? textColor}) {
+class DPAlertModal {
+  static void open(String message) {
     BuildContext context = Get.context!;
     DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
     DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
-    Get.rawSnackbar(
-      titleText: Center(
-        child: Text(
-          title,
-          style: textTheme.paragraph1.copyWith(color: colorTheme.grayscale900),
-          textAlign: TextAlign.center,
-        ),
-      ),
-      messageText: Container(),
-      backgroundColor: colorTheme.grayscale100,
-      borderColor: borderColor ?? colorTheme.primaryBrand,
-      borderRadius: 9999,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      animationDuration: const Duration(milliseconds: 500),
-    );
-  }
-}
 
-class DPErrorSnackBar {
-  void open(String title, {String? message, bool haptic = true}) {
-    BuildContext context = Get.context!;
-    DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
-    DPSnackBar.open(title, borderColor: colorTheme.primaryNegative);
+    if (Get.isSnackbarOpen) Get.closeCurrentSnackbar();
+    Get.rawSnackbar(
+        messageText: Text(message,
+            style: textTheme.header1.copyWith(color: colorTheme.grayscale100)),
+        icon: Icon(Icons.info_rounded, color: colorTheme.grayscale100),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        borderRadius: 16,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: colorTheme.primaryNegative,
+        animationDuration: const Duration(milliseconds: 200),
+        reverseAnimationCurve: Curves.easeOut);
   }
 }
