@@ -7,10 +7,10 @@ class OnboardingPage extends GetView<OnboardPageController> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Onboarding Page'),
-      ),
-    );
+    return Scaffold(
+        body: Center(
+      child: ElevatedButton(
+          onPressed: () => controller.logout(), child: const Text('logout')),
+    ));
   }
 }

@@ -7,9 +7,12 @@ class PinPage extends GetView<PinPageController> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('Pin Page'),
+        child: ElevatedButton(
+          onPressed: () => controller.loginWithPasscode(passcode: '3071'),
+          child: Text('gogo'),
+        ),
       ),
     );
   }
