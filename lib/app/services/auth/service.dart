@@ -5,6 +5,7 @@ import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/repository.dart';
 import 'package:fast_rsa/fast_rsa.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -19,6 +20,10 @@ class AuthService {
   late final AesManager aes;
   late final RsaManager rsa;
 
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+  String? name;
+
   bool get isPasscodeLoginSuccess => jwt.onboardingToken.accessToken != null;
 
   bool get isAuthenticated => jwt.token.accessToken != null;
@@ -32,6 +37,8 @@ class AuthService {
     jwt = await JwtManager().init();
     aes = await AesManager().init();
     rsa = await RsaManager().init();
+
+    name = await _storage.read(key: 'name');
 
     return this;
   }
@@ -60,6 +67,9 @@ class AuthService {
         'accessToken expires at ${JwtDecoder.getExpirationDate(jwt.token.accessToken!)}');
     dev.log(
         'refreshToken expires at ${JwtDecoder.getExpirationDate(jwt.token.refreshToken!)}');
+
+    name = loginResult['name'];
+    await _storage.write(key: 'name', value: name);
 
     await _getEncryptionKey();
   }
