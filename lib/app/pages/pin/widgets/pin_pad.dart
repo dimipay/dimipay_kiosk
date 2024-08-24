@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 class PinPad extends StatelessWidget {
   final bool numpadEnabled;
   final bool backBtnEnabled;
+  final bool popBtnAvailable;
   final void Function(String value)? onPinTap;
   final List<int> nums;
 
@@ -16,6 +17,7 @@ class PinPad extends StatelessWidget {
     this.onPinTap,
     this.numpadEnabled = true,
     this.backBtnEnabled = true,
+    this.popBtnAvailable = true,
   });
 
   @override
@@ -143,16 +145,18 @@ class PinPad extends StatelessWidget {
                           : colorTheme.grayscale400),
                 ),
               ),
-              PinButton(
-                  onTap: () => Get.back(),
-                  enabled: numpadEnabled,
-                  child: Icon(
-                    Icons.undo_rounded,
-                    size: 32,
-                    color: numpadEnabled
-                        ? colorTheme.grayscale800
-                        : colorTheme.grayscale400,
-                  )),
+              popBtnAvailable
+                  ? PinButton(
+                      onTap: () => Get.back(),
+                      enabled: numpadEnabled,
+                      child: Icon(
+                        Icons.undo_rounded,
+                        size: 32,
+                        color: numpadEnabled
+                            ? colorTheme.grayscale800
+                            : colorTheme.grayscale400,
+                      ))
+                  : Container(),
               PinButton(
                 onTap: () => onPinTap?.call(nums[9].toString()),
                 enabled: numpadEnabled,

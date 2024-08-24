@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 class PinPageBase extends GetView<PinPageController> {
   final String headerText;
   final String subText;
+  final bool popBtnAvailable;
   final FutureOr<void> Function()? onPinComplete;
 
   const PinPageBase({
@@ -16,6 +17,7 @@ class PinPageBase extends GetView<PinPageController> {
     required this.headerText,
     required this.subText,
     this.onPinComplete,
+    this.popBtnAvailable = true,
   });
 
   Widget pinHint(bool activated, DPColors colorTheme) {
@@ -84,6 +86,7 @@ class PinPageBase extends GetView<PinPageController> {
                 },
                 backBtnEnabled: controller.backBtnEnabled,
                 numpadEnabled: controller.numpadEnabled,
+                popBtnAvailable: popBtnAvailable,
               ),
             ),
             const Spacer(),
