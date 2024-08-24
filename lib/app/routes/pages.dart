@@ -23,7 +23,6 @@ class AppPages {
       page: () => const PinPage(),
       binding: PinPageBinding(),
       transition: Transition.cupertino,
-      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.ONBOARDING,
@@ -33,7 +32,6 @@ class AppPages {
       middlewares: [
         LoginMiddleware(),
       ],
-      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PRODUCT,
@@ -43,7 +41,6 @@ class AppPages {
       middlewares: [
         LoginMiddleware(),
       ],
-      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT,
@@ -53,7 +50,6 @@ class AppPages {
       middlewares: [
         LoginMiddleware(),
       ],
-      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT_SUCCESS,
@@ -63,7 +59,6 @@ class AppPages {
       middlewares: [
         LoginMiddleware(),
       ],
-      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT_FAILED,
@@ -73,7 +68,6 @@ class AppPages {
       middlewares: [
         LoginMiddleware(),
       ],
-      gestureWidth: (_) => 0,
     ),
   ];
 }

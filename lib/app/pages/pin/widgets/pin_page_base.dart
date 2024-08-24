@@ -69,25 +69,21 @@ class PinPageBase extends GetView<PinPageController> {
               ),
             ),
             const SizedBox(height: 120),
-            SizedBox(
-              width: 340,
-              height: 480,
-              child: Obx(
-                () => PinPad(
-                  controller.nums,
-                  onPinTap: (data) async {
-                    controller.onPinTap.call(data);
-                    if (controller.pin.length == 4) {
-                      try {
-                        await onPinComplete?.call();
-                      } finally {
-                        controller.clearPin();
-                      }
+            Obx(
+              () => PinPad(
+                controller.nums,
+                onPinTap: (data) async {
+                  controller.onPinTap.call(data);
+                  if (controller.pin.length == 4) {
+                    try {
+                      await onPinComplete?.call();
+                    } finally {
+                      controller.clearPin();
                     }
-                  },
-                  backBtnEnabled: controller.backBtnEnabled,
-                  numpadEnabled: controller.numpadEnabled,
-                ),
+                  }
+                },
+                backBtnEnabled: controller.backBtnEnabled,
+                numpadEnabled: controller.numpadEnabled,
               ),
             ),
             const Spacer(),
