@@ -52,6 +52,15 @@ class AuthService {
     jwt.setOnboardingToken(
         JwtToken(accessToken: loginResult['tokens']['accessToken']));
 
+    await jwt.setToken(JwtToken(
+        accessToken: loginResult['tokens']['accessToken'],
+        refreshToken: loginResult['tokens']['refreshToken']));
+    dev.log('logged in successfully!');
+    dev.log(
+        'accessToken expires at ${JwtDecoder.getExpirationDate(jwt.token.accessToken!)}');
+    dev.log(
+        'refreshToken expires at ${JwtDecoder.getExpirationDate(jwt.token.refreshToken!)}');
+
     await _getEncryptionKey();
   }
 
