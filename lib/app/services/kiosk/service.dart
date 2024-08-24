@@ -7,15 +7,14 @@ class KioskService extends GetxController {
   KioskService({KioskRepository? repository})
       : repository = repository ?? KioskRepository();
 
-  final Rx<String?> _health = Rx(null);
+  final _status = Rx<String?>(null);
 
-  String? get health => _health.value;
+  String? get status => _status.value;
 
   Future<String> getHealth() async {
     try {
-      Map data = await repository.getHealth();
-      _health.value = data["status"];
-      return _health.value!;
+      final data = await repository.getHealth();
+      return _status.value = data["status"];
     } catch (e) {
       rethrow;
     }
