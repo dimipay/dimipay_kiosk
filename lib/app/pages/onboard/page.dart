@@ -20,7 +20,11 @@ class OnboardingPage extends GetView<OnboardPageController> {
               const Spacer(),
               Column(
                 children: [
-                  SvgPicture.asset('assets/images/dimipay_logo.svg'),
+                  SvgPicture.asset(
+                    'assets/images/dimipay_logo.svg',
+                    width: 346,
+                    height: 72,
+                  ),
                   const SizedBox(height: 64),
                   Text(
                     '매점에 오신 것을 환영합니다!',
