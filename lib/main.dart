@@ -1,4 +1,6 @@
+import 'package:dimipay_kiosk/app/core/theme/dark.dart';
 import 'package:dimipay_kiosk/app/core/theme/light.dart';
+import 'package:dimipay_kiosk/app/services/theme/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,20 +15,26 @@ String getInintialRoute({bool debug = false}) {
 void main() async {
   await AppLoader().load();
   runApp(
-    GetMaterialApp(
-      builder: (context, child) {
-        return MediaQuery(
-          data:
-              MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
-          child: child!,
+    Obx(
+      () {
+        ThemeService themeService = Get.find<ThemeService>();
+        return GetMaterialApp(
+          builder: (context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.noScaling),
+              child: child!,
+            );
+          },
+          title: '디미페이 키오스크',
+          initialRoute: getInintialRoute(debug: true),
+          getPages: AppPages.pages,
+          debugShowCheckedModeBanner: false,
+          theme: lightThemeData,
+          darkTheme: darkThemeData,
+          themeMode: themeService.themeMode,
         );
       },
-      title: '디미페이 키오스크',
-      initialRoute: getInintialRoute(debug: true),
-      getPages: AppPages.pages,
-      debugShowCheckedModeBanner: false,
-      theme: lightThemeData,
-      themeMode: ThemeMode.light,
     ),
   );
 }
