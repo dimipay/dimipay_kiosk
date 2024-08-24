@@ -39,7 +39,17 @@ class OnboardingPage extends GetView<OnboardPageController> {
                 ],
               ),
               const Spacer(),
-              const HealthAreaSucceed(),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                child: Obx(
+                  () => controller.healthAreaStatus.value.when(
+                    loading: () => const HealthAreaLoading(),
+                    success: () => const HealthAreaSuccess(),
+                    failed: () => const HealthAreaFailed(),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -48,72 +58,118 @@ class OnboardingPage extends GetView<OnboardPageController> {
   }
 }
 
-class HealthAreaSucceed extends GetView<OnboardPageController> {
-  const HealthAreaSucceed({super.key});
+class HealthAreaLoading extends StatelessWidget {
+  const HealthAreaLoading({super.key});
 
   @override
   Widget build(BuildContext context) {
     DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
     DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-      child: Row(
-        children: [
-          Icon(
-            Icons.dns_outlined,
+    return Row(
+      children: [
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(colorTheme.grayscale500),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '서버 연결 중...',
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+      ],
+    );
+  }
+}
+
+class HealthAreaFailed extends StatelessWidget {
+  const HealthAreaFailed({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
+    DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
+    return Row(
+      children: [
+        Icon(
+          Icons.dns_outlined,
+          color: colorTheme.primaryNegative,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '서버 연결 실패',
+          style:
+              textTheme.description.copyWith(color: colorTheme.primaryNegative),
+        ),
+      ],
+    );
+  }
+}
+
+class HealthAreaSuccess extends GetView<OnboardPageController> {
+  const HealthAreaSuccess({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
+    DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
+    return Row(
+      children: [
+        Icon(
+          Icons.dns_outlined,
+          color: colorTheme.grayscale500,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '서버 연결 완료',
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+        const SizedBox(width: 16),
+        Container(
+          width: 4,
+          height: 4,
+          decoration: BoxDecoration(
             color: colorTheme.grayscale500,
-            size: 20,
+            borderRadius: BorderRadius.circular(999),
           ),
-          const SizedBox(width: 6),
-          Text(
-            '서버 연결 완료',
-            style:
-                textTheme.description.copyWith(color: colorTheme.grayscale500),
-          ),
-          const SizedBox(width: 16),
-          Container(
-            width: 4,
-            height: 4,
-            decoration: BoxDecoration(
-              color: colorTheme.grayscale500,
-              borderRadius: BorderRadius.circular(999),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Icon(
-            Icons.monitor_heart_outlined,
+        ),
+        const SizedBox(width: 16),
+        Icon(
+          Icons.monitor_heart_outlined,
+          color: colorTheme.grayscale500,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          controller.authService.name!,
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+        const SizedBox(width: 16),
+        Container(
+          width: 4,
+          height: 4,
+          decoration: BoxDecoration(
             color: colorTheme.grayscale500,
-            size: 20,
+            borderRadius: BorderRadius.circular(999),
           ),
-          const SizedBox(width: 6),
-          Text(
-            controller.authService.name!,
-            style:
-                textTheme.description.copyWith(color: colorTheme.grayscale500),
-          ),
-          const SizedBox(width: 16),
-          Container(
-            width: 4,
-            height: 4,
-            decoration: BoxDecoration(
-              color: colorTheme.grayscale500,
-              borderRadius: BorderRadius.circular(999),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Icon(
-            Icons.school_outlined,
-            color: colorTheme.grayscale500,
-            size: 20,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            '한국디지털미디어고등학교',
-            style:
-                textTheme.description.copyWith(color: colorTheme.grayscale500),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 16),
+        Icon(
+          Icons.school_outlined,
+          color: colorTheme.grayscale500,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '한국디지털미디어고등학교',
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+      ],
     );
   }
 }
