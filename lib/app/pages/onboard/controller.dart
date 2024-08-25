@@ -4,6 +4,7 @@ import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/service.dart';
 import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:get/get.dart';
+import 'dart:io';
 
 class OnboardPageController extends GetxController {
   AuthService authService = Get.find<AuthService>();
@@ -30,6 +31,14 @@ class OnboardPageController extends GetxController {
   Future<void> getHealth() async {
     try {
       healthAreaStatus.value = HealthStatus.loading();
+
+      bool isConnected = await checkInternetConnection();
+      if (!isConnected) {
+        healthAreaStatus.value = HealthStatus.failed();
+        DPAlertModal.open('인터넷 연결이 없습니다. 네트워크 상태를 확인해주세요.');
+        return;
+      }
+
       final health = await kioskService.getHealth();
       if (health == 'healthy') {
         healthAreaStatus.value = HealthStatus.success();
@@ -51,6 +60,15 @@ class OnboardPageController extends GetxController {
     } catch (e) {
       print(e);
       healthAreaStatus.value = HealthStatus.failed();
+    }
+  }
+
+  Future<bool> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('prod-next.dimipay.io');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
     }
   }
 }
