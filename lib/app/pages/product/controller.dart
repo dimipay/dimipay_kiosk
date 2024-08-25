@@ -1,20 +1,49 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/service.dart';
+import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 class ProductPageController extends GetxController {
   final String? firstProduct = Get.arguments as String?;
   KioskService kioskService = Get.find<KioskService>();
+  TransactionService transactionService = Get.find<TransactionService>();
 
   final RxList<ProductItem> productItems = <ProductItem>[].obs;
+  late final String? transactionId;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     if (firstProduct != null) {
       getProduct(barcode: firstProduct!);
+    }
+    generateTransactionId();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    deleteTransactionId(transactionId: transactionId!);
+  }
+
+  void generateTransactionId() async {
+    try {
+      transactionId = await transactionService.generateTransactionId();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void deleteTransactionId({required String transactionId}) async {
+    try {
+      await transactionService.deleteTransactionId(
+          transactionId: transactionId);
+    } on DeletingTransactionIfNotFoundException catch (e) {
+      DPAlertModal.open(e.message);
+    } catch (e) {
+      print(e);
     }
   }
 

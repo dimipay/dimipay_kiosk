@@ -81,3 +81,9 @@ class DisabledProductException implements Exception {
 
   DisabledProductException({this.message = ''});
 }
+
+class DeletingTransactionIfNotFoundException implements Exception {
+  final String message;
+
+  DeletingTransactionIfNotFoundException({this.message = ''});
+}
