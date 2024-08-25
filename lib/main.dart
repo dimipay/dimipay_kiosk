@@ -8,7 +8,7 @@ import 'package:dimipay_kiosk/app/core/utils/loader.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/routes/pages.dart';
 
-String getInintialRoute({bool debug = false}) {
+String getInitialRoute({bool debug = false}) {
   return debug ? Routes.TEST : Routes.ONBOARDING;
 }
 
@@ -27,7 +27,7 @@ void main() async {
             );
           },
           title: '디미페이 키오스크',
-          initialRoute: getInintialRoute(debug: true),
+          initialRoute: getInitialRoute(debug: true),
           getPages: AppPages.pages,
           debugShowCheckedModeBanner: false,
           theme: lightThemeData,

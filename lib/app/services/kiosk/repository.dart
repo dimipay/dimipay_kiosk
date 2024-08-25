@@ -32,6 +32,28 @@ class KioskRepository {
       if (e.response?.data['code'] == 'ERR_CLIENT_NOT_FOUND') {
         throw ClientNotFoundException(message: e.response?.data['message']);
       }
+      if (e.response?.data['code'] == 'ERR_TOKEN_ERROR') {
+        throw TokenErrorException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_CLIENT_NOT_FOUND') {
+        throw TokenExpiredException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_TOKEN_NOT_FOUND') {
+        throw TokenNotFoundException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_UNAUTHENTICATED') {
+        throw UnauthenticatedException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_WRONG_TOKEN_TYPE') {
+        throw WrongTokenTypeException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_WRONG_CLIENT_TYPE') {
+        throw WrongClientTypeException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_NO_TRANSACTION_ID_FOUND') {
+        throw NoTransactionIdFoundException(
+            message: e.response?.data['message']);
+      }
       rethrow;
     }
   }

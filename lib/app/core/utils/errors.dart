@@ -33,3 +33,39 @@ class ClientNotFoundException implements Exception {
 
   ClientNotFoundException({this.message = ''});
 }
+
+class TokenErrorException implements Exception {
+  final String message;
+
+  TokenErrorException({this.message = ''});
+}
+
+class TokenExpiredException implements Exception {
+  final String message;
+
+  TokenExpiredException({this.message = ''});
+}
+
+class TokenNotFoundException implements Exception {
+  final String message;
+
+  TokenNotFoundException({this.message = ''});
+}
+
+class UnauthenticatedException implements Exception {
+  final String message;
+
+  UnauthenticatedException({this.message = ''});
+}
+
+class WrongTokenTypeException implements Exception {
+  final String message;
+
+  WrongTokenTypeException({this.message = ''});
+}
+
+class NoTransactionIdFoundException implements Exception {
+  final String message;
+
+  NoTransactionIdFoundException({this.message = ''});
+}

@@ -72,6 +72,24 @@ class OnboardPageController extends GetxController {
     } on ClientNotFoundException catch (e) {
       DPAlertModal.open(e.message);
       healthAreaStatus.value = HealthStatus.failed();
+    } on TokenErrorException catch (e) {
+      DPAlertModal.open(e.message);
+      healthAreaStatus.value = HealthStatus.failed();
+    } on TokenExpiredException catch (e) {
+      DPAlertModal.open(e.message);
+      healthAreaStatus.value = HealthStatus.failed();
+    } on TokenNotFoundException catch (e) {
+      DPAlertModal.open(e.message);
+      healthAreaStatus.value = HealthStatus.failed();
+    } on UnauthenticatedException catch (e) {
+      DPAlertModal.open(e.message);
+      healthAreaStatus.value = HealthStatus.failed();
+    } on WrongTokenTypeException catch (e) {
+      DPAlertModal.open(e.message);
+      healthAreaStatus.value = HealthStatus.failed();
+    } on NoTransactionIdFoundException catch (e) {
+      DPAlertModal.open(e.message);
+      healthAreaStatus.value = HealthStatus.failed();
     } catch (e) {
       print(e);
       healthAreaStatus.value = HealthStatus.failed();
