@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
@@ -13,10 +14,24 @@ class OnboardPageController extends GetxController {
   final Rx<HealthStatus> healthAreaStatus =
       Rx<HealthStatus>(HealthStatus.loading());
 
+  Timer? _healthCheckTimer;
+  static const Duration healthCheckInterval = Duration(minutes: 5);
+
   @override
   void onInit() {
     super.onInit();
     getHealth();
+    _startPeriodicHealthCheck();
+  }
+
+  @override
+  void onClose() {
+    _healthCheckTimer?.cancel();
+    super.onClose();
+  }
+
+  void _startPeriodicHealthCheck() {
+    _healthCheckTimer = Timer.periodic(healthCheckInterval, (_) => getHealth());
   }
 
   Future<void> logout() async {
