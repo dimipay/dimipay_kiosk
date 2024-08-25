@@ -231,12 +231,23 @@ class ProductPage extends GetView<ProductPageController> {
               ),
             ],
           ),
-          DPButton(
-            onTap: () {},
-            child: Text(
-              "결제하기",
-              style: textTheme.header1.copyWith(color: colorTheme.grayscale100),
-            ),
+          Obx(
+            () => controller.productItems.isEmpty
+                ? DPButton.disabled(
+                    child: Text(
+                      "결제하기",
+                      style: textTheme.header1
+                          .copyWith(color: colorTheme.grayscale100),
+                    ),
+                  )
+                : DPButton(
+                    onTap: () {},
+                    child: Text(
+                      "결제하기",
+                      style: textTheme.header1
+                          .copyWith(color: colorTheme.grayscale100),
+                    ),
+                  ),
           )
         ],
       ),
