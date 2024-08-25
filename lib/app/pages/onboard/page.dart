@@ -45,8 +45,15 @@ class OnboardingPage extends GetView<OnboardPageController> {
                     ),
                     const SizedBox(height: 64),
                     ElevatedButton(
-                        onPressed: controller.logout,
-                        child: const Text('로그아웃')),
+                      onPressed: controller.logout,
+                      child: const Text('로그아웃'),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => Get.toNamed(Routes.PRODUCT,
+                          arguments: '8801047289685'),
+                      child: const Text('오미자 추가'),
+                    ),
                   ],
                 ),
                 const Spacer(),

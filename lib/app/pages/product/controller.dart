@@ -55,8 +55,10 @@ class ProductPageController extends GetxController {
     }
   }
 
-  void clearProductItems() {
-    productItems.clear();
+  void checkAndNavigateBack() {
+    if (productItems.isEmpty) {
+      Get.back();
+    }
   }
 
   void decreaseProductItemAmount(String id) {
@@ -73,6 +75,12 @@ class ProductPageController extends GetxController {
       } else {
         productItems.removeAt(index);
       }
+      checkAndNavigateBack();
     }
+  }
+
+  void clearProductItems() {
+    productItems.clear();
+    checkAndNavigateBack();
   }
 }
