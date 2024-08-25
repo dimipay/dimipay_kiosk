@@ -69,3 +69,15 @@ class NoTransactionIdFoundException implements Exception {
 
   NoTransactionIdFoundException({this.message = ''});
 }
+
+class ProductNotFoundException implements Exception {
+  final String message;
+
+  ProductNotFoundException({this.message = ''});
+}
+
+class DisabledProductException implements Exception {
+  final String message;
+
+  DisabledProductException({this.message = ''});
+}

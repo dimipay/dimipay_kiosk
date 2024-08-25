@@ -8,6 +8,7 @@ class DPGestureDetectorWithFillInteraction extends StatefulWidget {
   final Widget child;
   final EdgeInsets effectPadding;
   final double effectBorderRadius;
+
   const DPGestureDetectorWithFillInteraction({
     super.key,
     this.onTap,
@@ -19,10 +20,12 @@ class DPGestureDetectorWithFillInteraction extends StatefulWidget {
   });
 
   @override
-  State<DPGestureDetectorWithFillInteraction> createState() => _DPGestureDetectorWithFillInteractionState();
+  State<DPGestureDetectorWithFillInteraction> createState() =>
+      _DPGestureDetectorWithFillInteractionState();
 }
 
-class _DPGestureDetectorWithFillInteractionState extends State<DPGestureDetectorWithFillInteraction> {
+class _DPGestureDetectorWithFillInteractionState
+    extends State<DPGestureDetectorWithFillInteraction> {
   bool isPressed = false;
 
   void pressUp() {
@@ -65,7 +68,8 @@ class _DPGestureDetectorWithFillInteractionState extends State<DPGestureDetector
                     margin: widget.effectPadding,
                     decoration: BoxDecoration(
                       color: colorTheme.grayscale1000,
-                      borderRadius: BorderRadius.circular(widget.effectBorderRadius),
+                      borderRadius:
+                          BorderRadius.circular(widget.effectBorderRadius),
                     ),
                   ),
                 ),
@@ -84,6 +88,7 @@ class DPGestureDetectorWithOpacityInteraction extends StatefulWidget {
   final void Function()? onLongPress;
   final Duration duration;
   final Widget child;
+
   const DPGestureDetectorWithOpacityInteraction({
     super.key,
     this.onTap,
@@ -93,10 +98,12 @@ class DPGestureDetectorWithOpacityInteraction extends StatefulWidget {
   });
 
   @override
-  State<DPGestureDetectorWithOpacityInteraction> createState() => _DPGestureDetectorWithOpacityInteractionState();
+  State<DPGestureDetectorWithOpacityInteraction> createState() =>
+      _DPGestureDetectorWithOpacityInteractionState();
 }
 
-class _DPGestureDetectorWithOpacityInteractionState extends State<DPGestureDetectorWithOpacityInteraction> {
+class _DPGestureDetectorWithOpacityInteractionState
+    extends State<DPGestureDetectorWithOpacityInteraction> {
   bool isPressed = false;
 
   void pressUp() {
@@ -145,6 +152,7 @@ class DPGestureDetectorWithScaleInteraction extends StatefulWidget {
   final void Function()? onLongPress;
   final Duration duration;
   final Widget child;
+
   const DPGestureDetectorWithScaleInteraction({
     super.key,
     this.onTap,
@@ -154,10 +162,12 @@ class DPGestureDetectorWithScaleInteraction extends StatefulWidget {
   });
 
   @override
-  State<DPGestureDetectorWithScaleInteraction> createState() => _DPGestureDetectorWithScaleInteractionState();
+  State<DPGestureDetectorWithScaleInteraction> createState() =>
+      _DPGestureDetectorWithScaleInteractionState();
 }
 
-class _DPGestureDetectorWithScaleInteractionState extends State<DPGestureDetectorWithScaleInteraction> {
+class _DPGestureDetectorWithScaleInteractionState
+    extends State<DPGestureDetectorWithScaleInteraction> {
   bool isPressed = false;
 
   void pressUp() {
@@ -226,7 +236,8 @@ class DPButton extends StatefulWidget {
         child = SizedBox(
           width: 20,
           height: 20,
-          child: CircularProgressIndicator(color: foregroundColor ?? Colors.white, strokeWidth: 2),
+          child: CircularProgressIndicator(
+              color: foregroundColor ?? Colors.white, strokeWidth: 2),
         );
 
   DPButton.disabled({
@@ -237,7 +248,8 @@ class DPButton extends StatefulWidget {
     required this.child,
   })  : onTap = null,
         onLongPress = null,
-        backgroundColor = backgroundColor ?? DPLightThemeColors().primaryBrand.withAlpha(100),
+        backgroundColor =
+            backgroundColor ?? DPLightThemeColors().primaryBrand.withAlpha(100),
         foregroundColor = foregroundColor ?? Colors.white.withAlpha(120);
 
   @override
@@ -265,9 +277,10 @@ class _DPButtonState extends State<DPButton> {
             ),
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.all(20),
                 child: DefaultTextStyle.merge(
-                  style: textTheme.itemDescription.copyWith(color: widget.foregroundColor ?? Colors.white),
+                  style: textTheme.itemDescription
+                      .copyWith(color: widget.foregroundColor ?? Colors.white),
                   child: widget.child,
                 ),
               ),
