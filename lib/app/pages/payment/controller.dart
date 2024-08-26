@@ -31,10 +31,6 @@ class PaymentPageController extends GetxController {
     progressTimer.cancel();
     secondTimer.cancel();
 
-    print(transactionId);
-    print(productItems);
-    print(dpToken);
-
     Get.offAndToNamed(Routes.PAYMENT_PENDING, arguments: {
       'type': PaymentType.qr,
       'transactionId': transactionId,

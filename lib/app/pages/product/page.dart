@@ -13,7 +13,11 @@ class ProductPage extends GetView<ProductPageController> {
   Widget build(BuildContext context) {
     return BarcodeScanner(
       onKey: (input) async {
-        controller.getProduct(barcode: input);
+        if (input.startsWith('-DP') || input.startsWith('688000')) {
+          controller.setDPToken(barcode: input);
+        } else {
+          controller.getProduct(barcode: input);
+        }
       },
       child: Scaffold(
         body: Column(

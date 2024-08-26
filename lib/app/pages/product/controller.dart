@@ -1,4 +1,5 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/service.dart';
@@ -15,6 +16,7 @@ class ProductPageController extends GetxController {
 
   final RxList<ProductItem> productItems = <ProductItem>[].obs;
   late final String? transactionId;
+  late String dpToken;
 
   final Rx<FaceDetectionStatus> faceDetectionStatus =
       Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
@@ -58,6 +60,20 @@ class ProductPageController extends GetxController {
     } catch (e) {
       print(e);
     }
+  }
+
+  void setDPToken({required String barcode}) {
+    dpToken = barcode;
+    payQR();
+  }
+
+  void payQR() {
+    Get.offAndToNamed(Routes.PAYMENT_PENDING, arguments: {
+      'type': PaymentType.qr,
+      'transactionId': transactionId,
+      'productItems': productItems,
+      'dpToken': dpToken,
+    });
   }
 
   Future<Product?> getProduct({required String barcode}) async {
