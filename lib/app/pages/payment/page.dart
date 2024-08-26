@@ -15,7 +15,7 @@ class PaymentPage extends GetView<PaymentPageController> {
     final colorTheme = Theme.of(context).extension<DPColors>()!;
     final textTheme = Theme.of(context).extension<DPTypography>()!;
     return BarcodeScanner(
-      onScan: (input) => controller.setDPToken(barcode: input),
+      onKey: (input) => controller.setDPToken(barcode: input),
       child: Scaffold(
         body: Stack(
           children: [
@@ -31,6 +31,11 @@ class PaymentPage extends GetView<PaymentPageController> {
                   _buildRemainingTime(textTheme, colorTheme),
                   const SizedBox(height: 132),
                   _buildBackButton(textTheme, colorTheme),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                      onPressed: () => controller.setDPToken(
+                          barcode: '-DPb3itdeb-5aDbV8fHO5z0H'),
+                      child: const Text('테스트 결제'))
                 ],
               ),
             ),

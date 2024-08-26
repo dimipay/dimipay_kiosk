@@ -12,7 +12,7 @@ class ProductPage extends GetView<ProductPageController> {
   @override
   Widget build(BuildContext context) {
     return BarcodeScanner(
-      onScan: (input) async {
+      onKey: (input) async {
         controller.getProduct(barcode: input);
       },
       child: Scaffold(

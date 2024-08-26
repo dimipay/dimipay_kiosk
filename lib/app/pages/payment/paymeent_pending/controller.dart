@@ -30,28 +30,34 @@ class PaymentPendingPageController extends GetxController {
     }
   }
 
-  void startQRPayment() {
+  List<Map<String, dynamic>> _formatProductList() {
+    return productItems
+        .map((product) => {"id": product.id, "amount": product.amount})
+        .toList();
+  }
+
+  Future<void> startQRPayment() async {
     try {
-      transactionService.payQR(
+      await transactionService.payQR(
           transactionId: transactionId.value,
           dpToken: dpToken.value,
-          productList: productItems);
-      Get.offNamed(Routes.PAYMENT_SUCCESS);
+          formattedProductList: _formatProductList());
+      Get.offAndToNamed(Routes.PAYMENT_SUCCESS);
     } on ForbiddenUserException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offNamed(Routes.PAYMENT_FAILED);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on WrongPayTokenException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offNamed(Routes.PAYMENT_FAILED);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on UnknownProductException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offNamed(Routes.PAYMENT_FAILED);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on FailedToCancelTransactionException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offNamed(Routes.PAYMENT_FAILED);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offNamed(Routes.PAYMENT_FAILED);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     }
   }
 }

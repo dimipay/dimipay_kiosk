@@ -12,23 +12,30 @@ class PaymentPageController extends GetxController {
   late Timer progressTimer;
   late Timer secondTimer;
 
-  final transactionId = RxString('');
-  final productItems = RxList<ProductItem>([]);
-  final dpToken = RxString('');
+  late String transactionId;
+  late List<ProductItem> productItems;
+  late String dpToken;
 
   @override
   void onInit() {
     super.onInit();
     final args = Get.arguments;
     if (args != null && args is Map<String, dynamic>) {
-      transactionId.value = args['transactionId'] ?? '';
-      productItems.value = args['productItems'];
+      transactionId = args['transactionId'] ?? '';
+      productItems = args['productItems'];
     }
     startTimers();
   }
 
-  void payQR({required String dpToken}) {
-    Get.offNamed(Routes.PAYMENT_PENDING, arguments: {
+  void payQR() {
+    progressTimer.cancel();
+    secondTimer.cancel();
+
+    print(transactionId);
+    print(productItems);
+    print(dpToken);
+
+    Get.offAndToNamed(Routes.PAYMENT_PENDING, arguments: {
       'type': PaymentType.qr,
       'transactionId': transactionId,
       'productItems': productItems,
@@ -37,8 +44,8 @@ class PaymentPageController extends GetxController {
   }
 
   void setDPToken({required String barcode}) {
-    dpToken.value = barcode;
-    payQR(dpToken: dpToken.value);
+    dpToken = barcode;
+    payQR();
   }
 
   void startTimers() {

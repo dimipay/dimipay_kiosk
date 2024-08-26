@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -12,7 +13,7 @@ class PaymentSuccessPageController extends GetxController {
 
   void startTimer() {
     timer = Timer(const Duration(seconds: 2), () {
-      Get.back();
+      Get.offAllNamed(Routes.ONBOARDING);
     });
   }
 

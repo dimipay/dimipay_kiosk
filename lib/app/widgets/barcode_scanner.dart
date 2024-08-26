@@ -1,47 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class BarcodeScanner extends StatefulWidget {
-  const BarcodeScanner({
-    super.key,
-    required this.child,
-    required this.onScan,
-  });
+class BarcodeScanner extends StatelessWidget {
+  const BarcodeScanner({super.key, required this.child, required this.onKey});
 
   final Widget child;
-  final ValueChanged<String> onScan;
+  final Function(String input) onKey;
+  static String _input = "";
 
   @override
-  State<BarcodeScanner> createState() => _BarcodeScannerState();
-}
-
-class _BarcodeScannerState extends State<BarcodeScanner> {
-  final FocusNode _focusNode = FocusNode();
-  String _input = '';
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  void _handleKeyEvent(KeyEvent event) {
-    if (event is KeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.enter && _input.isNotEmpty) {
-        widget.onScan(_input);
-        _input = '';
-      } else if (event.character != null && event.character!.isNotEmpty) {
-        _input += event.character!;
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return KeyboardListener(
-      focusNode: _focusNode,
-      onKeyEvent: _handleKeyEvent,
-      child: widget.child,
-    );
-  }
+  Widget build(BuildContext context) => KeyboardListener(
+        autofocus: true,
+        focusNode: FocusNode(),
+        onKeyEvent: (event) {
+          if (event is KeyDownEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.enter && _input != "") {
+              onKey(_input);
+              _input = "";
+            } else if (event.character != null && event.character!.isNotEmpty) {
+              _input += event.character!;
+            }
+          }
+        },
+        child: child,
+      );
 }

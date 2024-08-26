@@ -43,20 +43,15 @@ class TransactionRepository {
   Future<void> payQR({
     required String dpToken,
     required String transactionId,
-    required List<ProductItem> productList,
+    required List<Map<String, dynamic>> formattedProductList,
   }) async {
     String url = '/qr';
 
     try {
-      // Convert ProductItem list to the required format
-      List<Map<String, dynamic>> formattedProducts = productList
-          .map((product) => {"id": product.id, "amount": product.amount})
-          .toList();
-
       await secureApi.post(
         url,
         data: {
-          'products': formattedProducts,
+          'products': formattedProductList,
         },
         options: Options(
             headers: {'Transaction-ID': transactionId, 'DP-Token': dpToken}),
