@@ -87,3 +87,33 @@ class DeletingTransactionIfNotFoundException implements Exception {
 
   DeletingTransactionIfNotFoundException({this.message = ''});
 }
+
+class ForbiddenUserException implements Exception {
+  final String message;
+
+  ForbiddenUserException({this.message = ''});
+}
+
+class WrongPayTokenException implements Exception {
+  final String message;
+
+  WrongPayTokenException({this.message = ''});
+}
+
+class UnknownProductException implements Exception {
+  final String message;
+
+  UnknownProductException({this.message = ''});
+}
+
+class FailedToCancelTransactionException implements Exception {
+  final String message;
+
+  FailedToCancelTransactionException({this.message = ''});
+}
+
+class UnknownException implements Exception {
+  final String message;
+
+  UnknownException({this.message = ''});
+}

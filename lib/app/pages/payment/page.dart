@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
@@ -13,25 +14,28 @@ class PaymentPage extends GetView<PaymentPageController> {
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).extension<DPColors>()!;
     final textTheme = Theme.of(context).extension<DPTypography>()!;
-    return Scaffold(
-      body: Stack(
-        children: [
-          _buildBackgroundSpots(),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildInstructions(textTheme, colorTheme),
-                const SizedBox(height: 68),
-                _buildProgressBar(colorTheme),
-                const SizedBox(height: 24),
-                _buildRemainingTime(textTheme, colorTheme),
-                const SizedBox(height: 132),
-                _buildBackButton(textTheme, colorTheme),
-              ],
+    return BarcodeScanner(
+      onScan: (input) => controller.setDPToken(barcode: input),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            _buildBackgroundSpots(),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildInstructions(textTheme, colorTheme),
+                  const SizedBox(height: 68),
+                  _buildProgressBar(colorTheme),
+                  const SizedBox(height: 24),
+                  _buildRemainingTime(textTheme, colorTheme),
+                  const SizedBox(height: 132),
+                  _buildBackButton(textTheme, colorTheme),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

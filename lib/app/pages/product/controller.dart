@@ -1,4 +1,5 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/service.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
@@ -118,6 +119,16 @@ class ProductPageController extends GetxController {
       }
       checkAndNavigateBack();
     }
+  }
+
+  void qrPayment() {
+    Get.toNamed(
+      Routes.PAYMENT,
+      arguments: {
+        'transactionId': transactionId,
+        'productItems': productItems,
+      },
+    );
   }
 
   void clearProductItems() {

@@ -56,7 +56,12 @@ class ProductPageFooter extends GetView<ProductPageController> {
                         ),
                       )
                     : DPButton(
-                        onTap: () {},
+                        onTap: () {
+                          controller.faceDetectionStatus.value ==
+                                  FaceDetectionStatus.detected
+                              ? null
+                              : controller.qrPayment();
+                        },
                         child: Text(
                           "결제하기",
                           style: textTheme.header1

@@ -1,6 +1,8 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 import 'package:dimipay_kiosk/app/provider/model/response.dart';
+import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
+import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
@@ -35,6 +37,45 @@ class TransactionRepository {
             message: e.response?.data['message']);
       }
       rethrow;
+    }
+  }
+
+  Future<void> payQR({
+    required String dpToken,
+    required String transactionId,
+    required List<ProductItem> productList,
+  }) async {
+    String url = '/qr';
+
+    try {
+      // Convert ProductItem list to the required format
+      List<Map<String, dynamic>> formattedProducts = productList
+          .map((product) => {"id": product.id, "amount": product.amount})
+          .toList();
+
+      await secureApi.post(
+        url,
+        data: {
+          'products': formattedProducts,
+        },
+        options: Options(
+            headers: {'Transaction-ID': transactionId, 'DP-Token': dpToken}),
+      );
+    } on DioException catch (e) {
+      if (e.response?.data['code'] == 'ERR_FORBIDDEN_USER') {
+        throw ForbiddenUserException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_WRONG_PAY_TOKEN') {
+        throw WrongPayTokenException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_UNKNOWN_PRODUCT') {
+        throw UnknownProductException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_FAILED_TO_CANCEL_TRANSACTION') {
+        throw FailedToCancelTransactionException(
+            message: e.response?.data['message']);
+      }
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 }

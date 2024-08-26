@@ -1,3 +1,4 @@
+import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -26,6 +27,20 @@ class TransactionService extends GetxController {
   Future<void> deleteTransactionId({required String transactionId}) async {
     try {
       await repository.deleteTransactionId(transactionId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> payQR(
+      {required String transactionId,
+      required String dpToken,
+      required List<ProductItem> productList}) async {
+    try {
+      await repository.payQR(
+          transactionId: transactionId,
+          dpToken: dpToken,
+          productList: productList);
     } catch (e) {
       rethrow;
     }
