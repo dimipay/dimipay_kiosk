@@ -91,7 +91,7 @@ class OnboardPageController extends GetxController {
       DPAlertModal.open(e.message);
       healthAreaStatus.value = HealthStatus.failed();
     } catch (e) {
-      print(e);
+      DPAlertModal.open('알 수 없는 오류가 발생했습니다.');
       healthAreaStatus.value = HealthStatus.failed();
     }
   }
