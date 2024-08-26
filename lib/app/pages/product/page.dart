@@ -18,7 +18,7 @@ class ProductPage extends GetView<ProductPageController> {
       child: const Scaffold(
         body: Column(
           children: [
-            ProductPageHeader(),
+            ProductPageHeaderDetected(),
             Expanded(
               child: ProductPageList(),
             ),
