@@ -6,6 +6,6 @@ import 'package:get/get.dart';
 class PaymentSuccessPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => PaymentSuccessPageController());
+    Get.put(PaymentSuccessPageController());
   }
 }
