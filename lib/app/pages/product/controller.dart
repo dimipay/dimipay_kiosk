@@ -68,7 +68,7 @@ class ProductPageController extends GetxController {
   }
 
   void payQR() {
-    Get.offAndToNamed(Routes.PAYMENT_PENDING, arguments: {
+    Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
       'type': PaymentType.qr,
       'transactionId': transactionId,
       'productItems': productItems,

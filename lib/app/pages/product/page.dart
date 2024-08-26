@@ -42,6 +42,10 @@ class ProductPage extends GetView<ProductPageController> {
                     onPressed: () => controller
                         .updateFaceDetectionStatus(FaceDetectionStatus.failed),
                     child: const Text('failed')),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                    onPressed: () => controller.setDPToken(barcode: '-DP123'),
+                    child: const Text('테스트 결제')),
               ],
             ),
             const ProductPageFooter(),
