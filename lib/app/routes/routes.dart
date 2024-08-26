@@ -6,6 +6,7 @@ abstract class Routes {
   static const ONBOARDING = '/onboarding';
   static const PRODUCT = '/product';
   static const PAYMENT = '/payment';
+  static const PAYMENT_PENDING = '/payment/pending';
   static const PAYMENT_SUCCESS = '/payment/success';
   static const PAYMENT_FAILED = '/payment/failed';
 }

@@ -1,4 +1,5 @@
 import 'package:dimipay_kiosk/app/core/middleware/login.dart';
+import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/page.dart';
 import 'package:dimipay_kiosk/app/pages/payment/payment_failed/page.dart';
 import 'package:dimipay_kiosk/app/pages/payment/payment_success/binding.dart';
 import 'package:dimipay_kiosk/app/pages/payment/payment_success/page.dart';
@@ -45,6 +46,15 @@ class AppPages {
     GetPage(
       name: Routes.PAYMENT,
       page: () => const PaymentPage(),
+      binding: PaymentPageBinding(),
+      transition: Transition.cupertino,
+      middlewares: [
+        LoginMiddleware(),
+      ],
+    ),
+    GetPage(
+      name: Routes.PAYMENT_PENDING,
+      page: () => const PaymentPendingPage(),
       binding: PaymentPageBinding(),
       transition: Transition.cupertino,
       middlewares: [
