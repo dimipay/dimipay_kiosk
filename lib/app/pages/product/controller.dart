@@ -5,6 +5,8 @@ import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
+enum FaceDetectionStatus { searching, detected, failed }
+
 class ProductPageController extends GetxController {
   final String? firstProduct = Get.arguments as String?;
   KioskService kioskService = Get.find<KioskService>();
@@ -12,6 +14,16 @@ class ProductPageController extends GetxController {
 
   final RxList<ProductItem> productItems = <ProductItem>[].obs;
   late final String? transactionId;
+
+  final Rx<FaceDetectionStatus> faceDetectionStatus =
+      Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
+
+  void updateFaceDetectionStatus(FaceDetectionStatus status) {
+    faceDetectionStatus.value = status;
+  }
+
+  RxBool get isPaymentMethodSelectable =>
+      (faceDetectionStatus.value == FaceDetectionStatus.detected).obs;
 
   @override
   void onInit() async {

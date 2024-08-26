@@ -15,14 +15,32 @@ class ProductPage extends GetView<ProductPageController> {
       onScan: (input) async {
         controller.getProduct(barcode: input);
       },
-      child: const Scaffold(
+      child: Scaffold(
         body: Column(
           children: [
-            ProductPageHeaderDetected(),
-            Expanded(
+            const ProductPageHeader(),
+            const Expanded(
               child: ProductPageList(),
             ),
-            ProductPageFooter(),
+            Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () => controller.updateFaceDetectionStatus(
+                        FaceDetectionStatus.searching),
+                    child: const Text('searching')),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                    onPressed: () => controller.updateFaceDetectionStatus(
+                        FaceDetectionStatus.detected),
+                    child: const Text('detected')),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                    onPressed: () => controller
+                        .updateFaceDetectionStatus(FaceDetectionStatus.failed),
+                    child: const Text('failed')),
+              ],
+            ),
+            const ProductPageFooter(),
           ],
         ),
       ),

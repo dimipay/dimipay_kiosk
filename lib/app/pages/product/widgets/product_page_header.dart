@@ -1,18 +1,32 @@
-import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
-import 'package:dimipay_design_kit/interfaces/dimipay_typography.dart';
-import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 import 'package:dimipay_kiosk/app/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
+import 'package:dimipay_design_kit/interfaces/dimipay_typography.dart';
+import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 
-class ProductPageHeaderSearching extends GetView<ProductPageController> {
-  const ProductPageHeaderSearching({super.key});
+class ProductPageHeader extends GetView<ProductPageController> {
+  const ProductPageHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).extension<DPColors>()!;
     final textTheme = Theme.of(context).extension<DPTypography>()!;
 
+    return Obx(() {
+      switch (controller.faceDetectionStatus.value) {
+        case FaceDetectionStatus.searching:
+          return _buildSearchingHeader(context, colorTheme, textTheme);
+        case FaceDetectionStatus.detected:
+          return _buildDetectedHeader(context, colorTheme, textTheme);
+        case FaceDetectionStatus.failed:
+          return _buildFailedHeader(context, colorTheme, textTheme);
+      }
+    });
+  }
+
+  Widget _buildSearchingHeader(
+      BuildContext context, DPColors colorTheme, DPTypography textTheme) {
     return Padding(
       padding: const EdgeInsets.all(36),
       child: Row(
@@ -37,31 +51,13 @@ class ProductPageHeaderSearching extends GetView<ProductPageController> {
               color: colorTheme.grayscale800,
             ),
           ),
-          const Spacer(),
-          _buildAddButton('마이쮸 추가', '8801111187893'),
-          const SizedBox(width: 16),
-          _buildAddButton('오미자 추가', '8801047289685'),
         ],
       ),
     );
   }
 
-  Widget _buildAddButton(String label, String barcode) {
-    return ElevatedButton(
-      onPressed: () => controller.getProduct(barcode: barcode),
-      child: Text(label),
-    );
-  }
-}
-
-class ProductPageHeaderDetected extends GetView<ProductPageController> {
-  const ProductPageHeaderDetected({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorTheme = Theme.of(context).extension<DPColors>()!;
-    final textTheme = Theme.of(context).extension<DPTypography>()!;
-
+  Widget _buildDetectedHeader(
+      BuildContext context, DPColors colorTheme, DPTypography textTheme) {
     return Padding(
       padding: const EdgeInsets.all(36),
       child: Row(
@@ -78,7 +74,8 @@ class ProductPageHeaderDetected extends GetView<ProductPageController> {
           ),
           const Spacer(),
           DPGestureDetectorWithOpacityInteraction(
-              onTap: () => {},
+              onTap: () => controller
+                  .updateFaceDetectionStatus(FaceDetectionStatus.searching),
               child: Text('얼굴 다시 인식하기',
                   style: textTheme.header1.copyWith(
                     color: Colors.black45,
@@ -90,22 +87,8 @@ class ProductPageHeaderDetected extends GetView<ProductPageController> {
     );
   }
 
-  Widget _buildAddButton(String label, String barcode) {
-    return ElevatedButton(
-      onPressed: () => controller.getProduct(barcode: barcode),
-      child: Text(label),
-    );
-  }
-}
-
-class ProductPageHeaderFailed extends GetView<ProductPageController> {
-  const ProductPageHeaderFailed({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorTheme = Theme.of(context).extension<DPColors>()!;
-    final textTheme = Theme.of(context).extension<DPTypography>()!;
-
+  Widget _buildFailedHeader(
+      BuildContext context, DPColors colorTheme, DPTypography textTheme) {
     return Padding(
       padding: const EdgeInsets.all(36),
       child: Row(
@@ -132,7 +115,8 @@ class ProductPageHeaderFailed extends GetView<ProductPageController> {
           ),
           const Spacer(),
           DPGestureDetectorWithOpacityInteraction(
-              onTap: () => {},
+              onTap: () => controller
+                  .updateFaceDetectionStatus(FaceDetectionStatus.searching),
               child: Text('다시 인식하기',
                   style: textTheme.header1.copyWith(
                     color: Colors.black45,
