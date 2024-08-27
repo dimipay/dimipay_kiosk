@@ -38,4 +38,33 @@ class FaceSignRepository {
       rethrow;
     }
   }
+
+  Future<String> getFaceSignOTP(
+      {required String transactionId,
+      required String paymentPinAuthURL,
+      required String pin}) async {
+    String url = "/face-sign/payments/pin";
+
+    try {
+      final response = await secureApi.post(
+        url,
+        options: Options(
+          headers: {'Transaction-ID': transactionId},
+        ),
+        queryParameters: {
+          't': paymentPinAuthURL,
+        },
+        data: {
+          'pin': pin,
+        },
+      );
+
+      return response.data["otp"];
+    } on DioException catch (e) {
+      if (e.response?.data['code'] == 'ERR_INVALID_USER_TOKEN') {
+        throw InvalidUserTokenException(message: e.response?.data['message']);
+      }
+      rethrow;
+    }
+  }
 }

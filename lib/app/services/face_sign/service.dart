@@ -17,4 +17,16 @@ class FaceSignService extends GetxController {
 
     return data;
   }
+
+  Future<String> getFaceSignOTP(
+      {required String transactionId,
+      required String paymentPinAuthURL,
+      required String pin}) async {
+    String data = await repository.getFaceSignOTP(
+        transactionId: transactionId,
+        paymentPinAuthURL: paymentPinAuthURL,
+        pin: pin);
+
+    return data;
+  }
 }

@@ -123,3 +123,9 @@ class NoMatchedUserException implements Exception {
 
   NoMatchedUserException({this.message = ''});
 }
+
+class InvalidUserTokenException implements Exception {
+  final String message;
+
+  InvalidUserTokenException({this.message = ''});
+}

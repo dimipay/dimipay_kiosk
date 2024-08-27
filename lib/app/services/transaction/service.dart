@@ -13,7 +13,7 @@ class TransactionService extends GetxController {
   final _transactionId = Rx<String?>(null);
 
   String? get transactionId => _transactionId.value;
-  
+
   Future<String?> generateTransactionId() async {
     try {
       final data = await repository.generateTransactionId();
@@ -41,6 +41,24 @@ class TransactionService extends GetxController {
       await repository.payQR(
         transactionId: transactionId,
         dpToken: dpToken,
+        formattedProductList: formattedProductList,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> payFaceSign({
+    required String transactionId,
+    required String otp,
+    required String paymentMethodId,
+    required List<Map<String, dynamic>> formattedProductList,
+  }) async {
+    try {
+      await repository.payFaceSign(
+        transactionId: transactionId,
+        otp: otp,
+        paymentMethodId: paymentMethodId,
         formattedProductList: formattedProductList,
       );
     } catch (e) {

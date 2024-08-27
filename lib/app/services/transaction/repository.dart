@@ -73,4 +73,42 @@ class TransactionRepository {
       throw UnknownException(message: e.response?.data['message']);
     }
   }
+
+  Future<void> payFaceSign({
+    required String transactionId,
+    required List<Map<String, dynamic>> formattedProductList,
+    required String paymentMethodId,
+    required String otp,
+  }) async {
+    String url = '/face-sign/payments/approve';
+
+    try {
+      await secureApi.post(
+        url,
+        data: {
+          'products': formattedProductList,
+          'paymentMethodId': paymentMethodId,
+        },
+        options: Options(headers: {
+          'Transaction-ID': transactionId,
+          'DP-PAYMENT-PIN-OTP': otp
+        }),
+      );
+    } on DioException catch (e) {
+      if (e.response?.data['code'] == 'ERR_FORBIDDEN_USER') {
+        throw ForbiddenUserException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_WRONG_PAY_TOKEN') {
+        throw WrongPayTokenException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_UNKNOWN_PRODUCT') {
+        throw UnknownProductException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_FAILED_TO_CANCEL_TRANSACTION') {
+        throw FailedToCancelTransactionException(
+            message: e.response?.data['message']);
+      }
+      throw UnknownException(message: e.response?.data['message']);
+    }
+  }
 }
