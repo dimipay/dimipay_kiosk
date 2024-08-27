@@ -63,19 +63,19 @@ class ProductPageHeader extends GetView<ProductPageController> {
       child: Row(
         children: [
           CircleAvatar(
+            backgroundImage: NetworkImage(controller.user.profileImage),
             radius: 18,
           ),
           const SizedBox(width: 16),
           Text(
-            '서승표님',
+            '${controller.user.name}님',
             style: textTheme.header1.copyWith(
               color: colorTheme.grayscale900,
             ),
           ),
           const Spacer(),
           DPGestureDetectorWithOpacityInteraction(
-              onTap: () => controller
-                  .updateFaceDetectionStatus(FaceDetectionStatus.searching),
+              onTap: () => controller.restartFaceDetection(),
               child: Text('얼굴 다시 인식하기',
                   style: textTheme.header1.copyWith(
                     color: Colors.black45,
@@ -115,8 +115,7 @@ class ProductPageHeader extends GetView<ProductPageController> {
           ),
           const Spacer(),
           DPGestureDetectorWithOpacityInteraction(
-              onTap: () => controller
-                  .updateFaceDetectionStatus(FaceDetectionStatus.searching),
+              onTap: () => controller.restartFaceDetection(),
               child: Text('다시 인식하기',
                   style: textTheme.header1.copyWith(
                     color: Colors.black45,

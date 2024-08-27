@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
@@ -25,9 +26,10 @@ class ProductPageController extends GetxController {
   final Rx<FaceDetectionStatus> faceDetectionStatus =
       Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
 
-  void updateFaceDetectionStatus(FaceDetectionStatus status) {
-    faceDetectionStatus.value = status;
-  }
+  late CameraController _cameraController;
+  bool _isCameraInitialized = false;
+
+  late Rx<Method> selectedPaymentMethod;
 
   RxBool get isPaymentMethodSelectable =>
       (faceDetectionStatus.value == FaceDetectionStatus.detected).obs;
@@ -35,32 +37,92 @@ class ProductPageController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    await _initializeCamera();
     if (firstProduct != null) {
       getProduct(barcode: firstProduct!);
     }
     await generateTransactionId();
     await doFaceSignAction();
+
+    selectedPaymentMethod = Rx<Method>(user.paymentMethods.methods.firstWhere(
+      (method) => method.id == user.paymentMethods.mainPaymentMethodId,
+    ));
   }
 
   @override
   void onClose() {
+    _cameraController.dispose();
     super.onClose();
     deleteTransactionId(transactionId: transactionId!);
   }
 
-  Future<void> doFaceSignAction() async {
-    print('here1');
-    switch (faceDetectionStatus.value) {
-      case FaceDetectionStatus.searching:
-        // TODO: Handle this case.
-        break;
-      case FaceDetectionStatus.detected:
-        // TODO: Handle this case.
-        break;
-      case FaceDetectionStatus.failed:
-        // TODO: Handle this case.
-        break;
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    if (cameras.isEmpty) {
+      throw CameraException(
+          'No cameras found', 'No cameras available on this device');
     }
+
+    _cameraController = CameraController(
+      cameras[1],
+      ResolutionPreset.low,
+      enableAudio: false,
+    );
+
+    try {
+      await _cameraController.initialize();
+      await _cameraController.setFlashMode(FlashMode.off);
+      _isCameraInitialized = true;
+    } on CameraException catch (e) {
+      print('Error initializing camera: $e');
+      _isCameraInitialized = false;
+    }
+  }
+
+  Future<XFile> captureImage() async {
+    if (!_isCameraInitialized) {
+      throw CameraException('Camera not initialized',
+          'Please initialize the camera before capturing an image');
+    }
+
+    try {
+      final XFile image = await _cameraController.takePicture();
+      return image;
+    } on CameraException catch (e) {
+      print('Error capturing image: $e');
+      throw CameraException('Failed to capture image', e.description);
+    }
+  }
+
+  Future<void> doFaceSignAction() async {
+    int attempts = 0;
+    const int maxAttempts = 5;
+
+    while (faceDetectionStatus.value == FaceDetectionStatus.searching &&
+        attempts < maxAttempts) {
+      try {
+        XFile image = await captureImage();
+
+        User detectedUser = await faceSignService.getUserWithFaceSign(
+          image: image,
+          transactionId: transactionId!,
+        );
+
+        faceDetectionStatus.value = FaceDetectionStatus.detected;
+        user = detectedUser;
+        return;
+      } on NoMatchedUserException {
+        attempts++;
+        if (attempts >= maxAttempts) {
+          faceDetectionStatus.value = FaceDetectionStatus.failed;
+        }
+      }
+    }
+  }
+
+  Future<void> restartFaceDetection() async {
+    faceDetectionStatus.value = FaceDetectionStatus.searching;
+    await doFaceSignAction();
   }
 
   Future<void> generateTransactionId() async {
@@ -76,7 +138,7 @@ class ProductPageController extends GetxController {
       await transactionService.deleteTransactionId(
           transactionId: transactionId);
     } on DeletingTransactionIfNotFoundException catch (e) {
-      // DPAlertModal.open(e.message);
+      // Handle exception
     } catch (e) {
       print(e);
     }
@@ -114,7 +176,6 @@ class ProductPageController extends GetxController {
   void addOrUpdateProductItem(Product product) {
     int index = productItems.indexWhere((item) => item.id == product.id);
     if (index != -1) {
-      // 이미 존재하는 상품이면 amount를 1 증가
       ProductItem updatedItem = ProductItem(
         id: product.id,
         name: product.name,
@@ -123,7 +184,6 @@ class ProductPageController extends GetxController {
       );
       productItems[index] = updatedItem;
     } else {
-      // 새로운 상품이면 리스트에 추가
       productItems.add(ProductItem(
         id: product.id,
         name: product.name,
@@ -135,7 +195,7 @@ class ProductPageController extends GetxController {
 
   void checkAndNavigateBack() {
     if (productItems.isEmpty) {
-      Get.back();
+      Get.offAndToNamed(Routes.ONBOARDING);
     }
   }
 
@@ -170,5 +230,40 @@ class ProductPageController extends GetxController {
   void clearProductItems() {
     productItems.clear();
     checkAndNavigateBack();
+  }
+
+  void updateSelectedPaymentMethod(Method newMethod) {
+    selectedPaymentMethod.value = newMethod;
+  }
+
+  String getLogoImagePath(String cardCode) {
+    const url = 'assets/images/cards/';
+    final companyCodeToImagePath = {
+      'BC': 'BC.svg',
+      'Kb': 'Kb.svg',
+      'Hana': 'Hana.svg',
+      'Samsung': 'Samsung.svg',
+      'Shinhan': 'Shinhan.svg',
+      'Hyundai': 'Hyundai.svg',
+      'Lotte': 'Lotte.svg',
+      'Citi': 'Citi.svg',
+      'NH': 'NH.svg',
+      'Suhyup': 'Suhyup.svg',
+      'NACUFOK': 'Shinhyup.svg',
+      'Woori': 'Woori.svg',
+      'KJB': 'KJB.svg',
+      'VISA': 'VISA.svg',
+      'Mastercard': 'Mastercard.svg',
+      'Post': 'Post.svg',
+      'MG': 'MG.svg',
+      'KDB': 'KDB.svg',
+      'Kakaobank': 'Kakaobank.svg',
+      'Kbank': 'Kbank.svg',
+      'AMEX': 'AMEX.svg',
+      'Unionpay': 'Unionpay.svg',
+      'Tossbank': 'Tossbank.svg',
+      'Naverpay': 'Naverpay.svg',
+    };
+    return url + (companyCodeToImagePath[cardCode] ?? 'Unknown.svg');
   }
 }

@@ -30,7 +30,7 @@ class FaceSignRepository {
           ),
           options: Options(headers: {'Transaction-ID': transactionId}));
 
-      return User.fromJson(response.data["product"]);
+      return User.fromJson(response.data["foundUsers"][0]);
     } on DioException catch (e) {
       if (e.response?.data['code'] == 'ERR_NO_MATCHED_USER') {
         throw NoMatchedUserException(message: e.response?.data['message']);

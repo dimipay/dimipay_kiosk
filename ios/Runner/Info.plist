@@ -29,7 +29,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>얼굴 인식을 위한 카메라 사용을 허락해 주세요!</string>
+    <string>이 앱은 얼굴 인식 기능을 위해 카메라를 사용합니다.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

@@ -19,41 +19,14 @@ class ProductPage extends GetView<ProductPageController> {
           controller.getProduct(barcode: input);
         }
       },
-      child: Scaffold(
+      child: const Scaffold(
         body: Column(
           children: [
-            const ProductPageHeader(),
-            const Expanded(
+            ProductPageHeader(),
+            Expanded(
               child: ProductPageList(),
             ),
-            Row(
-              children: [
-                ElevatedButton(
-                    onPressed: () => controller.updateFaceDetectionStatus(
-                        FaceDetectionStatus.searching),
-                    child: const Text('searching')),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                    onPressed: () => controller.updateFaceDetectionStatus(
-                        FaceDetectionStatus.detected),
-                    child: const Text('detected')),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                    onPressed: () => controller
-                        .updateFaceDetectionStatus(FaceDetectionStatus.failed),
-                    child: const Text('failed')),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                    onPressed: () =>
-                        controller.getProduct(barcode: '8801047289685'),
-                    child: const Text('오미자 추가')),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                    onPressed: () => controller.setDPToken(barcode: '-DP123'),
-                    child: const Text('테스트 결제')),
-              ],
-            ),
-            const ProductPageFooter(),
+            ProductPageFooter(),
           ],
         ),
       ),

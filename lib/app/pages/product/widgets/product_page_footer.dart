@@ -4,7 +4,7 @@ import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
 import 'package:dimipay_design_kit/interfaces/dimipay_typography.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 import 'package:dimipay_kiosk/app/widgets/button.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:popover/popover.dart';
 
 class ProductPageFooter extends GetView<ProductPageController> {
@@ -59,8 +59,8 @@ class ProductPageFooter extends GetView<ProductPageController> {
                         onTap: () {
                           controller.faceDetectionStatus.value ==
                                   FaceDetectionStatus.detected
-                              ? null
-                              : controller.qrPayment();
+                              ? controller.qrPayment()
+                              : null;
                         },
                         child: Text(
                           "결제하기",
@@ -86,48 +86,49 @@ class ProductPageFooter extends GetView<ProductPageController> {
 
   Widget _buildPaymentMethodSelection(
       BuildContext context, DPColors colorTheme, DPTypography textTheme) {
-    return Container(
-      margin: const EdgeInsets.only(top: 36),
-      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-      decoration: BoxDecoration(
-        color: colorTheme.grayscale200,
-        border: Border.all(
-          color: colorTheme.grayscale300,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            width: 48,
-            height: 48,
-            'assets/images/cards/Naverpay.svg',
+    return Obx(() => Container(
+          margin: const EdgeInsets.only(top: 36),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+          decoration: BoxDecoration(
+            color: colorTheme.grayscale200,
+            border: Border.all(
+              color: colorTheme.grayscale300,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(8),
           ),
-          const SizedBox(width: 24),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                '네이버페이체크카드',
-                style:
-                    textTheme.header2.copyWith(color: colorTheme.grayscale800),
+              SvgPicture.asset(
+                width: 48,
+                height: 48,
+                controller.getLogoImagePath(
+                    controller.selectedPaymentMethod.value.cardCode),
               ),
-              const SizedBox(height: 4),
-              Text(
-                '이 카드로 결제',
-                style: textTheme.itemTitle.copyWith(
-                  color: colorTheme.grayscale600,
-                  fontWeight: FontWeight.w500,
-                ),
+              const SizedBox(width: 24),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.selectedPaymentMethod.value.name,
+                    style: textTheme.header2
+                        .copyWith(color: colorTheme.grayscale800),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '이 카드로 결제',
+                    style: textTheme.itemTitle.copyWith(
+                      color: colorTheme.grayscale600,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
+              const Spacer(),
+              const PaymentSelectionButton(),
             ],
           ),
-          const Spacer(),
-          const PaymentSelectionButton(),
-        ],
-      ),
-    );
+        ));
   }
 }
 
@@ -163,81 +164,52 @@ class PaymentSelectionButton extends GetView<ProductPageController> {
                   height: 8,
                 ),
                 SizedBox(
-                    width: 400,
-                    child: Column(
-                      children: [
-                        DPGestureDetectorWithFillInteraction(
-                          onTap: () {},
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 16),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  width: 48,
-                                  height: 48,
-                                  'assets/images/cards/Naverpay.svg',
-                                ),
-                                const SizedBox(width: 24),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                  width: 400,
+                  child: Column(
+                    children: controller.user.paymentMethods.methods
+                        .map((method) => DPGestureDetectorWithFillInteraction(
+                              onTap: () {
+                                controller.updateSelectedPaymentMethod(method);
+                                Navigator.of(context).pop();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 16),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      '네이버페이체크카드',
-                                      style: textTheme.header2.copyWith(
-                                          color: colorTheme.grayscale800),
+                                    SvgPicture.asset(
+                                      width: 48,
+                                      height: 48,
+                                      controller
+                                          .getLogoImagePath(method.cardCode),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '네이버카드 (782*)',
-                                      style: textTheme.itemTitle.copyWith(
-                                        color: colorTheme.grayscale600,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                    const SizedBox(width: 24),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          method.name,
+                                          style: textTheme.header2.copyWith(
+                                              color: colorTheme.grayscale800),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          '${method.cardCode} (${method.preview})',
+                                          style: textTheme.itemTitle.copyWith(
+                                            color: colorTheme.grayscale600,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        DPGestureDetectorWithFillInteraction(
-                          onTap: () {},
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 16),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  width: 48,
-                                  height: 48,
-                                  'assets/images/cards/Kakaobank.svg',
-                                ),
-                                const SizedBox(width: 24),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '카카오뱅크체크카드',
-                                      style: textTheme.header2.copyWith(
-                                          color: colorTheme.grayscale800),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '카카오카드 (782*)',
-                                      style: textTheme.itemTitle.copyWith(
-                                        color: colorTheme.grayscale600,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ),
               ],
             ),
           ),
