@@ -159,7 +159,7 @@ class HealthAreaSuccess extends GetView<OnboardPageController> {
         ),
         const SizedBox(width: 16),
         Icon(
-          Icons.monitor_heart_outlined,
+          Icons.monitor_outlined,
           color: colorTheme.grayscale500,
           size: 20,
         ),

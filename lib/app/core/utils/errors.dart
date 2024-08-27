@@ -117,3 +117,9 @@ class UnknownException implements Exception {
 
   UnknownException({this.message = ''});
 }
+
+class NoMatchedUserException implements Exception {
+  final String message;
+
+  NoMatchedUserException({this.message = ''});
+}

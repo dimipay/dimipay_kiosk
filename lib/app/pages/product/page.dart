@@ -44,6 +44,11 @@ class ProductPage extends GetView<ProductPageController> {
                     child: const Text('failed')),
                 const SizedBox(width: 8),
                 ElevatedButton(
+                    onPressed: () =>
+                        controller.getProduct(barcode: '8801047289685'),
+                    child: const Text('오미자 추가')),
+                const SizedBox(width: 8),
+                ElevatedButton(
                     onPressed: () => controller.setDPToken(barcode: '-DP123'),
                     child: const Text('테스트 결제')),
               ],

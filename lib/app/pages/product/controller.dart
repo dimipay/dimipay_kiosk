@@ -1,6 +1,8 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/service.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
@@ -13,10 +15,12 @@ class ProductPageController extends GetxController {
   final String? firstProduct = Get.arguments as String?;
   KioskService kioskService = Get.find<KioskService>();
   TransactionService transactionService = Get.find<TransactionService>();
+  FaceSignService faceSignService = Get.find<FaceSignService>();
 
   final RxList<ProductItem> productItems = <ProductItem>[].obs;
   late final String? transactionId;
   late String dpToken;
+  late User user;
 
   final Rx<FaceDetectionStatus> faceDetectionStatus =
       Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
@@ -34,7 +38,8 @@ class ProductPageController extends GetxController {
     if (firstProduct != null) {
       getProduct(barcode: firstProduct!);
     }
-    generateTransactionId();
+    await generateTransactionId();
+    await doFaceSignAction();
   }
 
   @override
@@ -43,7 +48,22 @@ class ProductPageController extends GetxController {
     deleteTransactionId(transactionId: transactionId!);
   }
 
-  void generateTransactionId() async {
+  Future<void> doFaceSignAction() async {
+    print('here1');
+    switch (faceDetectionStatus.value) {
+      case FaceDetectionStatus.searching:
+        // TODO: Handle this case.
+        break;
+      case FaceDetectionStatus.detected:
+        // TODO: Handle this case.
+        break;
+      case FaceDetectionStatus.failed:
+        // TODO: Handle this case.
+        break;
+    }
+  }
+
+  Future<void> generateTransactionId() async {
     try {
       transactionId = await transactionService.generateTransactionId();
     } catch (e) {
@@ -56,7 +76,7 @@ class ProductPageController extends GetxController {
       await transactionService.deleteTransactionId(
           transactionId: transactionId);
     } on DeletingTransactionIfNotFoundException catch (e) {
-      DPAlertModal.open(e.message);
+      // DPAlertModal.open(e.message);
     } catch (e) {
       print(e);
     }
