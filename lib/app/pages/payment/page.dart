@@ -31,11 +31,6 @@ class PaymentPage extends GetView<PaymentPageController> {
                   _buildRemainingTime(textTheme, colorTheme),
                   const SizedBox(height: 132),
                   _buildBackButton(textTheme, colorTheme),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                      onPressed: () => controller.setDPToken(
-                          barcode: '-DPb3itdeb-5aDbV8fHO5z0H'),
-                      child: const Text('테스트 결제'))
                 ],
               ),
             ),
