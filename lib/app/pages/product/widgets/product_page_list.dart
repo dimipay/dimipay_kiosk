@@ -14,7 +14,7 @@ class ProductPageList extends GetView<ProductPageController> {
     final textTheme = Theme.of(context).extension<DPTypography>()!;
 
     return Container(
-      padding: const EdgeInsets.all(36),
+      padding: const EdgeInsets.fromLTRB(36, 36, 36, 0),
       color: colorTheme.grayscale200,
       child: Column(
         children: [
