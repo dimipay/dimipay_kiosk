@@ -103,7 +103,7 @@ class PaymentPage extends GetView<PaymentPageController> {
           const SizedBox(width: 24),
           Text(
             '상품 스캔 화면으로 돌아가기',
-            style: textTheme.header1.copyWith(color: colorTheme.grayscale1000),
+            style: textTheme.header2.copyWith(color: colorTheme.grayscale600),
           ),
         ],
       ),

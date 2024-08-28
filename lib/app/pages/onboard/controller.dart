@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/service.dart';
 import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,21 @@ class OnboardPageController extends GetxController {
   void onClose() {
     _healthCheckTimer?.cancel();
     super.onClose();
+  }
+
+  Future<Product?> getProduct({required String input}) async {
+    try {
+      Product data = await kioskService.getProduct(barcode: input);
+      Get.offAndToNamed(Routes.PRODUCT, arguments: data);
+      return data;
+    } on ProductNotFoundException catch (e) {
+      DPAlertModal.open(e.message);
+    } on DisabledProductException catch (e) {
+      DPAlertModal.open(e.message);
+    } catch (e) {
+      print(e);
+    }
+    return null;
   }
 
   void _startPeriodicHealthCheck() {

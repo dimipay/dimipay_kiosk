@@ -18,7 +18,7 @@ import 'package:get/get.dart';
 enum FaceDetectionStatus { searching, detected, failed }
 
 class ProductPageController extends GetxController {
-  final String? firstProduct = Get.arguments as String?;
+  final Product? firstProduct = Get.arguments;
   KioskService kioskService = Get.find<KioskService>();
   TransactionService transactionService = Get.find<TransactionService>();
   FaceSignService faceSignService = Get.find<FaceSignService>();
@@ -47,7 +47,7 @@ class ProductPageController extends GetxController {
     super.onInit();
     await _initializeCamera();
     if (firstProduct != null) {
-      getProduct(barcode: firstProduct!);
+      addOrUpdateProductItem(firstProduct!);
     }
     await generateTransactionId();
     await doFaceSignAction();

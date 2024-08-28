@@ -135,3 +135,9 @@ class InvalidOTPException implements Exception {
 
   InvalidOTPException({this.message = ''});
 }
+
+class PaymentPinNotMatchException implements Exception {
+  final String message;
+
+  PaymentPinNotMatchException({this.message = ''});
+}

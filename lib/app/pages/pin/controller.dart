@@ -86,6 +86,8 @@ class PinPageController extends GetxController {
       });
     } on InvalidUserTokenException catch (e) {
       DPAlertModal.open(e.message);
+    } on PaymentPinNotMatchException catch (e) {
+      DPAlertModal.open(e.message);
     }
   }
 }

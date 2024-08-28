@@ -64,6 +64,9 @@ class FaceSignRepository {
       if (e.response?.data['code'] == 'ERR_INVALID_USER_TOKEN') {
         throw InvalidUserTokenException(message: e.response?.data['message']);
       }
+      if (e.response?.data['code'] == 'ERR_PAYMENT_PIN_NOT_MATCH') {
+        throw PaymentPinNotMatchException(message: e.response?.data['message']);
+      }
       rethrow;
     }
   }
