@@ -88,6 +88,8 @@ class PinPageController extends GetxController {
       DPAlertModal.open(e.message);
     } on PaymentPinNotMatchException catch (e) {
       DPAlertModal.open(e.message);
+    } on TryLimitExceededException catch (e) {
+      DPAlertModal.open(e.message);
     }
   }
 }

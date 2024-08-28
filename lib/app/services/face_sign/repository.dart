@@ -67,6 +67,9 @@ class FaceSignRepository {
       if (e.response?.data['code'] == 'ERR_PAYMENT_PIN_NOT_MATCH') {
         throw PaymentPinNotMatchException(message: e.response?.data['message']);
       }
+      if (e.response?.data['code'] == 'ERR_TRY_LIMIT_EXCEEDED') {
+        throw TryLimitExceededException(message: e.response?.data['message']);
+      }
       rethrow;
     }
   }

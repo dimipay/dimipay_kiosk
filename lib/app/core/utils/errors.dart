@@ -141,3 +141,9 @@ class PaymentPinNotMatchException implements Exception {
 
   PaymentPinNotMatchException({this.message = ''});
 }
+
+class TryLimitExceededException implements Exception {
+  final String message;
+
+  TryLimitExceededException({this.message = ''});
+}
