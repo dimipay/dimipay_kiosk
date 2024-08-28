@@ -165,7 +165,6 @@ class ProductPageController extends GetxController {
   }
 
   void faceSignPayment() {
-    restartFaceDetection();
     Get.toNamed(Routes.PIN, arguments: {
       'pinPageType': PinPageType.facesign,
       'type': PaymentType.faceSign,
@@ -174,6 +173,7 @@ class ProductPageController extends GetxController {
       'paymentPinAuthURL': user!.paymentMethods.paymentPinAuthURL,
       'paymentMethodId': selectedPaymentMethod.value!.id,
     });
+    restartFaceDetection();
   }
 
   Future<Product?> getProduct({required String barcode}) async {
