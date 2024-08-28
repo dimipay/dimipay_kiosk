@@ -1,8 +1,7 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 import 'package:dimipay_kiosk/app/provider/model/response.dart';
-import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
-import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
+import 'package:dimipay_kiosk/app/services/transaction/model.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +39,7 @@ class TransactionRepository {
     }
   }
 
-  Future<void> payQR({
+  Future<TransactionResult> payQR({
     required String dpToken,
     required String transactionId,
     required List<Map<String, dynamic>> formattedProductList,
@@ -48,7 +47,7 @@ class TransactionRepository {
     String url = '/kiosk/qr';
 
     try {
-      await secureApi.post(
+      DPHttpResponse response = await secureApi.post(
         url,
         data: {
           'products': formattedProductList,
@@ -56,6 +55,8 @@ class TransactionRepository {
         options: Options(
             headers: {'Transaction-ID': transactionId, 'DP-Token': dpToken}),
       );
+
+      return TransactionResult.fromJson(response.data);
     } on DioException catch (e) {
       if (e.response?.data['code'] == 'ERR_FORBIDDEN_USER') {
         throw ForbiddenUserException(message: e.response?.data['message']);
@@ -70,11 +71,11 @@ class TransactionRepository {
         throw FailedToCancelTransactionException(
             message: e.response?.data['message']);
       }
-      throw UnknownException(message: e.response?.data['message']);
+      rethrow;
     }
   }
 
-  Future<void> payFaceSign({
+  Future<TransactionResult> payFaceSign({
     required String transactionId,
     required List<Map<String, dynamic>> formattedProductList,
     required String paymentMethodId,
@@ -83,7 +84,7 @@ class TransactionRepository {
     String url = '/kiosk/face-sign/payments/approve';
 
     try {
-      await secureApi.post(
+      DPHttpResponse response = await secureApi.post(
         url,
         data: {
           'products': formattedProductList,
@@ -94,12 +95,14 @@ class TransactionRepository {
           'DP-PAYMENT-PIN-OTP': otp
         }),
       );
+
+      return TransactionResult.fromJson(response.data);
     } on DioException catch (e) {
+      if (e.response?.data['code'] == 'ERR_INVALID_OTP') {
+        throw InvalidOTPException(message: e.response?.data['message']);
+      }
       if (e.response?.data['code'] == 'ERR_FORBIDDEN_USER') {
         throw ForbiddenUserException(message: e.response?.data['message']);
-      }
-      if (e.response?.data['code'] == 'ERR_WRONG_PAY_TOKEN') {
-        throw WrongPayTokenException(message: e.response?.data['message']);
       }
       if (e.response?.data['code'] == 'ERR_UNKNOWN_PRODUCT') {
         throw UnknownProductException(message: e.response?.data['message']);
@@ -108,7 +111,7 @@ class TransactionRepository {
         throw FailedToCancelTransactionException(
             message: e.response?.data['message']);
       }
-      throw UnknownException(message: e.response?.data['message']);
+      rethrow;
     }
   }
 }

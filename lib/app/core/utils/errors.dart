@@ -129,3 +129,9 @@ class InvalidUserTokenException implements Exception {
 
   InvalidUserTokenException({this.message = ''});
 }
+
+class InvalidOTPException implements Exception {
+  final String message;
+
+  InvalidOTPException({this.message = ''});
+}

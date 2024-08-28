@@ -1,4 +1,5 @@
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
+import 'package:dimipay_kiosk/app/services/transaction/model.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
@@ -32,35 +33,39 @@ class TransactionService extends GetxController {
     }
   }
 
-  Future<void> payQR({
+  Future<TransactionResult> payQR({
     required String transactionId,
     required String dpToken,
     required List<Map<String, dynamic>> formattedProductList,
   }) async {
     try {
-      await repository.payQR(
+      TransactionResult data = await repository.payQR(
         transactionId: transactionId,
         dpToken: dpToken,
         formattedProductList: formattedProductList,
       );
+
+      return data;
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<void> payFaceSign({
+  Future<TransactionResult> payFaceSign({
     required String transactionId,
     required String otp,
     required String paymentMethodId,
     required List<Map<String, dynamic>> formattedProductList,
   }) async {
     try {
-      await repository.payFaceSign(
+      TransactionResult data = await repository.payFaceSign(
         transactionId: transactionId,
         otp: otp,
         paymentMethodId: paymentMethodId,
         formattedProductList: formattedProductList,
       );
+
+      return data;
     } catch (e) {
       rethrow;
     }
