@@ -34,10 +34,11 @@ class TestPage extends StatelessWidget {
       body: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
-          linkToRoute(Routes.ONBOARD),
+          linkToRoute(Routes.ONBOARDING),
           linkToRoute(Routes.PIN),
-          linkToRoute(Routes.PAYMENT),
           linkToRoute(Routes.PRODUCT),
+          linkToRoute(Routes.PAYMENT),
+          linkToRoute(Routes.PAYMENT_PENDING),
           linkToRoute(Routes.PAYMENT_SUCCESS),
           linkToRoute(Routes.PAYMENT_FAILED),
         ],

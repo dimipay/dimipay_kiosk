@@ -1,87 +1,95 @@
-import 'package:get/get.dart';
-import 'dart:math';
-
-import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
+import 'package:get/get.dart';
+
+enum PinPageType {
+  login,
+  facesign,
+}
 
 class PinPageController extends GetxController {
-  static PinPageController get to => Get.find<PinPageController>();
+  AuthService authService = Get.find<AuthService>();
+  FaceSignService faceSignService = Get.find<FaceSignService>();
 
-  final RxList<int> numbers = List.generate(10, (index) => index).obs;
-  final RxList<int> pressedPin = <int>[].obs;
-  final RxList<int> _input = <int>[].obs;
-  final RxInt _inputLength = 0.obs;
-  final RxBool _isPressed = false.obs;
+  final PinPageType pinPageType =
+      Get.arguments?['pinPageType'] ?? PinPageType.login;
 
-  final _dimension = [
-    [0, 3, 6],
-    [1, 4, 7, 9],
-    [2, 5, 8]
-  ];
+  final PaymentType? paymentType = Get.arguments?['type'];
+  final String? transactionId = Get.arguments?['transactionId'];
+  final List<dynamic>? productItems = Get.arguments?['productItems'];
+  final String? paymentPinAuthURL = Get.arguments?['paymentPinAuthURL'];
+  final String? paymentMethodId = Get.arguments?['paymentMethodId'];
 
-  int get inputLength => _inputLength.value;
-  bool get isPressed => _isPressed.value;
-  bool get canDelete => _inputLength.value > 0;
+  final Rx<List<int>> _nums = Rx([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-  set pressedPin(List<int> value) => pressedPin.value = value;
+  List<int> get nums => _nums.value;
 
-  PinPageController init() {
-    _input.clear();
-    _inputLength.value = 0;
-    numbers.shuffle();
-    return this;
+  final Rx<String> _pin = Rx('');
+
+  String get pin => _pin.value;
+
+  bool get backBtnEnabled => pin.isNotEmpty && pin.length < 4;
+
+  bool get numpadEnabled => pin.length < 4;
+
+  @override
+  void onInit() {
+    _shufleList();
+    super.onInit();
   }
 
-  List<int> _random(int number) {
-    var index = numbers.indexOf(number);
-    var row = index == 9 ? 1 : index % 3;
-    var randomIndex = Random();
-    var returnPins = [number];
-    returnPins.add(numbers[_dimension[0][randomIndex.nextInt(3)]]);
-    returnPins.add(numbers[_dimension[1][randomIndex.nextInt(4)]]);
-    returnPins.add(numbers[_dimension[2][randomIndex.nextInt(3)]]);
-    returnPins.removeAt(++row);
-    return returnPins;
+  void _shufleList() {
+    _nums.value.shuffle();
+    _nums.refresh();
   }
 
-  void down(int number) {
-    _isPressed.value = true;
-    if (number >= 10) {
-      pressedPin = [number];
-      return;
-    }
-    pressedPin = _random(number);
-  }
-
-  void canceled() {
-    _isPressed.value = false;
-    pressedPin.clear();
-  }
-
-  void up(int number) async {
-    _isPressed.value = false;
-    pressedPin.clear();
-    if (inputLength == 4) return;
-    if (number == -2) {
-      if (inputLength == 0) return;
-      _input.removeLast();
-      _inputLength.value--;
-      return;
-    }
-    if (number == -1) {
-      Get.back();
-      return;
-    }
-
-    _input.add(number);
-    _inputLength.value++;
-    if (inputLength == 4) {
-      if (AuthService.to.isAuthenticated) {
-        await FaceSignService.to.approvePin(_input.join().toString());
-      } else {
-        await AuthService.to.loginKiosk(_input.join().toString());
+  void onPinTap(String value) async {
+    if (value == 'del') {
+      if (pin.length > 0 && pin.length < 4) {
+        _pin.value = pin.substring(0, pin.length - 1);
       }
-      init();
+      return;
+    }
+    _pin.value += value;
+  }
+
+  void clearPin() {
+    _pin.value = '';
+  }
+
+  Future<void> loginWithPasscode() async {
+    try {
+      await authService.loginWithPasscode(passcode: pin);
+      Get.offNamed(Routes.ONBOARDING);
+    } on PasscodeNotFoundException catch (e) {
+      DPAlertModal.open(e.message);
+    }
+  }
+
+  Future<void> payFaceSign() async {
+    try {
+      String otp = await faceSignService.getFaceSignOTP(
+        transactionId: transactionId!,
+        paymentPinAuthURL: paymentPinAuthURL!,
+        pin: pin,
+      );
+      Get.offNamed(Routes.PAYMENT_PENDING, arguments: {
+        'type': paymentType,
+        'transactionId': transactionId,
+        'productItems': productItems,
+        'paymentMethodId': paymentMethodId,
+        'otp': otp,
+      });
+    } on InvalidUserTokenException catch (e) {
+      DPAlertModal.open(e.message);
+    } on PaymentPinNotMatchException catch (e) {
+      DPAlertModal.open(e.message);
+    } on TryLimitExceededException catch (e) {
+      DPAlertModal.open(e.message);
     }
   }
 }

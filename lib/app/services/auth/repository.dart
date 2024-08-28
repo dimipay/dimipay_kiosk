@@ -1,59 +1,60 @@
-import 'package:dio/dio.dart';
-
-import 'package:dimipay_kiosk/app/provider/api_interface.dart';
-import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
-import 'package:dimipay_kiosk/app/services/auth/model.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/provider/api_interface.dart';
+import 'package:dimipay_kiosk/app/provider/model/response.dart';
+import 'package:dio/dio.dart';
+import 'package:get/instance_manager.dart';
+
+import 'key_manager/jwt.dart';
 
 class AuthRepository {
-  Future<Login> authLogin(String passcode) async {
-    String url = "/kiosk/auth/login";
+  final SecureApiProvider secureApi;
+
+  AuthRepository({SecureApiProvider? secureApi})
+      : secureApi = secureApi ?? Get.find<SecureApiProvider>();
+
+  Future<Map> loginWithPasscode({required String passcode}) async {
+    String url = '/kiosk/auth/login';
+
+    final body = {'passcode': passcode};
+
     try {
-      Response response = await ApiProvider.to.post(
+      DPHttpResponse response = await secureApi.post(
         url,
-        data: {
-          "passcode": passcode,
-        },
+        data: body,
       );
-      return Login.fromJson(response.data["data"]);
+      return response.data;
     } on DioException catch (e) {
-      AlertModal.to.show(e.response?.data["message"]);
-      throw IncorrectPinException(e.response?.data["message"]);
+      if (e.response?.data['code'] == 'ERR_PASSCODE_NOT_FOUND') {
+        throw PasscodeNotFoundException(message: e.response?.data['message']);
+      }
+      rethrow;
     }
   }
 
-  Future<JWTToken> authRefresh(String refreshToken) async {
+  ///returns accessToken
+  Future<JwtToken> refreshAccessToken(String refreshToken) async {
     String url = "/kiosk/auth/refresh";
-    try {
-      Response response = await ApiProvider.to.get(
-        url,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $refreshToken',
-          },
-        ),
-      );
-      return JWTToken.fromJson(response.data["data"]["tokens"]);
-    } on DioException catch (_) {
-      throw NoRefreshTokenException();
-    }
+
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $refreshToken',
+    };
+    DPHttpResponse response =
+        await secureApi.get(url, options: Options(headers: headers));
+    return JwtToken(
+        accessToken: response.data['tokens']['accessToken'],
+        refreshToken: response.data['tokens']['refreshToken']);
   }
 
-  Future<String?> authEncryptionKey(String rsaKey) async {
-    String url = "/kiosk/auth/encryption-key";
-    try {
-      Response response = await ApiProvider.to.get(
-        url,
-        options: Options(
-          headers: {
-            "Dp-Encryption-Public-Key": rsaKey,
-          },
-        ),
-      );
-      return response.data["data"]["encryptionKey"];
-    } on DioException catch (e) {
-      AlertModal.to.show(e.response?.data["message"]);
-      throw NoAccessTokenException(e.response?.data["message"]);
-    }
+  Future<String> getEncryptionKey(
+      String publicKey, String onBoardingToken) async {
+    String url = '/kiosk/auth/encryption-key';
+    publicKey = publicKey.replaceAll('\n', '\\r\\n');
+    Map<String, dynamic> headers = {
+      'Dp-Encryption-Public-Key': publicKey,
+      'Authorization': 'Bearer $onBoardingToken',
+    };
+    DPHttpResponse response =
+        await secureApi.get(url, options: Options(headers: headers));
+    return response.data['encryptionKey'];
   }
 }

@@ -1,37 +1,33 @@
+import 'package:dimipay_kiosk/app/pages/product/controller.dart';
+import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
+import 'package:dimipay_kiosk/app/pages/product/widgets/product_page_header.dart';
+import 'package:dimipay_kiosk/app/pages/product/widgets/product_page_list.dart';
+import 'package:dimipay_kiosk/app/pages/product/widgets/product_page_footer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/pages/product/widget/product_list.dart';
-import 'package:dimipay_kiosk/app/pages/product/widget/product_desk.dart';
-import 'package:dimipay_kiosk/app/pages/product/widget/product_bar.dart';
-import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
-import 'package:dimipay_kiosk/app/services/product/service.dart';
-import 'package:dimipay_kiosk/app/pages/product/controller.dart';
-import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
-import 'package:dimipay_kiosk/app/services/qr/service.dart';
-
 class ProductPage extends GetView<ProductPageController> {
-  const ProductPage({super.key});
+  const ProductPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FaceSignService.to.findUser();
-      AuthService.to.createEncryptionKey();
-    });
-
     return BarcodeScanner(
       onKey: (input) async {
-        if (input.substring(0, 3) == "-DP" || input.substring(0, 6) == "688000") {
-          await QRService.to.approvePayment(input);
+        if (input.startsWith('-DP') || input.startsWith('688000')) {
+          controller.setDPToken(barcode: input);
         } else {
-          await ProductService.to.addProduct(input);
+          controller.getProduct(barcode: input);
         }
       },
       child: const Scaffold(
-        body: SafeArea(
-          child: Column(children: [ProductBar(), ProductList(), ProductDesk()]),
+        body: Column(
+          children: [
+            ProductPageHeader(),
+            Expanded(
+              child: ProductPageList(),
+            ),
+            ProductPageFooter(),
+          ],
         ),
       ),
     );

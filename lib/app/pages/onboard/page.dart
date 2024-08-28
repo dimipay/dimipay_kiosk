@@ -1,114 +1,60 @@
-import 'package:dimipay_design_kit/dimipay_design_kit.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
+import 'package:dimipay_design_kit/interfaces/dimipay_typography.dart';
+import 'package:dimipay_kiosk/app/pages/onboard/controller.dart';
+import 'package:dimipay_kiosk/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/services/product/service.dart';
-import 'package:dimipay_kiosk/app/pages/onboard/controller.dart';
-import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
-import 'package:dimipay_kiosk/app/services/health/service.dart';
-import 'package:dimipay_kiosk/app/routes/routes.dart';
-
-class OnboardStatus extends StatelessWidget {
-  const OnboardStatus({super.key, required this.title, required this.icon, required this.color});
-
-  final String title;
-  final IconData icon;
-  final Color color;
+class OnboardingPage extends GetView<OnboardPageController> {
+  const OnboardingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        DPIcons(icon, fill: 0, size: 20, color: color),
-        const SizedBox(width: 6),
-        Text(title, style: DPTypography.itemTitle(color: color)),
-      ],
-    );
-  }
-}
-
-class OnboardDivider extends StatelessWidget {
-  const OnboardDivider({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(width: 4, height: 4, decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: DPColors.grayscale500));
-  }
-}
-
-class OnboardPage extends GetView<OnboardPageController> {
-  const OnboardPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      HealthService.to.checkHealth();
-    });
-
+    DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
+    DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
     return BarcodeScanner(
       onKey: (input) async {
-        if (await ProductService.to.addProduct(input)) {
-          Get.toNamed(Routes.PRODUCT);
-        }
+        controller.getProduct(input: input);
       },
       child: Scaffold(
         body: SafeArea(
           child: SizedBox.expand(
             child: Column(
               children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset("assets/images/dimipay_logo.svg"),
-                          const SizedBox(width: 24),
-                          SvgPicture.asset("assets/images/dimipay_typography.svg"),
-                        ],
-                      ),
-                      const SizedBox(height: 64),
-                      Text("매점에 오신 것을 환영합니다!", style: DPTypography.title(color: DPColors.grayscale1000)),
-                      const SizedBox(height: 16),
-                      Text("물건의 바코드를 스캔하여 결제를 시작해주세요", style: DPTypography.header2(color: DPColors.grayscale700)),
-                    ],
-                  ),
+                const Spacer(),
+                Column(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/dimipay_logo.svg',
+                      width: 346,
+                      height: 72,
+                    ),
+                    const SizedBox(height: 64),
+                    Text(
+                      '매점에 오신 것을 환영합니다!',
+                      style: textTheme.title
+                          .copyWith(color: colorTheme.grayscale1000),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '물건의 바코드를 스캔하여 결제를 시작해주세요.',
+                      style: textTheme.header2
+                          .copyWith(color: colorTheme.grayscale700),
+                    ),
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                  child: Row(
-                    children: [
-                      Obx(
-                        () => OnboardStatus(
-                          icon: HealthService.to.status == null ? Symbols.hourglass_rounded : Symbols.dns_rounded,
-                          title: HealthService.to.status == null
-                              ? "서버 연결 중"
-                              : HealthService.to.status == "healthy"
-                                  ? "서버 연결 완료"
-                                  : "서버 연결 실패",
-                          color: HealthService.to.status == null ? DPColors.primaryNegative : DPColors.grayscale500,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Obx(
-                        () => HealthService.to.status == null
-                            ? const SizedBox(height: 0)
-                            : Row(
-                                children: [
-                                  const OnboardDivider(),
-                                  const SizedBox(width: 16),
-                                  OnboardStatus(icon: Symbols.browse_activity_rounded, title: HealthService.to.name!, color: DPColors.grayscale500),
-                                  const SizedBox(width: 16),
-                                  const OnboardDivider(),
-                                  const SizedBox(width: 16),
-                                  const OnboardStatus(icon: Symbols.school_rounded, title: "한국디지털미디어고등학교", color: DPColors.grayscale500),
-                                ],
-                              ),
-                      ),
-                    ],
+                const Spacer(),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                  child: Obx(
+                    () => controller.healthAreaStatus.value.when(
+                      loading: () => const HealthAreaLoading(),
+                      success: () => const HealthAreaSuccess(),
+                      failed: () => const HealthAreaFailed(),
+                    ),
                   ),
                 ),
               ],
@@ -116,6 +62,122 @@ class OnboardPage extends GetView<OnboardPageController> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class HealthAreaLoading extends StatelessWidget {
+  const HealthAreaLoading({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
+    DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
+    return Row(
+      children: [
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(colorTheme.grayscale500),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '서버 연결 확인 중...',
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+      ],
+    );
+  }
+}
+
+class HealthAreaFailed extends StatelessWidget {
+  const HealthAreaFailed({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
+    DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
+    return Row(
+      children: [
+        Icon(
+          Icons.dns_outlined,
+          color: colorTheme.primaryNegative,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '서버 연결 실패',
+          style:
+              textTheme.description.copyWith(color: colorTheme.primaryNegative),
+        ),
+      ],
+    );
+  }
+}
+
+class HealthAreaSuccess extends GetView<OnboardPageController> {
+  const HealthAreaSuccess({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DPColors colorTheme = Theme.of(context).extension<DPColors>()!;
+    DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
+    return Row(
+      children: [
+        Icon(
+          Icons.dns_outlined,
+          color: colorTheme.grayscale500,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '서버 연결 완료',
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+        const SizedBox(width: 16),
+        Container(
+          width: 4,
+          height: 4,
+          decoration: BoxDecoration(
+            color: colorTheme.grayscale500,
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Icon(
+          Icons.monitor_outlined,
+          color: colorTheme.grayscale500,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          controller.authService.name!,
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+        const SizedBox(width: 16),
+        Container(
+          width: 4,
+          height: 4,
+          decoration: BoxDecoration(
+            color: colorTheme.grayscale500,
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Icon(
+          Icons.school_outlined,
+          color: colorTheme.grayscale500,
+          size: 20,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '한국디지털미디어고등학교',
+          style: textTheme.description.copyWith(color: colorTheme.grayscale500),
+        ),
+      ],
     );
   }
 }

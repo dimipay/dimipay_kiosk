@@ -1,14 +1,13 @@
-import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/provider/api.dart';
+import 'package:dimipay_kiosk/app/provider/api_interface.dart';
+import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/theme/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-import 'package:dimipay_kiosk/app/services/product/service.dart';
-import 'package:dimipay_kiosk/app/services/health/service.dart';
-import 'package:dimipay_kiosk/app/provider/api_interface.dart';
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
-import 'package:dimipay_kiosk/app/widgets/alert_modal.dart';
-import 'package:dimipay_kiosk/app/provider/api.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AppLoader {
   Future<void> load() async {
@@ -19,12 +18,12 @@ class AppLoader {
     ]);
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    Get.lazyPut(() => AlertModal());
-    Get.lazyPut(() => HealthService());
-    Get.lazyPut(() => ProductService());
-    Get.lazyPut<ApiProvider>(() => ProdApiProvider());
+    await Hive.initFlutter();
 
-    await Get.putAsync(() => FaceSignService().init());
-    await Get.putAsync(() => AuthService().init());
+    Get.lazyPut<SecureApiProvider>(() => ProdSecureApiProvider());
+    await Get.putAsync(AuthService().init);
+    await Get.putAsync(ThemeService().init);
+
+    await initializeDateFormatting('ko_KR');
   }
 }

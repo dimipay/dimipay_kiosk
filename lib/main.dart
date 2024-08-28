@@ -1,21 +1,40 @@
-import 'package:dimipay_design_kit/dimipay_design_kit.dart';
+import 'package:dimipay_kiosk/app/core/theme/dark.dart';
+import 'package:dimipay_kiosk/app/core/theme/light.dart';
+import 'package:dimipay_kiosk/app/services/theme/service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/core/utils/loader.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/routes/pages.dart';
 
+String getInitialRoute({bool debug = false}) {
+  return debug ? Routes.TEST : Routes.ONBOARDING;
+}
+
 void main() async {
   await AppLoader().load();
   runApp(
-    GetMaterialApp(
-      title: '디미페이 키오스크',
-      getPages: AppPages.pages,
-      initialRoute: AuthService.to.isAuthenticated ? Routes.ONBOARD : Routes.PIN,
-      theme: ThemeData(fontFamily: 'SUITv1', primaryColor: DPColors.primaryBrand, scaffoldBackgroundColor: DPColors.grayscale100),
-      debugShowCheckedModeBanner: false,
+    Obx(
+      () {
+        ThemeService themeService = Get.find<ThemeService>();
+        return GetMaterialApp(
+          builder: (context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.noScaling),
+              child: child!,
+            );
+          },
+          title: '디미페이 키오스크',
+          initialRoute: getInitialRoute(debug: false),
+          getPages: AppPages.pages,
+          debugShowCheckedModeBanner: false,
+          theme: lightThemeData,
+          darkTheme: darkThemeData,
+          themeMode: themeService.themeMode,
+        );
+      },
     ),
   );
 }

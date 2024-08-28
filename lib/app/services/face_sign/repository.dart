@@ -1,96 +1,76 @@
-import 'package:cryptography/cryptography.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:dio/dio.dart';
-import 'dart:typed_data';
-import 'dart:convert';
-
-import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
-import 'package:dimipay_kiosk/app/services/product/service.dart';
-import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
-import 'package:dimipay_kiosk/app/provider/api_interface.dart';
-import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:camera/camera.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/provider/api_interface.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
+import 'package:dio/dio.dart';
+import 'package:get/instance_manager.dart';
+import 'dart:typed_data';
+
+// ignore: depend_on_referenced_packages
+import 'package:http_parser/http_parser.dart';
 
 class FaceSignRepository {
-  Future<List<User>> faceSign(Uint8List imageBytes) async {
+  final SecureApiProvider secureApi;
+
+  FaceSignRepository({SecureApiProvider? secureApi})
+      : secureApi = secureApi ?? Get.find<SecureApiProvider>();
+
+  Future<User> getUserWithFaceSign(
+      {required Uint8List file, required String transactionId}) async {
     String url = "/kiosk/face-sign";
 
     try {
-      Response response = await ApiProvider.to.post(
-        url,
-        data: FormData.fromMap(
-          {
-            "image": MultipartFile.fromBytes(
-              imageBytes,
-              filename: "image.jpeg",
-              contentType: MediaType('image', 'jpeg'),
-            ),
-          },
-        ),
-        options: Options(
-          contentType: Headers.multipartFormDataContentType,
-        ),
-      );
+      final response = await secureApi.post(url,
+          data: FormData.fromMap(
+            {
+              'image': MultipartFile.fromBytes(
+                file,
+                filename: "image.jpeg",
+                contentType: MediaType('image', 'jpeg'),
+              ),
+            },
+          ),
+          options: Options(headers: {'Transaction-ID': transactionId}));
 
-      return [for (int i = 0; i < (response.data["data"]["foundUsers"] as List).length; i++) User.fromJson(response.data["data"]["foundUsers"][i])];
-    } on DioException {
-      throw NoUserFoundException();
-    }
-  }
-
-  Future<String?> faceSignPaymentsPin(String url, String pin) async {
-    var encrypt = await AesGcm.with128bits(nonceLength: 12).encrypt(Uint8List.fromList({"\"pin\"": "\"$pin\""}.toString().codeUnits), secretKey: SecretKey((await AuthService.to.encryptionKey)!));
-
-    try {
-      Response response = await ApiProvider.to.post(
-        url,
-        data: base64.encode(
-          [
-            12,
-            ...encrypt.nonce,
-            ...encrypt.mac.bytes,
-            ...encrypt.cipherText,
-          ],
-        ),
-        options: Options(
-          contentType: "application/octet-stream",
-        ),
-      );
-      return response.data["data"]["otp"];
+      return User.fromJson(response.data["foundUsers"][0]);
     } on DioException catch (e) {
-      throw IncorrectPinException(e.response?.data["message"]);
+      if (e.response?.data['code'] == 'ERR_NO_MATCHED_USER') {
+        throw NoMatchedUserException(message: e.response?.data['message']);
+      }
+      rethrow;
     }
   }
 
-  Future<PaymentApprove?> faceSignPaymentsApprove(String otp) async {
-    String url = "/kiosk/face-sign/payments/approve";
-
+  Future<String> getFaceSignOTP(
+      {required String transactionId,
+      required String paymentPinAuthURL,
+      required String pin}) async {
     try {
-      Response response = await ApiProvider.to.post(
-        url,
+      final response = await secureApi.post(
+        paymentPinAuthURL,
         options: Options(
           headers: {
-            "DP-PAYMENT-PIN-OTP": otp,
-            "DP-DCH-USER-ID": FaceSignService.to.user.id,
+            'Transaction-ID': transactionId,
           },
         ),
+        encrypt: true,
         data: {
-          "products": [
-            for (var product in ProductService.to.productList.keys) {"id": ProductService.to.productList[product]!.id, "amount": ProductService.to.productList[product]!.count.value}
-          ],
-          "paymentMethodId": FaceSignService.to.user.paymentMethods.methods[FaceSignService.to.paymentIndex.value].id,
+          'pin': pin,
         },
       );
 
-      if (response.data["data"]["status"] != PaymentResponse.success) {
-        throw PaymentApproveFailedException(response.data["data"]["message"]);
-      }
-
-      return PaymentApprove.fromJson(response.data["data"]);
+      return response.data["otp"];
     } on DioException catch (e) {
-      throw PaymentApproveFailedException(e.response?.data["message"]);
+      if (e.response?.data['code'] == 'ERR_INVALID_USER_TOKEN') {
+        throw InvalidUserTokenException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_PAYMENT_PIN_NOT_MATCH') {
+        throw PaymentPinNotMatchException(message: e.response?.data['message']);
+      }
+      if (e.response?.data['code'] == 'ERR_TRY_LIMIT_EXCEEDED') {
+        throw TryLimitExceededException(message: e.response?.data['message']);
+      }
+      rethrow;
     }
   }
 }

@@ -1,72 +1,116 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter/foundation.dart';
-import 'package:fast_rsa/fast_rsa.dart';
-import 'package:get/get.dart';
-import 'dart:convert';
 import 'dart:async';
-
-import 'package:dimipay_kiosk/app/services/auth/repository.dart';
-import 'package:dimipay_kiosk/app/services/auth/model.dart';
+import 'dart:convert';
+import 'dart:developer' as dev;
+import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
+import 'package:dimipay_kiosk/app/services/auth/repository.dart';
+import 'package:fast_rsa/fast_rsa.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
-class AuthService extends GetxController {
-  static AuthService get to => Get.find<AuthService>();
+import 'key_manager/aes.dart';
+import 'key_manager/jwt.dart';
+import 'key_manager/rsa.dart';
 
+class AuthService {
   final AuthRepository repository;
-  final Rx<String?> _deviceName = Rx(null);
-  final Rx<Uint8List?> _encryptionKey = Rx(null);
-  final Rx<KeyPair> _rsaKey = Rx(KeyPair("", ""));
-  final Rx<JWTToken> _jwtToken = Rx(JWTToken());
+
+  late final JwtManager jwt;
+  late final AesManager aes;
+  late final RsaManager rsa;
+
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  AuthService({AuthRepository? repository}) : repository = repository ?? AuthRepository();
-  bool get isAuthenticated => _jwtToken.value.accessToken != null;
-  String? get deviceName => _deviceName.value;
-  String? get accessToken => _jwtToken.value.accessToken;
-  Future<Uint8List?> get encryptionKey async {
-    return _encryptionKey.value ?? await createEncryptionKey();
-  }
+  String? name;
+
+  bool get isPasscodeLoginSuccess => jwt.onboardingToken.accessToken != null;
+
+  bool get isAuthenticated => jwt.token.accessToken != null;
+
+  Completer _refreshTokenApiCompleter = Completer()..complete();
+
+  AuthService({AuthRepository? repository})
+      : repository = repository ?? AuthRepository();
 
   Future<AuthService> init() async {
-    final String? refreshToken = await _storage.read(key: 'refreshToken');
-    _deviceName.value = await _storage.read(key: 'deviceName');
-    if (refreshToken == null || _deviceName.value == null) {
-      return this;
-    }
-    try {
-      _jwtToken.value = await repository.authRefresh(refreshToken);
-    } catch (_) {
-      await _storage.deleteAll();
-    }
+    jwt = await JwtManager().init();
+    aes = await AesManager().init();
+    rsa = await RsaManager().init();
+
+    name = await _storage.read(key: 'name');
+
     return this;
   }
 
-  Future<void> _storeLoginData(Login loginData) async {
-    await _storage.write(key: "deviceName", value: loginData.name);
-    await _storage.write(key: "refreshToken", value: loginData.tokens.refreshToken);
-    _deviceName.value = loginData.name;
-    _jwtToken.value = loginData.tokens;
+  Future<void> _getEncryptionKey() async {
+    rsa.setKey(await RsaManager.generateRSAKeyPair());
+    final String rawAesEncKey = await repository.getEncryptionKey(
+        rsa.key!.publicKey.replaceAll('\n', '\\r\\n'),
+        jwt.onboardingToken.accessToken!);
+
+    aes.setKey(await RSA.decryptOAEPBytes(
+        base64.decode(rawAesEncKey), '', Hash.SHA1, rsa.key!.privateKey));
   }
 
-  Future<void> refreshAccessToken() async {
-    _jwtToken.value = await repository.authRefresh(_jwtToken.value.refreshToken!);
+  Future<void> loginWithPasscode({required String passcode}) async {
+    Map loginResult = await repository.loginWithPasscode(passcode: passcode);
+
+    jwt.setOnboardingToken(
+        JwtToken(accessToken: loginResult['tokens']['accessToken']));
+
+    await jwt.setToken(JwtToken(
+        accessToken: loginResult['tokens']['accessToken'],
+        refreshToken: loginResult['tokens']['refreshToken']));
+    dev.log('logged in successfully!');
+    dev.log(
+        'accessToken expires at ${JwtDecoder.getExpirationDate(jwt.token.accessToken!)}');
+    dev.log(
+        'refreshToken expires at ${JwtDecoder.getExpirationDate(jwt.token.refreshToken!)}');
+
+    name = loginResult['name'];
+    await _storage.write(key: 'name', value: name);
+
+    await _getEncryptionKey();
   }
 
-  Future<void> loginKiosk(String pin) async {
+  ///Throws exception and route to LoginPage if refresh faild
+  Future<void> refreshAcessToken() async {
+    // refreshTokenApi의 동시 다발적인 호출을 방지하기 위해 completer를 사용함. 동시 다발적으로 이 함수를 호출해도 api는 1번만 호출 됨.
+    if (_refreshTokenApiCompleter.isCompleted == false) {
+      return _refreshTokenApiCompleter.future;
+    }
+
+    //첫 호출(null)이거나 이미 완료된 호출(completed completer)일 경우 새 객체 할당
+    _refreshTokenApiCompleter = Completer();
     try {
-      await _storeLoginData(await repository.authLogin(pin));
-      Get.offAndToNamed(Routes.ONBOARD);
-    } catch (_) {
-      return;
+      JwtToken newJwt =
+          await repository.refreshAccessToken(jwt.token.refreshToken!);
+      if (jwt.token.refreshToken == null) {
+        throw NoRefreshTokenException();
+      }
+      dev.log('token refreshed!');
+      dev.log(
+          'accessToken expires at ${JwtDecoder.getExpirationDate(newJwt.accessToken!)}');
+      dev.log(
+          'refreshToken expires at ${JwtDecoder.getExpirationDate(newJwt.refreshToken!)}');
+      await jwt.setToken(newJwt);
+      _refreshTokenApiCompleter.complete();
+    } catch (e) {
+      await logout();
+      Get.offAllNamed(Routes.ONBOARDING);
+      _refreshTokenApiCompleter.completeError(e);
+      rethrow;
     }
   }
 
-  Future<Uint8List?> createEncryptionKey() async {
-    _rsaKey.value = await RSA.generate(2048);
-    _rsaKey.value.publicKey = await RSA.convertPublicKeyToPKCS1(_rsaKey.value.publicKey);
-    _rsaKey.value.privateKey = await RSA.convertPrivateKeyToPKCS8(_rsaKey.value.privateKey);
-    _encryptionKey.value =
-        (await RSA.decryptOAEPBytes(base64.decode((await repository.authEncryptionKey(_rsaKey.value.publicKey.replaceAll('\n', '\\r\\n')))!), '', Hash.SHA1, _rsaKey.value.privateKey));
-    return _encryptionKey.value;
+  Future<void> _clearTokens() async {
+    await jwt.clear();
+    await aes.clear();
+    await rsa.clear();
+  }
+
+  Future<void> logout() async {
+    await _clearTokens();
   }
 }

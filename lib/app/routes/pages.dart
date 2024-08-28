@@ -1,8 +1,12 @@
+import 'package:dimipay_kiosk/app/core/middleware/login.dart';
+import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/binding.dart';
+import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/page.dart';
+import 'package:dimipay_kiosk/app/pages/payment/payment_failed/page.dart';
+import 'package:dimipay_kiosk/app/pages/payment/payment_success/binding.dart';
+import 'package:dimipay_kiosk/app/pages/payment/payment_success/page.dart';
 import 'package:dimipay_kiosk/app/pages/test/page.dart';
 import 'package:get/get.dart';
 
-import 'package:dimipay_kiosk/app/pages/payment/widget/payment_success.dart';
-import 'package:dimipay_kiosk/app/pages/payment/widget/payment_failed.dart';
 import 'package:dimipay_kiosk/app/pages/onboard/binding.dart';
 import 'package:dimipay_kiosk/app/pages/product/binding.dart';
 import 'package:dimipay_kiosk/app/pages/payment/binding.dart';
@@ -20,38 +24,62 @@ class AppPages {
       name: Routes.PIN,
       page: () => const PinPage(),
       binding: PinPageBinding(),
-      gestureWidth: (_) => 0,
+      transition: Transition.cupertino,
     ),
     GetPage(
-      name: Routes.ONBOARD,
-      page: () => const OnboardPage(),
+      name: Routes.ONBOARDING,
+      page: () => const OnboardingPage(),
       binding: OnboardPageBinding(),
       transition: Transition.cupertino,
-      gestureWidth: (_) => 0,
+      middlewares: [
+        LoginMiddleware(),
+      ],
     ),
     GetPage(
       name: Routes.PRODUCT,
       page: () => const ProductPage(),
       binding: ProductPageBinding(),
       transition: Transition.cupertino,
-      gestureWidth: (_) => 0,
+      middlewares: [
+        LoginMiddleware(),
+      ],
     ),
     GetPage(
       name: Routes.PAYMENT,
       page: () => const PaymentPage(),
       binding: PaymentPageBinding(),
+      transition: Transition.cupertino,
+      middlewares: [
+        LoginMiddleware(),
+      ],
+    ),
+    GetPage(
+      name: Routes.PAYMENT_PENDING,
+      page: () => const PaymentPendingPage(),
+      binding: PaymentPendingPageBinding(),
+      transition: Transition.cupertino,
+      middlewares: [
+        LoginMiddleware(),
+      ],
       gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT_SUCCESS,
-      page: () => const PaymentSuccess(),
-      gestureWidth: (_) => 0,
+      page: () => const PaymentSuccessPage(),
+      binding: PaymentSuccessPageBinding(),
+      transition: Transition.cupertino,
+      middlewares: [
+        LoginMiddleware(),
+      ],
     ),
     GetPage(
       name: Routes.PAYMENT_FAILED,
-      page: () => const PaymentFailed(),
+      page: () => const PaymentFailedPage(),
       binding: PaymentPageBinding(),
-      gestureWidth: (_) => 0,
+      transition: Transition.cupertino,
+      middlewares: [
+        LoginMiddleware(),
+      ],
     ),
   ];
 }
