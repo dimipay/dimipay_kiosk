@@ -1,6 +1,6 @@
-import 'package:camera/camera.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/repository.dart';
 import 'package:get/get.dart';
+import 'dart:typed_data';
 
 import 'model.dart';
 
@@ -11,7 +11,7 @@ class FaceSignService extends GetxController {
       : repository = repository ?? FaceSignRepository();
 
   Future<User> getUserWithFaceSign(
-      {required XFile image, required String transactionId}) async {
+      {required Uint8List image, required String transactionId}) async {
     User data = await repository.getUserWithFaceSign(
         file: image, transactionId: transactionId);
 

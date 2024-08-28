@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
+import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
@@ -28,6 +32,7 @@ class ProductPageController extends GetxController {
       Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
 
   late CameraController _cameraController;
+  final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
   bool _isCameraInitialized = false;
 
   late Rx<Method?> selectedPaymentMethod = Rx<Method?>(null);
@@ -80,19 +85,33 @@ class ProductPageController extends GetxController {
     }
   }
 
-  Future<XFile> captureImage() async {
+  Future<Uint8List> captureImage() async {
     if (!_isCameraInitialized) {
       throw CameraException('Camera not initialized',
           'Please initialize the camera before capturing an image');
     }
 
-    try {
-      final XFile image = await _cameraController.takePicture();
-      return image;
-    } on CameraException catch (e) {
-      print('Error capturing image: $e');
-      throw CameraException('Failed to capture image', e.description);
-    }
+    Completer<Uint8List> completer = Completer<Uint8List>();
+
+    await _cameraController.startImageStream((CameraImage cameraImage) async {
+      if (!completer.isCompleted) {
+        _cameraController.stopImageStream();
+
+        try {
+          final Uint8List? convertedImage =
+              await _convertNative.convertImgToBytes(
+            cameraImage.planes[0].bytes,
+            cameraImage.width,
+            cameraImage.height,
+          );
+          completer.complete(convertedImage);
+        } catch (e) {
+          completer.completeError('Failed to convert image: $e');
+        }
+      }
+    });
+
+    return completer.future;
   }
 
   Future<void> doFaceSignAction() async {
@@ -102,7 +121,7 @@ class ProductPageController extends GetxController {
     while (faceDetectionStatus.value == FaceDetectionStatus.searching &&
         attempts < maxAttempts) {
       try {
-        XFile image = await captureImage();
+        Uint8List image = await captureImage();
 
         User detectedUser = await faceSignService.getUserWithFaceSign(
           image: image,

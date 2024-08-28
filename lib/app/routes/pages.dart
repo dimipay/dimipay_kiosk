@@ -61,6 +61,7 @@ class AppPages {
       middlewares: [
         LoginMiddleware(),
       ],
+      gestureWidth: (_) => 0,
     ),
     GetPage(
       name: Routes.PAYMENT_SUCCESS,
