@@ -13,7 +13,7 @@ class AuthRepository {
       : secureApi = secureApi ?? Get.find<SecureApiProvider>();
 
   Future<Map> loginWithPasscode({required String passcode}) async {
-    String url = '/auth/login';
+    String url = '/kiosk/auth/login';
 
     final body = {'passcode': passcode};
 
@@ -33,7 +33,7 @@ class AuthRepository {
 
   ///returns accessToken
   Future<JwtToken> refreshAccessToken(String refreshToken) async {
-    String url = "/auth/refresh";
+    String url = "/kiosk/auth/refresh";
 
     Map<String, dynamic> headers = {
       'Authorization': 'Bearer $refreshToken',
@@ -47,7 +47,7 @@ class AuthRepository {
 
   Future<String> getEncryptionKey(
       String publicKey, String onBoardingToken) async {
-    String url = '/auth/encryption-key';
+    String url = '/kiosk/auth/encryption-key';
     publicKey = publicKey.replaceAll('\n', '\\r\\n');
     Map<String, dynamic> headers = {
       'Dp-Encryption-Public-Key': publicKey,

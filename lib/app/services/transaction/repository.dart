@@ -13,7 +13,7 @@ class TransactionRepository {
       : secureApi = secureApi ?? Get.find<SecureApiProvider>();
 
   Future<Map<String, dynamic>> generateTransactionId() async {
-    String url = '/transaction/id';
+    String url = '/kiosk/transaction/id';
 
     try {
       DPHttpResponse response = await secureApi.get(url);
@@ -45,7 +45,7 @@ class TransactionRepository {
     required String transactionId,
     required List<Map<String, dynamic>> formattedProductList,
   }) async {
-    String url = '/qr';
+    String url = '/kiosk/qr';
 
     try {
       await secureApi.post(
@@ -80,7 +80,7 @@ class TransactionRepository {
     required String paymentMethodId,
     required String otp,
   }) async {
-    String url = '/face-sign/payments/approve';
+    String url = '/kiosk/face-sign/payments/approve';
 
     try {
       await secureApi.post(

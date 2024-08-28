@@ -12,7 +12,7 @@ class KioskRepository {
       : secureApi = secureApi ?? Get.find<SecureApiProvider>();
 
   Future<Map> getHealth() async {
-    String url = '/health';
+    String url = '/kiosk/health';
 
     try {
       DPHttpResponse response = await secureApi.get(url);
@@ -60,7 +60,7 @@ class KioskRepository {
   }
 
   Future<Product> getProduct({required String barcode}) async {
-    String url = '/product/$barcode';
+    String url = '/kiosk/product/$barcode';
 
     try {
       DPHttpResponse response = await secureApi.get(url);

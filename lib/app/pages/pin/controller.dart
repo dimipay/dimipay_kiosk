@@ -1,6 +1,8 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
+import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
+import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
 import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
@@ -11,10 +13,16 @@ enum PinPageType {
 
 class PinPageController extends GetxController {
   AuthService authService = Get.find<AuthService>();
-  final String? redirect = Get.arguments?['redirect'];
+  FaceSignService faceSignService = Get.find<FaceSignService>();
 
   final PinPageType pinPageType =
       Get.arguments?['pinPageType'] ?? PinPageType.login;
+
+  final PaymentType? paymentType = Get.arguments?['type'];
+  final String? transactionId = Get.arguments?['transactionId'];
+  final List<dynamic>? productItems = Get.arguments?['productItems'];
+  final String? paymentPinAuthURL = Get.arguments?['paymentPinAuthURL'];
+  final String? paymentMethodId = Get.arguments?['paymentMethodId'];
 
   final Rx<List<int>> _nums = Rx([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
@@ -58,6 +66,25 @@ class PinPageController extends GetxController {
       await authService.loginWithPasscode(passcode: pin);
       Get.offNamed(Routes.ONBOARDING);
     } on PasscodeNotFoundException catch (e) {
+      DPAlertModal.open(e.message);
+    }
+  }
+
+  Future<void> payFaceSign() async {
+    try {
+      String otp = await faceSignService.getFaceSignOTP(
+        transactionId: transactionId!,
+        paymentPinAuthURL: paymentPinAuthURL!,
+        pin: pin,
+      );
+      Get.offNamed(Routes.PAYMENT_PENDING, arguments: {
+        'type': paymentType,
+        'transactionId': transactionId,
+        'productItems': productItems,
+        'paymentMethodId': paymentMethodId,
+        'otp': otp,
+      });
+    } on InvalidUserTokenException catch (e) {
       DPAlertModal.open(e.message);
     }
   }

@@ -44,7 +44,7 @@ class ProductPageList extends GetView<ProductPageController> {
     return Row(
       children: [
         Text(
-          '상품을 터치해서 삭제할 수 있어요',
+          '상품을 터치해서 삭제할 수 있어요.',
           style: textTheme.header1.copyWith(
             fontWeight: FontWeight.w500,
             color: colorTheme.grayscale500,

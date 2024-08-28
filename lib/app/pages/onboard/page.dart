@@ -39,9 +39,20 @@ class OnboardingPage extends GetView<OnboardPageController> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '물건의 바코드를 스캔하여 결제를 시작해주세요',
+                      '물건의 바코드를 스캔하여 결제를 시작해주세요.',
                       style: textTheme.header2
                           .copyWith(color: colorTheme.grayscale700),
+                    ),
+                    const SizedBox(height: 64),
+                    ElevatedButton(
+                      onPressed: controller.logout,
+                      child: const Text('로그아웃'),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => Get.toNamed(Routes.PRODUCT,
+                          arguments: '8801047289685'),
+                      child: const Text('오미자 추가'),
                     ),
                   ],
                 ),

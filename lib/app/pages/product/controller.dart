@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
+import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
@@ -155,6 +156,17 @@ class ProductPageController extends GetxController {
       'transactionId': transactionId,
       'productItems': productItems,
       'dpToken': dpToken,
+    });
+  }
+
+  void faceSignPayment() {
+    Get.toNamed(Routes.PIN, arguments: {
+      'pinPageType': PinPageType.facesign,
+      'type': PaymentType.faceSign,
+      'transactionId': transactionId,
+      'productItems': productItems,
+      'paymentPinAuthURL': user.paymentMethods.paymentPinAuthURL,
+      'paymentMethodId': selectedPaymentMethod.value.id,
     });
   }
 

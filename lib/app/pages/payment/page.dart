@@ -44,12 +44,12 @@ class PaymentPage extends GetView<PaymentPageController> {
     return Column(
       children: [
         Text(
-          '디미페이 앱의 결제 QR를 스캔해주세요',
+          '디미페이 앱의 결제 QR를 스캔해주세요.',
           style: textTheme.title.copyWith(color: colorTheme.grayscale1000),
         ),
         const SizedBox(height: 48),
         Text(
-          '상품 스캔 창에서 결제 QR를 바로 스캔하면\n빠르게 결제를 완료할 수 있습니다',
+          '상품 스캔 창에서 결제 QR를 바로 스캔하면\n빠르게 결제를 완료할 수 있습니다.',
           style: textTheme.header1.copyWith(color: colorTheme.grayscale600),
           textAlign: TextAlign.center,
         ),
@@ -105,6 +105,11 @@ class PaymentPage extends GetView<PaymentPageController> {
             '상품 스캔 화면으로 돌아가기',
             style: textTheme.header1.copyWith(color: colorTheme.grayscale1000),
           ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+              onPressed: () =>
+                  controller.setDPToken(barcode: '-DPb3itdeb-5aDbV8fHO5z0H'),
+              child: const Text('테스트 결제'))
         ],
       ),
     );

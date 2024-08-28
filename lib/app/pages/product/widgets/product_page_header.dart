@@ -107,7 +107,7 @@ class ProductPageHeader extends GetView<ProductPageController> {
           ),
           const SizedBox(width: 16),
           Text(
-            '얼굴 인식에 실패했습니다',
+            '얼굴 인식에 실패했습니다.',
             style: textTheme.header1.copyWith(
               fontWeight: FontWeight.w500,
               color: colorTheme.grayscale800,

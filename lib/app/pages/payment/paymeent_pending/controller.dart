@@ -15,6 +15,9 @@ class PaymentPendingPageController extends GetxController {
   final productItems = RxList<ProductItem>([]);
   final dpToken = RxString('');
 
+  final paymentMethodId = RxString('');
+  final otp = RxString('');
+
   @override
   void onInit() {
     super.onInit();
@@ -24,9 +27,13 @@ class PaymentPendingPageController extends GetxController {
       transactionId.value = args['transactionId'] ?? '';
       productItems.value = args['productItems'];
       dpToken.value = args['dpToken'] ?? '';
+      paymentMethodId.value = args['paymentMethodId'] ?? '';
+      otp.value = args['otp'] ?? '';
     }
     if (paymentType.value == PaymentType.qr) {
       startQRPayment();
+    } else if (paymentType.value == PaymentType.faceSign) {
+      startFaceSignPayment();
     }
   }
 
@@ -41,6 +48,32 @@ class PaymentPendingPageController extends GetxController {
       await transactionService.payQR(
           transactionId: transactionId.value,
           dpToken: dpToken.value,
+          formattedProductList: _formatProductList());
+      Get.offAndToNamed(Routes.PAYMENT_SUCCESS);
+    } on ForbiddenUserException catch (e) {
+      DPAlertModal.open(e.message);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
+    } on WrongPayTokenException catch (e) {
+      DPAlertModal.open(e.message);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
+    } on UnknownProductException catch (e) {
+      DPAlertModal.open(e.message);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
+    } on FailedToCancelTransactionException catch (e) {
+      DPAlertModal.open(e.message);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
+    } on UnknownException catch (e) {
+      DPAlertModal.open(e.message);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
+    }
+  }
+
+  Future<void> startFaceSignPayment() async {
+    try {
+      await transactionService.payFaceSign(
+          transactionId: transactionId.value,
+          otp: otp.value,
+          paymentMethodId: paymentMethodId.value,
           formattedProductList: _formatProductList());
       Get.offAndToNamed(Routes.PAYMENT_SUCCESS);
     } on ForbiddenUserException catch (e) {

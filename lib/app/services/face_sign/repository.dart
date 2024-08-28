@@ -16,7 +16,7 @@ class FaceSignRepository {
 
   Future<User> getUserWithFaceSign(
       {required XFile file, required String transactionId}) async {
-    String url = "/face-sign";
+    String url = "/kiosk/face-sign";
 
     MultipartFile faceSign = await MultipartFile.fromFile(file.path,
         contentType: MediaType('image', 'jpeg'));
@@ -43,17 +43,15 @@ class FaceSignRepository {
       {required String transactionId,
       required String paymentPinAuthURL,
       required String pin}) async {
-    String url = "/face-sign/payments/pin";
-
     try {
       final response = await secureApi.post(
-        url,
+        paymentPinAuthURL,
         options: Options(
-          headers: {'Transaction-ID': transactionId},
+          headers: {
+            'Transaction-ID': transactionId,
+          },
         ),
-        queryParameters: {
-          't': paymentPinAuthURL,
-        },
+        encrypt: true,
         data: {
           'pin': pin,
         },

@@ -59,8 +59,8 @@ class ProductPageFooter extends GetView<ProductPageController> {
                         onTap: () {
                           controller.faceDetectionStatus.value ==
                                   FaceDetectionStatus.detected
-                              ? controller.qrPayment()
-                              : null;
+                              ? controller.faceSignPayment()
+                              : controller.qrPayment();
                         },
                         child: Text(
                           "결제하기",
