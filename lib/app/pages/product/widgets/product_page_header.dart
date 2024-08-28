@@ -63,12 +63,12 @@ class ProductPageHeader extends GetView<ProductPageController> {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(controller.user.profileImage),
+            backgroundImage: NetworkImage(controller.user!.profileImage),
             radius: 18,
           ),
           const SizedBox(width: 16),
           Text(
-            '${controller.user.name}님',
+            '${controller.user!.name}님',
             style: textTheme.header1.copyWith(
               color: colorTheme.grayscale900,
             ),

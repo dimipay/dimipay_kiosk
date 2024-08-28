@@ -103,14 +103,14 @@ class ProductPageFooter extends GetView<ProductPageController> {
                 width: 48,
                 height: 48,
                 controller.getLogoImagePath(
-                    controller.selectedPaymentMethod.value.cardCode),
+                    controller.selectedPaymentMethod.value!.cardCode),
               ),
               const SizedBox(width: 24),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    controller.selectedPaymentMethod.value.name,
+                    controller.selectedPaymentMethod.value!.name,
                     style: textTheme.header2
                         .copyWith(color: colorTheme.grayscale800),
                   ),
@@ -166,7 +166,7 @@ class PaymentSelectionButton extends GetView<ProductPageController> {
                 SizedBox(
                   width: 400,
                   child: Column(
-                    children: controller.user.paymentMethods.methods
+                    children: controller.user!.paymentMethods.methods
                         .map((method) => DPGestureDetectorWithFillInteraction(
                               onTap: () {
                                 controller.updateSelectedPaymentMethod(method);

@@ -20,9 +20,9 @@ class ProductPageController extends GetxController {
   FaceSignService faceSignService = Get.find<FaceSignService>();
 
   final RxList<ProductItem> productItems = <ProductItem>[].obs;
-  late final String? transactionId;
+  String? transactionId;
   late String dpToken;
-  late User user;
+  User? user;
 
   final Rx<FaceDetectionStatus> faceDetectionStatus =
       Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
@@ -30,10 +30,12 @@ class ProductPageController extends GetxController {
   late CameraController _cameraController;
   bool _isCameraInitialized = false;
 
-  late Rx<Method> selectedPaymentMethod;
+  late Rx<Method?> selectedPaymentMethod = Rx<Method?>(null);
 
   RxBool get isPaymentMethodSelectable =>
-      (faceDetectionStatus.value == FaceDetectionStatus.detected).obs;
+      (faceDetectionStatus.value == FaceDetectionStatus.detected &&
+              user != null)
+          .obs;
 
   @override
   void onInit() async {
@@ -44,17 +46,15 @@ class ProductPageController extends GetxController {
     }
     await generateTransactionId();
     await doFaceSignAction();
-
-    selectedPaymentMethod = Rx<Method>(user.paymentMethods.methods.firstWhere(
-      (method) => method.id == user.paymentMethods.mainPaymentMethodId,
-    ));
   }
 
   @override
   void onClose() {
     _cameraController.dispose();
     super.onClose();
-    deleteTransactionId(transactionId: transactionId!);
+    if (transactionId != null) {
+      deleteTransactionId(transactionId: transactionId!);
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -111,6 +111,9 @@ class ProductPageController extends GetxController {
 
         faceDetectionStatus.value = FaceDetectionStatus.detected;
         user = detectedUser;
+        selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
+          (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
+        );
         return;
       } on NoMatchedUserException {
         attempts++;
@@ -123,6 +126,8 @@ class ProductPageController extends GetxController {
 
   Future<void> restartFaceDetection() async {
     faceDetectionStatus.value = FaceDetectionStatus.searching;
+    user = null;
+    selectedPaymentMethod.value = null;
     await doFaceSignAction();
   }
 
@@ -160,13 +165,18 @@ class ProductPageController extends GetxController {
   }
 
   void faceSignPayment() {
+    if (user == null || selectedPaymentMethod.value == null) {
+      DPAlertModal.open('사용자 인식에 실패했습니다. 다시 시도해주세요.');
+      restartFaceDetection();
+      return;
+    }
     Get.toNamed(Routes.PIN, arguments: {
       'pinPageType': PinPageType.facesign,
       'type': PaymentType.faceSign,
       'transactionId': transactionId,
       'productItems': productItems,
-      'paymentPinAuthURL': user.paymentMethods.paymentPinAuthURL,
-      'paymentMethodId': selectedPaymentMethod.value.id,
+      'paymentPinAuthURL': user!.paymentMethods.paymentPinAuthURL,
+      'paymentMethodId': selectedPaymentMethod.value!.id,
     });
   }
 
