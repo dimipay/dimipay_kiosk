@@ -165,11 +165,7 @@ class ProductPageController extends GetxController {
   }
 
   void faceSignPayment() {
-    if (user == null || selectedPaymentMethod.value == null) {
-      DPAlertModal.open('사용자 인식에 실패했습니다. 다시 시도해주세요.');
-      restartFaceDetection();
-      return;
-    }
+    restartFaceDetection();
     Get.toNamed(Routes.PIN, arguments: {
       'pinPageType': PinPageType.facesign,
       'type': PaymentType.faceSign,
