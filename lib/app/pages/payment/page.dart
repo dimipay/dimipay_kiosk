@@ -105,11 +105,6 @@ class PaymentPage extends GetView<PaymentPageController> {
             '상품 스캔 화면으로 돌아가기',
             style: textTheme.header1.copyWith(color: colorTheme.grayscale1000),
           ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-              onPressed: () =>
-                  controller.setDPToken(barcode: '-DPb3itdeb-5aDbV8fHO5z0H'),
-              child: const Text('테스트 결제'))
         ],
       ),
     );
