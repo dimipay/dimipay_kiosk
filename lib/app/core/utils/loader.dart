@@ -20,7 +20,7 @@ class AppLoader {
 
     await Hive.initFlutter();
 
-    Get.lazyPut<SecureApiProvider>(() => DevSecureApiProvider());
+    Get.lazyPut<SecureApiProvider>(() => ProdSecureApiProvider());
     await Get.putAsync(AuthService().init);
     await Get.putAsync(ThemeService().init);
 

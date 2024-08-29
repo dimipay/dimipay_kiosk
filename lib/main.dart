@@ -27,7 +27,7 @@ void main() async {
             );
           },
           title: '디미페이 키오스크',
-          initialRoute: getInitialRoute(debug: true),
+          initialRoute: getInitialRoute(debug: false),
           getPages: AppPages.pages,
           debugShowCheckedModeBanner: false,
           theme: lightThemeData,
