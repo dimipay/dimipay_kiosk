@@ -46,7 +46,7 @@ class JWTInterceptor extends Interceptor {
 
     DPHttpResponse httpResponse = DPHttpResponse.fromDioResponse(err.response!);
 
-    if (httpResponse.code == 'ERR_TOKEN_EXPIRED') {
+    if (httpResponse.code == 'ERR_TOKEN_ERROR') {
       try {
         await authService.refreshAcessToken();
 
@@ -56,13 +56,10 @@ class JWTInterceptor extends Interceptor {
         return handler.resolve(response);
       } catch (e) {
         //refresh 실패 시 401을 그대로 반환
+        await authService.logout();
+        Get.offAllNamed(Routes.ONBOARDING);
         return handler.next(err);
       }
-    }
-    if (httpResponse.message == '알 수 없는 사용자입니다.' ||
-        httpResponse.code == 'ERR_LOGINED_IN_OTHER_DEVICE') {
-      await authService.logout();
-      Get.offNamed(Routes.ONBOARDING);
     }
     return handler.next(err);
   }
