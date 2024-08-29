@@ -34,7 +34,7 @@ class OnboardPageController extends GetxController {
   Future<Product?> getProduct({required String input}) async {
     try {
       Product data = await kioskService.getProduct(barcode: input);
-      Get.offAndToNamed(Routes.PRODUCT, arguments: data);
+      Get.offAllNamed(Routes.PRODUCT, arguments: data);
       return data;
     } on ProductNotFoundException catch (e) {
       DPAlertModal.open(e.message);

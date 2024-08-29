@@ -6,6 +6,7 @@ import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
+import 'package:dimipay_kiosk/app/pages/product/widgets/timeout_alert.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
@@ -29,7 +30,7 @@ class ProductPageController extends GetxController {
   User? user;
 
   final Rx<FaceDetectionStatus> faceDetectionStatus =
-      Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
+  Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
 
   late CameraController _cameraController;
   final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
@@ -39,8 +40,12 @@ class ProductPageController extends GetxController {
 
   RxBool get isPaymentMethodSelectable =>
       (faceDetectionStatus.value == FaceDetectionStatus.detected &&
-              user != null)
+          user != null)
           .obs;
+
+  Timer? _inactivityTimer;
+  final RxInt _remainingTime = 30.obs;
+  final RxBool _showAlert = false.obs;
 
   @override
   void onInit() async {
@@ -51,15 +56,57 @@ class ProductPageController extends GetxController {
     }
     await generateTransactionId();
     await doFaceSignAction();
+    _startInactivityTimer();
   }
 
   @override
   void onClose() {
+    _stopInactivityTimer();
     _cameraController.dispose();
-    super.onClose();
     if (transactionId != null) {
       deleteTransactionId(transactionId: transactionId!);
     }
+    super.onClose();
+  }
+
+  void _startInactivityTimer() {
+    _stopInactivityTimer();
+    _remainingTime.value = 30;
+    _inactivityTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_remainingTime.value > 0) {
+        _remainingTime.value--;
+        if (_remainingTime.value == 10 && !_showAlert.value) {
+          _showAlert.value = true;
+          _showTimeoutAlert();
+        }
+      } else {
+        _stopInactivityTimer();
+        Get.offAndToNamed(Routes.ONBOARDING);
+      }
+    });
+  }
+
+  void _stopInactivityTimer() {
+    _inactivityTimer?.cancel();
+    _inactivityTimer = null;
+    _showAlert.value = false;
+    Get.back(closeOverlays: true);
+  }
+
+  void _resetInactivityTimer() {
+    if (_inactivityTimer != null && _inactivityTimer!.isActive) {
+      _startInactivityTimer();
+    }
+  }
+
+  void _showTimeoutAlert() {
+    Get.dialog(
+      TimeoutAlert(
+        remainingTime: _remainingTime,
+        onInteraction: _resetInactivityTimer,
+      ),
+      barrierDismissible: false,
+    );
   }
 
   Future<void> _initializeCamera() async {
@@ -99,7 +146,7 @@ class ProductPageController extends GetxController {
 
         try {
           final Uint8List? convertedImage =
-              await _convertNative.convertImgToBytes(
+          await _convertNative.convertImgToBytes(
             cameraImage.planes[0].bytes,
             cameraImage.width,
             cameraImage.height,
@@ -131,7 +178,7 @@ class ProductPageController extends GetxController {
         faceDetectionStatus.value = FaceDetectionStatus.detected;
         user = detectedUser;
         selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
-          (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
+              (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
         );
         return;
       } on NoMatchedUserException {
@@ -165,7 +212,11 @@ class ProductPageController extends GetxController {
       await transactionService.deleteTransactionId(
           transactionId: transactionId);
     } on DeletingTransactionIfNotFoundException catch (e) {
-      DPAlertModal.open(e.message);
+      // DPAlertModal.open(e.message);
+      return;
+    } on NoTransactionIdFoundException catch (e) {
+      // DPAlertModal.open(e.message);
+      return;
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
     }
@@ -177,6 +228,7 @@ class ProductPageController extends GetxController {
   }
 
   void payQR() {
+    _stopInactivityTimer();
     Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
       'type': PaymentType.qr,
       'transactionId': transactionId,
@@ -186,6 +238,7 @@ class ProductPageController extends GetxController {
   }
 
   void faceSignPayment() {
+    _stopInactivityTimer();
     Get.toNamed(Routes.PIN, arguments: {
       'pinPageType': PinPageType.facesign,
       'type': PaymentType.faceSign,
@@ -198,6 +251,7 @@ class ProductPageController extends GetxController {
   }
 
   Future<Product?> getProduct({required String barcode}) async {
+    _resetInactivityTimer();
     try {
       Product data = await kioskService.getProduct(barcode: barcode);
       addOrUpdateProductItem(data);
@@ -230,10 +284,12 @@ class ProductPageController extends GetxController {
         amount: 1,
       ));
     }
+    _resetInactivityTimer();
   }
 
   void checkAndNavigateBack() {
     if (productItems.isEmpty) {
+      _stopInactivityTimer();
       Get.offAndToNamed(Routes.ONBOARDING);
     }
   }
@@ -254,9 +310,11 @@ class ProductPageController extends GetxController {
       }
       checkAndNavigateBack();
     }
+    _resetInactivityTimer();
   }
 
   void qrPayment() {
+    _stopInactivityTimer();
     Get.toNamed(
       Routes.PAYMENT,
       arguments: {
@@ -269,10 +327,12 @@ class ProductPageController extends GetxController {
   void clearProductItems() {
     productItems.clear();
     checkAndNavigateBack();
+    _resetInactivityTimer();
   }
 
   void updateSelectedPaymentMethod(Method newMethod) {
     selectedPaymentMethod.value = newMethod;
+    _resetInactivityTimer();
   }
 
   String getLogoImagePath(String cardCode) {
