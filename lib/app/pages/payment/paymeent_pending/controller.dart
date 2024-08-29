@@ -82,7 +82,7 @@ class PaymentPendingPageController extends GetxController {
       Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offAndToNamed(Routes.PAYMENT_FAILED);
+      Get.offAllNamed(Routes.ONBOARDING);
     }
   }
 
@@ -117,7 +117,7 @@ class PaymentPendingPageController extends GetxController {
       Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offAndToNamed(Routes.PAYMENT_FAILED);
+      Get.offAllNamed(Routes.ONBOARDING);
     }
   }
 }

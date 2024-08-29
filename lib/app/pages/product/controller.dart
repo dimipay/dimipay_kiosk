@@ -149,6 +149,7 @@ class ProductPageController extends GetxController {
       }
       on UnknownException catch (e) {
         DPAlertModal.open(e.message);
+        Get.offAllNamed(Routes.ONBOARDING);
       }
     }
   }
@@ -166,6 +167,7 @@ class ProductPageController extends GetxController {
       transactionId = await transactionService.generateTransactionId();
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
+      Get.offAllNamed(Routes.ONBOARDING);
     }
   }
 
@@ -181,6 +183,7 @@ class ProductPageController extends GetxController {
       return;
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
+      Get.offAllNamed(Routes.ONBOARDING);
     }
   }
 
@@ -224,6 +227,7 @@ class ProductPageController extends GetxController {
       DPAlertModal.open(e.message);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
+      Get.offAllNamed(Routes.ONBOARDING);
     }
     return null;
   }

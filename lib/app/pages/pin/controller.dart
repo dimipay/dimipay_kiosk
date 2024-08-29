@@ -80,6 +80,9 @@ class PinPageController extends GetxController {
       Get.offNamed(Routes.ONBOARDING);
     } on PasscodeNotFoundException catch (e) {
       DPAlertModal.open(e.message);
+    } on UnknownException catch (e) {
+      DPAlertModal.open(e.message);
+      Get.offAllNamed(Routes.ONBOARDING);
     }
   }
 
@@ -108,6 +111,7 @@ class PinPageController extends GetxController {
       Get.offAllNamed(Routes.ONBOARDING);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
+      Get.offAllNamed(Routes.ONBOARDING);
     }
   }
 }
