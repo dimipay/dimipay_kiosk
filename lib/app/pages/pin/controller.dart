@@ -90,6 +90,11 @@ class PinPageController extends GetxController {
       DPAlertModal.open(e.message);
     } on TryLimitExceededException catch (e) {
       DPAlertModal.open(e.message);
+    } on NoTransactionIdFoundException catch (e) {
+      DPAlertModal.open(e.message);
+      Get.offAllNamed(Routes.ONBOARDING);
+    } on UnknownException catch (e) {
+      DPAlertModal.open(e.message);
     }
   }
 }

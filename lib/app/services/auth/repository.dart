@@ -27,7 +27,7 @@ class AuthRepository {
       if (e.response?.data['code'] == 'ERR_PASSCODE_NOT_FOUND') {
         throw PasscodeNotFoundException(message: e.response?.data['message']);
       }
-      rethrow;
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 
@@ -39,14 +39,14 @@ class AuthRepository {
       'Authorization': 'Bearer $refreshToken',
     };
     DPHttpResponse response =
-        await secureApi.get(url, options: Options(headers: headers));
+    await secureApi.get(url, options: Options(headers: headers));
     return JwtToken(
         accessToken: response.data['tokens']['accessToken'],
         refreshToken: response.data['tokens']['refreshToken']);
   }
 
-  Future<String> getEncryptionKey(
-      String publicKey, String onBoardingToken) async {
+  Future<String> getEncryptionKey(String publicKey,
+      String onBoardingToken) async {
     String url = '/kiosk/auth/encryption-key';
     publicKey = publicKey.replaceAll('\n', '\\r\\n');
     Map<String, dynamic> headers = {
@@ -54,7 +54,7 @@ class AuthRepository {
       'Authorization': 'Bearer $onBoardingToken',
     };
     DPHttpResponse response =
-        await secureApi.get(url, options: Options(headers: headers));
+    await secureApi.get(url, options: Options(headers: headers));
     return response.data['encryptionKey'];
   }
 }

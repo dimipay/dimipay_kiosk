@@ -40,8 +40,9 @@ class OnboardPageController extends GetxController {
       DPAlertModal.open(e.message);
     } on DisabledProductException catch (e) {
       DPAlertModal.open(e.message);
-    } catch (e) {
-      print(e);
+    } on UnknownException catch (e) {
+      DPAlertModal.open(e.message);
+      healthAreaStatus.value = HealthStatus.failed();
     }
     return null;
   }
@@ -106,8 +107,8 @@ class OnboardPageController extends GetxController {
     } on NoTransactionIdFoundException catch (e) {
       DPAlertModal.open(e.message);
       healthAreaStatus.value = HealthStatus.failed();
-    } catch (e) {
-      DPAlertModal.open('알 수 없는 오류가 발생했습니다.');
+    } on UnknownException catch (e) {
+      DPAlertModal.open(e.message);
       healthAreaStatus.value = HealthStatus.failed();
     }
   }

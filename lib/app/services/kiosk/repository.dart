@@ -55,7 +55,7 @@ class KioskRepository {
         throw NoTransactionIdFoundException(
             message: e.response?.data['message']);
       }
-      rethrow;
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 
@@ -73,7 +73,7 @@ class KioskRepository {
       if (e.response?.data['code'] == 'ERR_DISABLED_PRODUCT') {
         throw DisabledProductException(message: e.response?.data['message']);
       }
-      rethrow;
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 }

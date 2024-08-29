@@ -21,12 +21,12 @@ class TransactionRepository {
         'transactionId': response.data['transactionId'],
       };
     } on DioException catch (e) {
-      rethrow;
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 
   Future<void> deleteTransactionId(String transactionId) async {
-    String url = '/transaction/id/$transactionId';
+    String url = '/kiosk/transaction/id/$transactionId';
 
     try {
       await secureApi.delete(url);
@@ -35,7 +35,7 @@ class TransactionRepository {
         throw DeletingTransactionIfNotFoundException(
             message: e.response?.data['message']);
       }
-      rethrow;
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 
@@ -58,6 +58,10 @@ class TransactionRepository {
 
       return TransactionResult.fromJson(response.data);
     } on DioException catch (e) {
+      if (e.response?.data['code'] == 'ERR_NO_TRANSACTION_ID_FOUND') {
+        throw NoTransactionIdFoundException(
+            message: e.response?.data['message']);
+      }
       if (e.response?.data['code'] == 'ERR_FORBIDDEN_USER') {
         throw ForbiddenUserException(message: e.response?.data['message']);
       }
@@ -71,7 +75,7 @@ class TransactionRepository {
         throw FailedToCancelTransactionException(
             message: e.response?.data['message']);
       }
-      rethrow;
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 
@@ -98,6 +102,10 @@ class TransactionRepository {
 
       return TransactionResult.fromJson(response.data);
     } on DioException catch (e) {
+      if (e.response?.data['code'] == 'ERR_NO_TRANSACTION_ID_FOUND') {
+        throw NoTransactionIdFoundException(
+            message: e.response?.data['message']);
+      }
       if (e.response?.data['code'] == 'ERR_INVALID_OTP') {
         throw InvalidOTPException(message: e.response?.data['message']);
       }
@@ -111,7 +119,7 @@ class TransactionRepository {
         throw FailedToCancelTransactionException(
             message: e.response?.data['message']);
       }
-      rethrow;
+      throw UnknownException(message: e.response?.data['message']);
     }
   }
 }
