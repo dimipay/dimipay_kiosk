@@ -59,6 +59,7 @@ class PaymentPageController extends GetxController {
     });
 
     secondTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      timerService.stopTimer();
       if (remainingTime.value > 0) {
         remainingTime.value--;
       } else {

@@ -37,6 +37,10 @@ class FaceSignRepository {
       if (e.response?.data['code'] == 'ERR_NO_MATCHED_USER') {
         throw NoMatchedUserException(message: e.response?.data['message']);
       }
+      if (e.response?.data['code'] == 'ERR_NO_TRANSACTION_ID_FOUND') {
+        throw NoTransactionIdFoundException(
+            message: e.response?.data['message']);
+      }
       throw UnknownException(message: e.response?.data['message']);
     }
   }

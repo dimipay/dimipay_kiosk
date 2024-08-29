@@ -144,13 +144,17 @@ class ProductPageController extends GetxController {
         if (attempts >= maxAttempts) {
           faceDetectionStatus.value = FaceDetectionStatus.failed;
         }
-      } on UnknownException catch (e) {
+      } on NoTransactionIdFoundException catch (e) {
+        Get.offAllNamed(Routes.ONBOARDING);
+      }
+      on UnknownException catch (e) {
         DPAlertModal.open(e.message);
       }
     }
   }
 
   Future<void> restartFaceDetection() async {
+    timerService.resetTimer();
     faceDetectionStatus.value = FaceDetectionStatus.searching;
     user = null;
     selectedPaymentMethod.value = null;
