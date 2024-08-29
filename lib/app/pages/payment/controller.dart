@@ -1,5 +1,6 @@
 import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
+import 'package:dimipay_kiosk/app/services/timer/service.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'dart:math';
@@ -7,6 +8,8 @@ import 'dart:math';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 
 class PaymentPageController extends GetxController {
+  TimerService timerService = Get.find<TimerService>();
+
   final progress = 1.0.obs;
   final remainingTime = 30.obs;
   late Timer progressTimer;
@@ -18,6 +21,7 @@ class PaymentPageController extends GetxController {
 
   @override
   void onInit() {
+    timerService.stopTimer();
     super.onInit();
     final args = Get.arguments;
     if (args != null && args is Map<String, dynamic>) {
@@ -69,6 +73,7 @@ class PaymentPageController extends GetxController {
   void onClose() {
     progressTimer.cancel();
     secondTimer.cancel();
+    timerService.startTimer();
     super.onClose();
   }
 }

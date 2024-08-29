@@ -1,6 +1,7 @@
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
+import 'package:dimipay_kiosk/app/services/timer/service.dart';
 import 'package:dimipay_kiosk/app/services/transaction/model.dart';
 import 'package:dimipay_kiosk/app/services/transaction/service.dart';
 import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
@@ -10,6 +11,7 @@ enum PaymentType { qr, faceSign }
 
 class PaymentPendingPageController extends GetxController {
   TransactionService transactionService = TransactionService();
+  TimerService timerService = Get.find<TimerService>();
 
   final paymentType = PaymentType.qr.obs;
   final transactionId = RxString('');
@@ -22,6 +24,7 @@ class PaymentPendingPageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    timerService.stopTimer();
     final args = Get.arguments;
     if (args != null && args is Map<String, dynamic>) {
       paymentType.value = args['type'] ?? PaymentType.qr;
@@ -36,6 +39,11 @@ class PaymentPendingPageController extends GetxController {
     } else if (paymentType.value == PaymentType.faceSign) {
       startFaceSignPayment();
     }
+  }
+
+  @override void onClose() {
+    timerService.stopTimer();
+    super.onClose();
   }
 
   List<Map<String, dynamic>> _formatProductList() {

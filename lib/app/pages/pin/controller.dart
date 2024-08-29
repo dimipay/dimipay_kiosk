@@ -3,6 +3,7 @@ import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
+import 'package:dimipay_kiosk/app/services/timer/service.dart';
 import 'package:dimipay_kiosk/app/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +15,7 @@ enum PinPageType {
 class PinPageController extends GetxController {
   AuthService authService = Get.find<AuthService>();
   FaceSignService faceSignService = Get.find<FaceSignService>();
+  TimerService timerService = Get.find<TimerService>();
 
   final PinPageType pinPageType =
       Get.arguments?['pinPageType'] ?? PinPageType.login;
@@ -39,7 +41,18 @@ class PinPageController extends GetxController {
   @override
   void onInit() {
     _shufleList();
+    if (pinPageType == PinPageType.facesign) {
+      timerService.stopTimer();
+    }
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    if (pinPageType == PinPageType.facesign) {
+      timerService.startTimer();
+    }
+    super.onClose();
   }
 
   void _shufleList() {
