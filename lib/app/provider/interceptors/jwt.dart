@@ -21,7 +21,7 @@ class JWTInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
+    if (err.response?.statusCode == 401 || err.type == DioExceptionType.connectionTimeout) {
       AuthService authService = Get.find<AuthService>();
 
       if (err.requestOptions.path == '/kiosk/auth/refresh') {
@@ -36,12 +36,16 @@ class JWTInterceptor extends Interceptor {
         final response = await _dioInstance.fetch(err.requestOptions);
         return handler.resolve(response);
       } catch (refreshError) {
-        await authService.logout();
-        Get.offAllNamed(Routes.PIN);
+        await _handleLogout(authService);
         return handler.next(err);
       }
     }
 
     return handler.next(err);
+  }
+
+  Future<void> _handleLogout(AuthService authService) async {
+    await authService.logout();
+    Get.offAllNamed(Routes.PIN);
   }
 }
