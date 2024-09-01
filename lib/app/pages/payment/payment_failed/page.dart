@@ -39,7 +39,7 @@ class PaymentFailedPage extends GetView<PaymentFailedPageController> {
               height: 72,
             ),
             DPGestureDetectorWithOpacityInteraction(
-              onTap: () => Get.back(),
+              onTap: () => Get.back(closeOverlays: true),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

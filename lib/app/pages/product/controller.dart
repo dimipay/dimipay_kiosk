@@ -32,7 +32,7 @@ class ProductPageController extends GetxController {
   User? user;
 
   final Rx<FaceDetectionStatus> faceDetectionStatus =
-  Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
+      Rx<FaceDetectionStatus>(FaceDetectionStatus.searching);
 
   late CameraController _cameraController;
   final ConvertNativeImgStream _convertNative = ConvertNativeImgStream();
@@ -42,7 +42,7 @@ class ProductPageController extends GetxController {
 
   RxBool get isPaymentMethodSelectable =>
       (faceDetectionStatus.value == FaceDetectionStatus.detected &&
-          user != null)
+              user != null)
           .obs;
 
   @override
@@ -64,6 +64,7 @@ class ProductPageController extends GetxController {
     if (transactionId != null) {
       deleteTransactionId(transactionId: transactionId!);
     }
+    faceSignService.resetOTP();
     super.onClose();
   }
 
@@ -104,7 +105,7 @@ class ProductPageController extends GetxController {
 
         try {
           final Uint8List? convertedImage =
-          await _convertNative.convertImgToBytes(
+              await _convertNative.convertImgToBytes(
             cameraImage.planes[0].bytes,
             cameraImage.width,
             cameraImage.height,
@@ -123,6 +124,8 @@ class ProductPageController extends GetxController {
     int attempts = 0;
     const int maxAttempts = 5;
 
+    faceSignService.resetOTP();
+
     while (faceDetectionStatus.value == FaceDetectionStatus.searching &&
         attempts < maxAttempts) {
       try {
@@ -136,7 +139,7 @@ class ProductPageController extends GetxController {
         faceDetectionStatus.value = FaceDetectionStatus.detected;
         user = detectedUser;
         selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
-              (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
+          (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
         );
         return;
       } on NoMatchedUserException {
@@ -146,8 +149,7 @@ class ProductPageController extends GetxController {
         }
       } on NoTransactionIdFoundException catch (e) {
         Get.offAllNamed(Routes.ONBOARDING);
-      }
-      on UnknownException catch (e) {
+      } on UnknownException catch (e) {
         DPAlertModal.open(e.message);
         Get.offAllNamed(Routes.ONBOARDING);
       }
@@ -204,15 +206,25 @@ class ProductPageController extends GetxController {
 
   void faceSignPayment() {
     timerService.stopTimer();
-    Get.toNamed(Routes.PIN, arguments: {
-      'pinPageType': PinPageType.facesign,
-      'type': PaymentType.faceSign,
-      'transactionId': transactionId,
-      'productItems': productItems,
-      'paymentPinAuthURL': user!.paymentMethods.paymentPinAuthURL,
-      'paymentMethodId': selectedPaymentMethod.value!.id,
-    });
-    restartFaceDetection();
+
+    if (faceSignService.otp.value != null) {
+      Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
+        'type': PaymentType.faceSign,
+        'transactionId': transactionId,
+        'productItems': productItems,
+        'paymentMethodId': selectedPaymentMethod.value!.id,
+        'otp': faceSignService.otp.value,
+      });
+    } else {
+      Get.toNamed(Routes.PIN, arguments: {
+        'pinPageType': PinPageType.facesign,
+        'type': PaymentType.faceSign,
+        'transactionId': transactionId,
+        'productItems': productItems,
+        'paymentPinAuthURL': user!.paymentMethods.paymentPinAuthURL,
+        'paymentMethodId': selectedPaymentMethod.value!.id,
+      });
+    }
   }
 
   Future<Product?> getProduct({required String barcode}) async {

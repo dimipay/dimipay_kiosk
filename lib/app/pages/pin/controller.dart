@@ -88,7 +88,7 @@ class PinPageController extends GetxController {
 
   Future<void> payFaceSign() async {
     try {
-      String otp = await faceSignService.getFaceSignOTP(
+      await faceSignService.getFaceSignOTP(
         transactionId: transactionId!,
         paymentPinAuthURL: paymentPinAuthURL!,
         pin: pin,
@@ -98,7 +98,7 @@ class PinPageController extends GetxController {
         'transactionId': transactionId,
         'productItems': productItems,
         'paymentMethodId': paymentMethodId,
-        'otp': otp,
+        'otp': faceSignService.otp.value,
       });
     } on InvalidUserTokenException catch (e) {
       DPAlertModal.open(e.message);

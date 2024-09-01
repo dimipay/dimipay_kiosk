@@ -7,6 +7,8 @@ import 'model.dart';
 class FaceSignService extends GetxController {
   final FaceSignRepository repository;
 
+  Rx<String?> otp = Rx<String?>(null);
+
   FaceSignService({FaceSignRepository? repository})
       : repository = repository ?? FaceSignRepository();
 
@@ -18,7 +20,7 @@ class FaceSignService extends GetxController {
     return data;
   }
 
-  Future<String> getFaceSignOTP(
+  Future<void> getFaceSignOTP(
       {required String transactionId,
       required String paymentPinAuthURL,
       required String pin}) async {
@@ -27,6 +29,10 @@ class FaceSignService extends GetxController {
         paymentPinAuthURL: paymentPinAuthURL,
         pin: pin);
 
-    return data;
+    otp.value = data;
+  }
+
+  void resetOTP() {
+    otp.value = null;
   }
 }
