@@ -67,7 +67,7 @@ class PaymentPendingPageController extends GetxController {
       }
     } on NoTransactionIdFoundException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offAllNamed(Routes.ONBOARDING);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on ForbiddenUserException catch (e) {
       DPAlertModal.open(e.message);
       Get.offAndToNamed(Routes.PAYMENT_FAILED);
@@ -82,7 +82,6 @@ class PaymentPendingPageController extends GetxController {
       Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offAllNamed(Routes.ONBOARDING);
     }
   }
 
@@ -102,7 +101,7 @@ class PaymentPendingPageController extends GetxController {
       }
     } on NoTransactionIdFoundException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offAllNamed(Routes.ONBOARDING);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on InvalidOTPException catch (e) {
       DPAlertModal.open(e.message);
       Get.offAndToNamed(Routes.PAYMENT_FAILED);
@@ -117,7 +116,7 @@ class PaymentPendingPageController extends GetxController {
       Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offAllNamed(Routes.ONBOARDING);
+      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     }
   }
 }
