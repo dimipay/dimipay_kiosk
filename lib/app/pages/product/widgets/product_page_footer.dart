@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:popover/popover.dart';
 
 class ProductPageFooter extends GetView<ProductPageController> {
-  const ProductPageFooter({Key? key}) : super(key: key);
+  const ProductPageFooter({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,7 @@ class ProductPageFooter extends GetView<ProductPageController> {
               return _buildPaymentMethodSelection(
                   context, colorTheme, textTheme);
             } else {
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             }
           }),
         ],

@@ -3,7 +3,6 @@ import 'package:dimipay_design_kit/dimipay_design_kit.dart';
 import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
 import 'package:dimipay_kiosk/app/pages/pin/widgets/pin_pad.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class PinPageBase extends GetView<PinPageController> {

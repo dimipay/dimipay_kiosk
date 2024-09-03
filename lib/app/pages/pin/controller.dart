@@ -62,7 +62,7 @@ class PinPageController extends GetxController {
 
   void onPinTap(String value) async {
     if (value == 'del') {
-      if (pin.length > 0 && pin.length < 4) {
+      if (pin.isNotEmpty && pin.length < 4) {
         _pin.value = pin.substring(0, pin.length - 1);
       }
       return;
