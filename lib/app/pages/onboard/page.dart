@@ -1,7 +1,6 @@
 import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
 import 'package:dimipay_design_kit/interfaces/dimipay_typography.dart';
 import 'package:dimipay_kiosk/app/pages/onboard/controller.dart';
-import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

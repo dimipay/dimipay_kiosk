@@ -1,4 +1,3 @@
-import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
 import 'package:dimipay_kiosk/app/services/transaction/model.dart';
 import 'package:get/get.dart';
 import 'dart:async';

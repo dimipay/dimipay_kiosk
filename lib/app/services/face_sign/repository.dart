@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/provider/api_interface.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';

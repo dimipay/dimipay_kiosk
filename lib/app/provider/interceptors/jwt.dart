@@ -1,4 +1,3 @@
-import 'package:dimipay_kiosk/app/provider/model/response.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/auth/service.dart';
 import 'package:dio/dio.dart';

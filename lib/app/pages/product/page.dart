@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProductPage extends GetView<ProductPageController> {
-  const ProductPage({Key? key}) : super(key: key);
+  const ProductPage({super.key});
 
   @override
   Widget build(BuildContext context) {

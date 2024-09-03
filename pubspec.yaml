@@ -4,7 +4,7 @@ description: "디미페이 키오스크"
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 2.0.0+45
+version: 2.0.0+46
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -35,6 +35,8 @@ dependencies:
   image: ^4.2.0
   convert_native_img_stream: ^0.0.1
 
+  json_annotation: any
+  http_parser: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

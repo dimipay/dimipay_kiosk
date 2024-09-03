@@ -6,7 +6,6 @@ import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/pages/payment/paymeent_pending/controller.dart';
 import 'package:dimipay_kiosk/app/pages/pin/controller.dart';
-import 'package:dimipay_kiosk/app/pages/product/widgets/timeout_alert.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/model.dart';
 import 'package:dimipay_kiosk/app/services/face_sign/service.dart';
@@ -61,9 +60,6 @@ class ProductPageController extends GetxController {
   void onClose() {
     timerService.stopTimer();
     _cameraController.dispose();
-    if (transactionId != null) {
-      deleteTransactionId(transactionId: transactionId!);
-    }
     faceSignService.resetOTP();
     super.onClose();
   }
@@ -120,6 +116,12 @@ class ProductPageController extends GetxController {
     return completer.future;
   }
 
+  void stopFaceDetection() {
+    if (faceDetectionStatus.value == FaceDetectionStatus.searching) {
+      faceDetectionStatus.value = FaceDetectionStatus.failed;
+    }
+  }
+
   Future<void> doFaceSignAction() async {
     int attempts = 0;
     const int maxAttempts = 5;
@@ -141,6 +143,7 @@ class ProductPageController extends GetxController {
         selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
           (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
         );
+
         return;
       } on NoMatchedUserException {
         attempts++;
@@ -177,9 +180,10 @@ class ProductPageController extends GetxController {
           transactionId: transactionId);
     } on DeletingTransactionIfNotFoundException catch (e) {
       // DPAlertModal.open(e.message);
+      print('DeletingTransactionIfNotFoundException: ${e.message}');
       return;
     } on NoTransactionIdFoundException catch (e) {
-      // DPAlertModal.open(e.message);
+      DPAlertModal.open(e.message);
       return;
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
@@ -188,10 +192,12 @@ class ProductPageController extends GetxController {
 
   void setDPToken({required String barcode}) {
     dpToken = barcode;
+    stopFaceDetection();
     payQR();
   }
 
   void payQR() {
+    stopFaceDetection();
     timerService.stopTimer();
     Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
       'type': PaymentType.qr,
@@ -202,6 +208,12 @@ class ProductPageController extends GetxController {
   }
 
   void faceSignPayment() {
+    if (faceDetectionStatus.value == FaceDetectionStatus.searching) {
+      stopFaceDetection();
+      DPAlertModal.open('얼굴 인식이 완료되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
+
     timerService.stopTimer();
 
     if (faceSignService.otp.value != null) {
@@ -222,6 +234,18 @@ class ProductPageController extends GetxController {
         'paymentMethodId': selectedPaymentMethod.value!.id,
       });
     }
+  }
+
+  void qrPayment() {
+    stopFaceDetection();
+    timerService.stopTimer();
+    Get.toNamed(
+      Routes.PAYMENT,
+      arguments: {
+        'transactionId': transactionId,
+        'productItems': productItems,
+      },
+    );
   }
 
   Future<Product?> getProduct({required String barcode}) async {
@@ -263,6 +287,9 @@ class ProductPageController extends GetxController {
 
   void checkAndNavigateBack() {
     if (productItems.isEmpty) {
+      if (transactionId != null) {
+        deleteTransactionId(transactionId: transactionId!);
+      }
       Get.offAndToNamed(Routes.ONBOARDING);
     }
   }
@@ -284,17 +311,6 @@ class ProductPageController extends GetxController {
       checkAndNavigateBack();
     }
     timerService.resetTimer();
-  }
-
-  void qrPayment() {
-    timerService.stopTimer();
-    Get.toNamed(
-      Routes.PAYMENT,
-      arguments: {
-        'transactionId': transactionId,
-        'productItems': productItems,
-      },
-    );
   }
 
   void clearProductItems() {
