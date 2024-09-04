@@ -4,7 +4,7 @@ description: "디미페이 키오스크"
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 2.0.0+48
+version: 2.0.0+49
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
