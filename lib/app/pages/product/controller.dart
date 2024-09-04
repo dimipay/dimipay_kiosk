@@ -191,12 +191,22 @@ class ProductPageController extends GetxController {
   }
 
   void setDPToken({required String barcode}) {
+    if (transactionId.value == null) {
+      DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
+
     dpToken = barcode;
     stopFaceDetection();
     payQR();
   }
 
   void payQR() {
+    if (transactionId.value == null) {
+      DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
+
     stopFaceDetection();
     timerService.stopTimer();
     Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
