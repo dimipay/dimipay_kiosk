@@ -15,7 +15,9 @@ class OnboardingPage extends GetView<OnboardPageController> {
     DPTypography textTheme = Theme.of(context).extension<DPTypography>()!;
     return BarcodeScanner(
       onKey: (input) async {
-        controller.getProduct(input: input);
+        if (!input.startsWith('http')) {
+          controller.getProduct(input: input);
+        }
       },
       child: Scaffold(
         body: SafeArea(
