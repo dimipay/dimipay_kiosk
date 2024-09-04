@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
 import 'package:dimipay_design_kit/interfaces/dimipay_typography.dart';
 import 'package:dimipay_kiosk/app/pages/product/controller.dart';
 import 'package:dimipay_kiosk/app/widgets/button.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:popover/popover.dart';
 
 class ProductPageFooter extends GetView<ProductPageController> {
@@ -47,7 +47,8 @@ class ProductPageFooter extends GetView<ProductPageController> {
                 ],
               ),
               Obx(
-                () => controller.productItems.isEmpty
+                () => controller.productItems.isEmpty ||
+                        controller.transactionId == null
                     ? DPButton.disabled(
                         child: Text(
                           "결제하기",

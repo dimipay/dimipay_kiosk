@@ -208,6 +208,11 @@ class ProductPageController extends GetxController {
   }
 
   void faceSignPayment() {
+    if (transactionId == null) {
+      DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
+
     if (faceDetectionStatus.value == FaceDetectionStatus.searching) {
       stopFaceDetection();
       DPAlertModal.open('얼굴 인식이 완료되지 않았습니다. 다시 시도해 주세요.');
@@ -237,6 +242,10 @@ class ProductPageController extends GetxController {
   }
 
   void qrPayment() {
+    if (transactionId == null) {
+      DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
     stopFaceDetection();
     timerService.stopTimer();
     Get.toNamed(
