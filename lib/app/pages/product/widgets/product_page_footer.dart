@@ -48,7 +48,7 @@ class ProductPageFooter extends GetView<ProductPageController> {
               ),
               Obx(
                 () => controller.productItems.isEmpty ||
-                        controller.transactionId == null
+                        controller.transactionId.value == null
                     ? DPButton.disabled(
                         child: Text(
                           "결제하기",

@@ -26,7 +26,7 @@ class ProductPageController extends GetxController {
   TimerService timerService = Get.find<TimerService>();
 
   final RxList<ProductItem> productItems = <ProductItem>[].obs;
-  String? transactionId;
+  final Rx<String?> transactionId = Rx<String?>(null);
   late String dpToken;
   User? user;
 
@@ -135,7 +135,7 @@ class ProductPageController extends GetxController {
 
         User detectedUser = await faceSignService.getUserWithFaceSign(
           image: image,
-          transactionId: transactionId!,
+          transactionId: transactionId.value!,
         );
 
         faceDetectionStatus.value = FaceDetectionStatus.detected;
@@ -168,7 +168,7 @@ class ProductPageController extends GetxController {
 
   Future<void> generateTransactionId() async {
     try {
-      transactionId = await transactionService.generateTransactionId();
+      transactionId.value = await transactionService.generateTransactionId();
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
     }
@@ -178,8 +178,8 @@ class ProductPageController extends GetxController {
     try {
       await transactionService.deleteTransactionId(
           transactionId: transactionId);
+      this.transactionId.value = null;
     } on DeletingTransactionIfNotFoundException catch (e) {
-      // DPAlertModal.open(e.message);
       print('DeletingTransactionIfNotFoundException: ${e.message}');
       return;
     } on NoTransactionIdFoundException catch (e) {
@@ -201,14 +201,14 @@ class ProductPageController extends GetxController {
     timerService.stopTimer();
     Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
       'type': PaymentType.qr,
-      'transactionId': transactionId,
+      'transactionId': transactionId.value,
       'productItems': productItems,
       'dpToken': dpToken,
     });
   }
 
   void faceSignPayment() {
-    if (transactionId == null) {
+    if (transactionId.value == null) {
       DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
       return;
     }
@@ -224,7 +224,7 @@ class ProductPageController extends GetxController {
     if (faceSignService.otp.value != null) {
       Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
         'type': PaymentType.faceSign,
-        'transactionId': transactionId,
+        'transactionId': transactionId.value,
         'productItems': productItems,
         'paymentMethodId': selectedPaymentMethod.value!.id,
         'otp': faceSignService.otp.value,
@@ -233,7 +233,7 @@ class ProductPageController extends GetxController {
       Get.toNamed(Routes.PIN, arguments: {
         'pinPageType': PinPageType.facesign,
         'type': PaymentType.faceSign,
-        'transactionId': transactionId,
+        'transactionId': transactionId.value,
         'productItems': productItems,
         'paymentPinAuthURL': user!.paymentMethods.paymentPinAuthURL,
         'paymentMethodId': selectedPaymentMethod.value!.id,
@@ -242,7 +242,7 @@ class ProductPageController extends GetxController {
   }
 
   void qrPayment() {
-    if (transactionId == null) {
+    if (transactionId.value == null) {
       DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
       return;
     }
@@ -251,7 +251,7 @@ class ProductPageController extends GetxController {
     Get.toNamed(
       Routes.PAYMENT,
       arguments: {
-        'transactionId': transactionId,
+        'transactionId': transactionId.value,
         'productItems': productItems,
       },
     );
@@ -296,8 +296,8 @@ class ProductPageController extends GetxController {
 
   void checkAndNavigateBack() {
     if (productItems.isEmpty) {
-      if (transactionId != null) {
-        deleteTransactionId(transactionId: transactionId!);
+      if (transactionId.value != null) {
+        deleteTransactionId(transactionId: transactionId.value!);
       }
       Get.offAndToNamed(Routes.ONBOARDING);
     }
