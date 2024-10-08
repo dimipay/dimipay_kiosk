@@ -1,9 +1,7 @@
 import 'package:dimipay_design_kit/interfaces/dimipay_colors.dart';
 import 'package:dimipay_design_kit/interfaces/dimipay_typography.dart';
 import 'package:dimipay_kiosk/app/pages/onboard/controller.dart';
-import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
-import 'package:dimipay_kiosk/app/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -45,17 +43,6 @@ class OnboardingPage extends GetView<OnboardPageController> {
                       '물건의 바코드를 스캔하여 결제를 시작해주세요.',
                       style: textTheme.header2
                           .copyWith(color: colorTheme.grayscale700),
-                    ),
-                    const SizedBox(height: 64),
-                    DPGestureDetectorWithOpacityInteraction(
-                      onTap: () {
-                        Get.toNamed(Routes.PRODUCT);
-                      },
-                      child: Text(
-                        '바코드가 인식되지 않나요?',
-                        style: textTheme.header2
-                            .copyWith(color: colorTheme.grayscale500),
-                      ),
                     ),
                   ],
                 ),
