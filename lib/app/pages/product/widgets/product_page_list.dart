@@ -44,7 +44,7 @@ class ProductPageList extends GetView<ProductPageController> {
     return Row(
       children: [
         Text(
-          '상품을 터치해서 삭제할 수 있어요.',
+          '상품 등록창에서 바로 QR결제를 할 수 있어요.',
           style: textTheme.header1.copyWith(
             fontWeight: FontWeight.w500,
             color: colorTheme.grayscale500,
@@ -77,65 +77,81 @@ class ProductPageList extends GetView<ProductPageController> {
     DPColors colorTheme,
     DPTypography textTheme,
   ) {
-    return DPGestureDetectorWithOpacityInteraction(
-      onTap: () {},
-      child: DPGestureDetectorWithScaleInteraction(
-        onTap: () => controller.decreaseProductItemAmount(item.id),
-        child: Container(
-          padding: const EdgeInsets.all(28),
-          decoration: BoxDecoration(
-            color: colorTheme.grayscale100,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: colorTheme.grayscale300,
-              width: 2,
-            ),
-          ),
-          child: Row(
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: colorTheme.grayscale100,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorTheme.grayscale300,
+          width: 2,
+        ),
+      ),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.name,
-                    style: textTheme.header1.copyWith(
-                      color: colorTheme.grayscale900,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${item.price}원',
-                    style: textTheme.header1.copyWith(
-                      color: colorTheme.grayscale700,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
               Text(
-                '${item.amount}개',
-                style: textTheme.header2.copyWith(
+                item.name,
+                style: textTheme.header1.copyWith(
+                  color: colorTheme.grayscale900,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '${item.price}원',
+                style: textTheme.header1.copyWith(
                   color: colorTheme.grayscale700,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(width: 32),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: colorTheme.grayscale600,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.remove,
-                  color: colorTheme.grayscale100,
-                  size: 24,
-                ),
-              ),
             ],
           ),
-        ),
+          const Spacer(),
+          DPGestureDetectorWithOpacityInteraction(
+            onTap: () {
+              controller.decreaseProductItemAmount(item);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: colorTheme.grayscale600,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.remove,
+                color: colorTheme.grayscale100,
+                size: 24,
+              ),
+            ),
+          ),
+          const SizedBox(width: 32),
+          Text(
+            '${item.amount}개',
+            style: textTheme.header2.copyWith(
+              color: colorTheme.grayscale700,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(width: 32),DPGestureDetectorWithOpacityInteraction(
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: colorTheme.grayscale600,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.add,
+                color: colorTheme.grayscale100,
+                size: 24,
+              ),
+            ),
+            onTap: () {
+              controller.increaseProductItemAmount(item);
+            },
+          ),
+        ],
       ),
     );
   }

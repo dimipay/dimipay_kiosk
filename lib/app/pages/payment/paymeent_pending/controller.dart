@@ -34,6 +34,12 @@ class PaymentPendingPageController extends GetxController {
       paymentMethodId.value = args['paymentMethodId'] ?? '';
       otp.value = args['otp'] ?? '';
     }
+
+    Future.delayed(const Duration(seconds: 5), () {
+      DPAlertModal.open('결제 시간이 초과되었습니다.');
+      Get.offAllNamed(Routes.ONBOARDING);
+    });
+
     if (paymentType.value == PaymentType.qr) {
       startQRPayment();
     } else if (paymentType.value == PaymentType.faceSign) {
@@ -41,7 +47,8 @@ class PaymentPendingPageController extends GetxController {
     }
   }
 
-  @override void onClose() {
+  @override
+  void onClose() {
     timerService.stopTimer();
     super.onClose();
   }
