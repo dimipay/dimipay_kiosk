@@ -109,47 +109,57 @@ class ProductPageList extends GetView<ProductPageController> {
             ],
           ),
           const Spacer(),
-          DPGestureDetectorWithOpacityInteraction(
-            onTap: () {
-              controller.decreaseProductItemAmount(item.id);
-            },
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: colorTheme.grayscale600,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.remove,
-                color: colorTheme.grayscale100,
-                size: 24,
-              ),
-            ),
-          ),
-          const SizedBox(width: 32),
-          Text(
-            '${item.amount}개',
-            style: textTheme.header2.copyWith(
-              color: colorTheme.grayscale700,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 32),DPGestureDetectorWithOpacityInteraction(
-            onTap: () {
-              controller.increaseProductItemAmount(item.id);
-            },
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: colorTheme.grayscale600,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.add,
-                color: colorTheme.grayscale100,
-                size: 24,
-              ),
-            ),
+          SizedBox(
+            width: 108,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                DPGestureDetectorWithOpacityInteraction(
+                  onTap: () {
+                    controller.decreaseProductItemAmount(item.id);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: colorTheme.grayscale600,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.remove,
+                      color: colorTheme.grayscale100,
+                      size: 24,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '${item.amount}개',
+                  style: textTheme.header2.copyWith(
+                    color: colorTheme.grayscale700,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Spacer(),
+                DPGestureDetectorWithOpacityInteraction(
+                  onTap: () {
+                    controller.increaseProductItemAmount(item.id);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: colorTheme.grayscale600,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      color: colorTheme.grayscale100,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            )
           ),
         ],
       ),

@@ -30,7 +30,7 @@ class TimeoutAlert extends StatelessWidget {
           ),
           Center(
             child: CupertinoAlertDialog(
-              title: const Text('상호작용 없음 경고'),
+              title: const Text('아직 사용하고 계신가요?'),
               content: Obx(() => Text('${remainingTime.value}초 후에 초기 화면으로 돌아갑니다.')),
               actions: [
                 CupertinoDialogAction(
