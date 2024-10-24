@@ -112,7 +112,7 @@ class ProductPageList extends GetView<ProductPageController> {
           SizedBox(
             width: 108,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 DPGestureDetectorWithOpacityInteraction(
