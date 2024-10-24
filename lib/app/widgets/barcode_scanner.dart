@@ -10,10 +10,11 @@ class BarcodeScanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => KeyboardListener(
+    autofocus: true,
     focusNode: FocusNode(),
-    onKeyEvent: (KeyEvent event) {
+    onKeyEvent: (event) {
       if (event is KeyDownEvent) {
-        if (event.logicalKey == LogicalKeyboardKey.enter && _input.isNotEmpty) {
+        if (event.logicalKey == LogicalKeyboardKey.enter && _input != "") {
           onKey(_input);
           _input = "";
         } else if (event.character != null && event.character!.isNotEmpty) {

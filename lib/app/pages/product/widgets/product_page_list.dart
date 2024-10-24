@@ -111,7 +111,7 @@ class ProductPageList extends GetView<ProductPageController> {
           const Spacer(),
           DPGestureDetectorWithOpacityInteraction(
             onTap: () {
-              controller.decreaseProductItemAmount(item);
+              controller.decreaseProductItemAmount(item.id);
             },
             child: Container(
               padding: const EdgeInsets.all(6),
@@ -135,6 +135,9 @@ class ProductPageList extends GetView<ProductPageController> {
             ),
           ),
           const SizedBox(width: 32),DPGestureDetectorWithOpacityInteraction(
+            onTap: () {
+              controller.increaseProductItemAmount(item.id);
+            },
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
@@ -147,9 +150,6 @@ class ProductPageList extends GetView<ProductPageController> {
                 size: 24,
               ),
             ),
-            onTap: () {
-              controller.increaseProductItemAmount(item);
-            },
           ),
         ],
       ),
