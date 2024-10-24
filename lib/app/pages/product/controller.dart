@@ -332,6 +332,21 @@ class ProductPageController extends GetxController {
     timerService.resetTimer();
   }
 
+  void increaseProductItemAmount(String id) {
+    int index = productItems.indexWhere((item) => item.id == id);
+    if (index != -1) {
+      ProductItem updatedItem = ProductItem(
+        id: productItems[index].id,
+        name: productItems[index].name,
+        price: productItems[index].price,
+        amount: productItems[index].amount + 1,
+      );
+      productItems[index] = updatedItem;
+      checkAndNavigateBack();
+    }
+    timerService.resetTimer();
+  }
+
   void clearProductItems() {
     productItems.clear();
     checkAndNavigateBack();

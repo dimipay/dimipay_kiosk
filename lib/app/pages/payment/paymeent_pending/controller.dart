@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:dimipay_kiosk/app/core/utils/errors.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 import 'package:dimipay_kiosk/app/services/kiosk/model.dart';
@@ -12,6 +13,7 @@ enum PaymentType { qr, faceSign }
 class PaymentPendingPageController extends GetxController {
   TransactionService transactionService = TransactionService();
   TimerService timerService = Get.find<TimerService>();
+  Timer? _paymentTimer;
 
   final paymentType = PaymentType.qr.obs;
   final transactionId = RxString('');
@@ -34,6 +36,13 @@ class PaymentPendingPageController extends GetxController {
       paymentMethodId.value = args['paymentMethodId'] ?? '';
       otp.value = args['otp'] ?? '';
     }
+
+    // 5초 타이머 설정
+    _paymentTimer = Timer(const Duration(seconds: 5), () {
+      DPAlertModal.open('결제 시간이 초과되었습니다.');
+      Get.offAllNamed(Routes.ONBOARDING);
+    });
+
     if (paymentType.value == PaymentType.qr) {
       startQRPayment();
     } else if (paymentType.value == PaymentType.faceSign) {
@@ -41,8 +50,10 @@ class PaymentPendingPageController extends GetxController {
     }
   }
 
-  @override void onClose() {
+  @override
+  void onClose() {
     timerService.stopTimer();
+    _paymentTimer?.cancel(); // 타이머 취소
     super.onClose();
   }
 
@@ -116,7 +127,6 @@ class PaymentPendingPageController extends GetxController {
       Get.offAndToNamed(Routes.PAYMENT_FAILED);
     } on UnknownException catch (e) {
       DPAlertModal.open(e.message);
-      Get.offAndToNamed(Routes.PAYMENT_FAILED);
     }
   }
 }

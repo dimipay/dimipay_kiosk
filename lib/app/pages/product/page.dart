@@ -6,6 +6,8 @@ import 'package:dimipay_kiosk/app/widgets/barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../widgets/button.dart';
+
 class ProductPage extends GetView<ProductPageController> {
   const ProductPage({super.key});
 
