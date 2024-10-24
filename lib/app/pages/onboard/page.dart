@@ -46,7 +46,8 @@ class OnboardingPage extends GetView<OnboardPageController> {
                       '물건의 바코드를 스캔하여 결제를 시작해주세요.',
                       style: textTheme.header2
                           .copyWith(color: colorTheme.grayscale700),
-                    ),const SizedBox(height: 64),
+                    ),
+                    const SizedBox(height: 64),
                     DPGestureDetectorWithOpacityInteraction(
                       onTap: () {
                         Get.toNamed(Routes.PRODUCT);

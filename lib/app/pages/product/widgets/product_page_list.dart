@@ -110,7 +110,7 @@ class ProductPageList extends GetView<ProductPageController> {
           ),
           const Spacer(),
           SizedBox(
-            width: 108,
+            width: 160,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
