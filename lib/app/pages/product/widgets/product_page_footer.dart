@@ -58,10 +58,14 @@ class ProductPageFooter extends GetView<ProductPageController> {
                       )
                     : DPButton(
                         onTap: () {
-                          controller.faceDetectionStatus.value ==
-                                  FaceDetectionStatus.detected
-                              ? controller.faceSignPayment()
-                              : controller.qrPayment();
+                          if (controller.selectedPaymentMethod.value == null) {
+                            controller.qrPayment();
+                          } else {
+                            controller.faceDetectionStatus.value ==
+                                    FaceDetectionStatus.detected
+                                ? controller.faceSignPayment()
+                                : controller.qrPayment();
+                          }
                         },
                         child: Text(
                           "결제하기",
@@ -73,7 +77,8 @@ class ProductPageFooter extends GetView<ProductPageController> {
             ],
           ),
           Obx(() {
-            if (controller.isPaymentMethodSelectable.value) {
+            if (controller.isPaymentMethodSelectable.value &&
+                controller.selectedPaymentMethod.value != null) {
               return _buildPaymentMethodSelection(
                   context, colorTheme, textTheme);
             } else {
@@ -87,27 +92,27 @@ class ProductPageFooter extends GetView<ProductPageController> {
 
   Widget _buildPaymentMethodSelection(
       BuildContext context, DPColors colorTheme, DPTypography textTheme) {
-    return Obx(() => Container(
-          margin: const EdgeInsets.only(top: 36),
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          decoration: BoxDecoration(
-            color: colorTheme.grayscale200,
-            border: Border.all(
-              color: colorTheme.grayscale300,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              SvgPicture.asset(
+    return Container(
+      margin: const EdgeInsets.only(top: 36),
+      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+      decoration: BoxDecoration(
+        color: colorTheme.grayscale200,
+        border: Border.all(
+          color: colorTheme.grayscale300,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Obx(() => SvgPicture.asset(
                 width: 48,
                 height: 48,
                 controller.getLogoImagePath(
                     controller.selectedPaymentMethod.value!.cardCode),
-              ),
-              const SizedBox(width: 24),
-              Column(
+              )),
+          const SizedBox(width: 24),
+          Obx(() => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -124,12 +129,12 @@ class ProductPageFooter extends GetView<ProductPageController> {
                     ),
                   ),
                 ],
-              ),
-              const Spacer(),
-              const PaymentSelectionButton(),
-            ],
-          ),
-        ));
+              )),
+          const Spacer(),
+          const PaymentSelectionButton(),
+        ],
+      ),
+    );
   }
 }
 
@@ -161,55 +166,60 @@ class PaymentSelectionButton extends GetView<ProductPageController> {
                         .copyWith(color: colorTheme.grayscale1000),
                   ),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 SizedBox(
                   width: 400,
-                  child: Column(
-                    children: controller.user!.paymentMethods.methods
-                        .map((method) => DPGestureDetectorWithFillInteraction(
-                              onTap: () {
-                                controller.updateSelectedPaymentMethod(method);
-                                Navigator.of(context).pop();
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 16),
-                                child: Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      width: 48,
-                                      height: 48,
-                                      controller
-                                          .getLogoImagePath(method.cardCode),
-                                    ),
-                                    const SizedBox(width: 24),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          method.name,
-                                          style: textTheme.header2.copyWith(
-                                              color: colorTheme.grayscale800),
+                  child: Obx(() => Column(
+                        children: controller.user?.paymentMethods.methods
+                                .map((method) =>
+                                    DPGestureDetectorWithFillInteraction(
+                                      onTap: () {
+                                        controller.updateSelectedPaymentMethod(
+                                            method);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 16),
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.asset(
+                                              width: 48,
+                                              height: 48,
+                                              controller.getLogoImagePath(
+                                                  method.cardCode),
+                                            ),
+                                            const SizedBox(width: 24),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  method.name,
+                                                  style: textTheme.header2
+                                                      .copyWith(
+                                                          color: colorTheme
+                                                              .grayscale800),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  '${method.cardCode} (${method.preview})',
+                                                  style: textTheme.itemTitle
+                                                      .copyWith(
+                                                    color:
+                                                        colorTheme.grayscale600,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          '${method.cardCode} (${method.preview})',
-                                          style: textTheme.itemTitle.copyWith(
-                                            color: colorTheme.grayscale600,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
+                                      ),
+                                    ))
+                                .toList() ??
+                            [],
+                      )),
                 ),
               ],
             ),
