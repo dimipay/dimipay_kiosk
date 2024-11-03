@@ -138,11 +138,22 @@ class ProductPageController extends GetxController {
           transactionId: transactionId.value!,
         );
 
+        if (detectedUser.paymentMethods.methods.isEmpty) {
+          faceDetectionStatus.value = FaceDetectionStatus.failed;
+          DPAlertModal.open('등록된 결제수단이 없어요.');
+          return;
+        }
+
         faceDetectionStatus.value = FaceDetectionStatus.detected;
         user = detectedUser;
-        selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
-          (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
-        );
+
+        try {
+          selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
+            (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
+          );
+        } catch (e) {
+          selectedPaymentMethod.value = user!.paymentMethods.methods.first;
+        }
 
         return;
       } on NoMatchedUserException {
