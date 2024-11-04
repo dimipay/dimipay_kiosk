@@ -23,8 +23,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 PaymentMethods _$PaymentMethodsFromJson(Map<String, dynamic> json) =>
     PaymentMethods(
-      mainPaymentMethodId: json['mainPaymentMethodId'] as String,
-      paymentPinAuthURL: json['paymentPinAuthURL'] as String,
+      mainPaymentMethodId: json['mainPaymentMethodId'] as String?,
+      paymentPinAuthURL: json['paymentPinAuthURL'] as String?,
       methods: (json['methods'] as List<dynamic>)
           .map((e) => Method.fromJson(e as Map<String, dynamic>))
           .toList(),

@@ -23,8 +23,8 @@ class User {
 
 @JsonSerializable()
 class PaymentMethods {
-  String mainPaymentMethodId;
-  String paymentPinAuthURL;
+  String? mainPaymentMethodId;
+  String? paymentPinAuthURL;
   List<Method> methods;
 
   PaymentMethods({

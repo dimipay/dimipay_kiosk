@@ -140,6 +140,12 @@ class ProductPageController extends GetxController {
 
         faceDetectionStatus.value = FaceDetectionStatus.detected;
         user = detectedUser;
+
+        if (user!.paymentMethods.methods.isEmpty) {
+          DPAlertModal.open('등록된 결제수단이 없습니다.');
+          return;
+        }
+
         selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
           (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
         );
@@ -155,6 +161,45 @@ class ProductPageController extends GetxController {
       } on UnknownException catch (e) {
         DPAlertModal.open(e.message);
       }
+    }
+  }
+
+  void faceSignPayment() {
+    if (transactionId.value == null) {
+      DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
+
+    if (faceDetectionStatus.value == FaceDetectionStatus.searching) {
+      stopFaceDetection();
+      DPAlertModal.open('얼굴 인식이 완료되지 않았습니다. 다시 시도해 주세요.');
+      return;
+    }
+
+    if (user?.paymentMethods.methods.isEmpty ?? true) {
+      DPAlertModal.open('등록된 결제수단이 없습니다.');
+      return;
+    }
+
+    timerService.stopTimer();
+
+    if (faceSignService.otp.value != null) {
+      Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
+        'type': PaymentType.faceSign,
+        'transactionId': transactionId.value,
+        'productItems': productItems,
+        'paymentMethodId': selectedPaymentMethod.value!.id,
+        'otp': faceSignService.otp.value,
+      });
+    } else {
+      Get.toNamed(Routes.PIN, arguments: {
+        'pinPageType': PinPageType.facesign,
+        'type': PaymentType.faceSign,
+        'transactionId': transactionId.value,
+        'productItems': productItems,
+        'paymentPinAuthURL': user!.paymentMethods.paymentPinAuthURL,
+        'paymentMethodId': selectedPaymentMethod.value!.id,
+      });
     }
   }
 
@@ -215,40 +260,6 @@ class ProductPageController extends GetxController {
       'productItems': productItems,
       'dpToken': dpToken,
     });
-  }
-
-  void faceSignPayment() {
-    if (transactionId.value == null) {
-      DPAlertModal.open('트랜잭션 ID가 생성되지 않았습니다. 다시 시도해 주세요.');
-      return;
-    }
-
-    if (faceDetectionStatus.value == FaceDetectionStatus.searching) {
-      stopFaceDetection();
-      DPAlertModal.open('얼굴 인식이 완료되지 않았습니다. 다시 시도해 주세요.');
-      return;
-    }
-
-    timerService.stopTimer();
-
-    if (faceSignService.otp.value != null) {
-      Get.toNamed(Routes.PAYMENT_PENDING, arguments: {
-        'type': PaymentType.faceSign,
-        'transactionId': transactionId.value,
-        'productItems': productItems,
-        'paymentMethodId': selectedPaymentMethod.value!.id,
-        'otp': faceSignService.otp.value,
-      });
-    } else {
-      Get.toNamed(Routes.PIN, arguments: {
-        'pinPageType': PinPageType.facesign,
-        'type': PaymentType.faceSign,
-        'transactionId': transactionId.value,
-        'productItems': productItems,
-        'paymentPinAuthURL': user!.paymentMethods.paymentPinAuthURL,
-        'paymentMethodId': selectedPaymentMethod.value!.id,
-      });
-    }
   }
 
   void qrPayment() {
