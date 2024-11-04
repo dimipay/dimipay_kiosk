@@ -58,10 +58,18 @@ class ProductPageFooter extends GetView<ProductPageController> {
                       )
                     : DPButton(
                         onTap: () {
-                          controller.faceDetectionStatus.value ==
-                                  FaceDetectionStatus.detected
-                              ? controller.faceSignPayment()
-                              : controller.qrPayment();
+                          final hasPaymentMethods = controller
+                                  .user?.paymentMethods.methods.isNotEmpty ??
+                              false;
+                          final isDetected =
+                              controller.faceDetectionStatus.value ==
+                                  FaceDetectionStatus.detected;
+
+                          if (isDetected && hasPaymentMethods) {
+                            controller.faceSignPayment();
+                          } else {
+                            controller.qrPayment();
+                          }
                         },
                         child: Text(
                           "결제하기",
@@ -73,7 +81,10 @@ class ProductPageFooter extends GetView<ProductPageController> {
             ],
           ),
           Obx(() {
-            if (controller.isPaymentMethodSelectable.value) {
+            final hasPaymentMethods =
+                controller.user?.paymentMethods.methods.isNotEmpty ?? false;
+            if (controller.isPaymentMethodSelectable.value &&
+                hasPaymentMethods) {
               return _buildPaymentMethodSelection(
                   context, colorTheme, textTheme);
             } else {
