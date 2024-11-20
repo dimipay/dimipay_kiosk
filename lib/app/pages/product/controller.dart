@@ -160,6 +160,7 @@ class ProductPageController extends GetxController {
         DPAlertModal.open(e.message);
       } on UnknownException catch (e) {
         DPAlertModal.open(e.message);
+        Get.offAndToNamed(Routes.ONBOARDING);
       }
     }
   }
