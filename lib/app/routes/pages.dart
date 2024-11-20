@@ -17,6 +17,8 @@ import 'package:dimipay_kiosk/app/pages/pin/binding.dart';
 import 'package:dimipay_kiosk/app/pages/pin/page.dart';
 import 'package:dimipay_kiosk/app/routes/routes.dart';
 
+import '../pages/payment/payment_failed/binding.dart';
+
 class AppPages {
   static final pages = [
     GetPage(name: Routes.TEST, page: () => const TestPage()),
@@ -75,7 +77,7 @@ class AppPages {
     GetPage(
       name: Routes.PAYMENT_FAILED,
       page: () => const PaymentFailedPage(),
-      binding: PaymentPageBinding(),
+      binding: PaymentFailedPageBinding(),
       transition: Transition.cupertino,
       middlewares: [
         LoginMiddleware(),

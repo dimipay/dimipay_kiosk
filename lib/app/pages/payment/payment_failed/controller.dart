@@ -14,7 +14,7 @@ class PaymentFailedPageController extends GetxController {
   }
 
   Future<void> _playErrorSound() async {
-    await audioPlayer.play(AssetSource('assets/audio/bell.mp3'));
+    await audioPlayer.play(AssetSource('/audio/bell.mp3'));
   }
 
   @override
