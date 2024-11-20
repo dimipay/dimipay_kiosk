@@ -148,7 +148,6 @@ class ProductPageController extends GetxController {
         attempts++;
         if (attempts >= maxAttempts) {
           faceDetectionStatus.value = FaceDetectionStatus.failed;
-          break;
         }
       } on NoTransactionIdFoundException catch (e) {
         DPAlertModal.open(e.message);
