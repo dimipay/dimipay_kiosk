@@ -37,6 +37,7 @@ dependencies:
 
   json_annotation: any
   http_parser: any
+  audioplayers: ^6.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -52,6 +53,7 @@ flutter:
     - assets/fonts/
     - assets/images/
     - assets/images/cards/
+    - assets/audio/
 
   fonts:
     - family: SUITv1
