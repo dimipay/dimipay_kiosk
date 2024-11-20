@@ -125,31 +125,24 @@ class ProductPageController extends GetxController {
   Future<void> doFaceSignAction() async {
     int attempts = 0;
     const int maxAttempts = 5;
-
     faceSignService.resetOTP();
-
     while (faceDetectionStatus.value == FaceDetectionStatus.searching &&
         attempts < maxAttempts) {
       try {
         Uint8List image = await captureImage();
-
         User detectedUser = await faceSignService.getUserWithFaceSign(
           image: image,
           transactionId: transactionId.value!,
         );
-
         faceDetectionStatus.value = FaceDetectionStatus.detected;
         user = detectedUser;
-
         if (user!.paymentMethods.methods.isEmpty) {
           DPAlertModal.open('등록된 결제수단이 없습니다.');
           return;
         }
-
         selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
           (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
         );
-
         return;
       } on NoMatchedUserException {
         attempts++;
@@ -158,8 +151,10 @@ class ProductPageController extends GetxController {
         }
       } on NoTransactionIdFoundException catch (e) {
         DPAlertModal.open(e.message);
+        break;
       } on UnknownException catch (e) {
         DPAlertModal.open(e.message);
+        break;
       }
     }
   }

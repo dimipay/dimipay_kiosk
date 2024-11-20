@@ -38,7 +38,7 @@ class PaymentPendingPageController extends GetxController {
     }
 
     // 5초 타이머 설정
-    _paymentTimer = Timer(const Duration(seconds: 5), () {
+    _paymentTimer = Timer(const Duration(seconds: 10), () {
       DPAlertModal.open('결제 시간이 초과되었습니다.');
       Get.offAllNamed(Routes.ONBOARDING);
     });
