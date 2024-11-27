@@ -14,7 +14,6 @@ class TimerService extends GetxService {
     showAlert.value = false;
 
     _inactivityTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      print('Timer: ${remainingTime.value}');
       if (remainingTime.value > 1) {
         remainingTime.value--;
         if (remainingTime.value <= 10 && !showAlert.value) {
