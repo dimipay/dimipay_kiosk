@@ -140,9 +140,18 @@ class ProductPageController extends GetxController {
           DPAlertModal.open('등록된 결제수단이 없습니다.');
           return;
         }
-        selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
-          (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
-        );
+
+        if (user!.paymentMethods.mainPaymentMethodId != null) {
+          try {
+            selectedPaymentMethod.value = user!.paymentMethods.methods.firstWhere(
+                  (method) => method.id == user!.paymentMethods.mainPaymentMethodId,
+            );
+          } catch (e) {
+            selectedPaymentMethod.value = user!.paymentMethods.methods.first;
+          }
+        } else {
+          selectedPaymentMethod.value = user!.paymentMethods.methods.first;
+        }
         return;
       } on NoMatchedUserException {
         attempts++;
