@@ -16,7 +16,7 @@ class PaymentPage extends GetView<PaymentPageController> {
     final textTheme = Theme.of(context).extension<DPTypography>()!;
     return BarcodeScanner(
       onKey: (input) {
-        if (input.startsWith('-DP') || input.startsWith('688000')) {
+        if (input.startsWith('-DP') || input.startsWith('688000') || input.startsWith('6T9SS8FGW')) {
           controller.setDPToken(barcode: input);
         }
       },

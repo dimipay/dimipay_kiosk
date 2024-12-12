@@ -15,7 +15,7 @@ class ProductPage extends GetView<ProductPageController> {
   Widget build(BuildContext context) {
     return BarcodeScanner(
       onKey: (input) async {
-        if (input.startsWith('-DP') || input.startsWith('688000')) {
+        if (input.startsWith('-DP') || input.startsWith('688000') || input.startsWith('6T9SS8FGW')) {
           controller.setDPToken(barcode: input);
         } else {
           if (!input.startsWith('http')) {
