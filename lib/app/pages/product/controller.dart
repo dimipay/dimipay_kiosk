@@ -225,8 +225,6 @@ class ProductPageController extends GetxController {
 
   void deleteTransactionId({required String transactionId}) async {
     try {
-      await transactionService.deleteTransactionId(
-          transactionId: transactionId);
       this.transactionId.value = null;
     } on DeletingTransactionIfNotFoundException catch (e) {
       print('DeletingTransactionIfNotFoundException: ${e.message}');

@@ -25,20 +25,6 @@ class TransactionRepository {
     }
   }
 
-  Future<void> deleteTransactionId(String transactionId) async {
-    String url = '/kiosk/transaction/id/$transactionId';
-
-    try {
-      await secureApi.delete(url);
-    } on DioException catch (e) {
-      if (e.response?.data['code'] == 'ERR_DELETING_TRANSACTION_IF_NOT_FOUND') {
-        throw DeletingTransactionIfNotFoundException(
-            message: e.response?.data['message']);
-      }
-      throw UnknownException(message: e.response?.data['message']);
-    }
-  }
-
   Future<TransactionResult> payQR({
     required String dpToken,
     required String transactionId,
