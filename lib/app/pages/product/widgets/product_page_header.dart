@@ -13,16 +13,32 @@ class ProductPageHeader extends GetView<ProductPageController> {
     final colorTheme = Theme.of(context).extension<DPColors>()!;
     final textTheme = Theme.of(context).extension<DPTypography>()!;
 
-    return Obx(() {
-      switch (controller.faceDetectionStatus.value) {
-        case FaceDetectionStatus.searching:
-          return _buildSearchingHeader(context, colorTheme, textTheme);
-        case FaceDetectionStatus.detected:
-          return _buildDetectedHeader(context, colorTheme, textTheme);
-        case FaceDetectionStatus.failed:
-          return _buildFailedHeader(context, colorTheme, textTheme);
-      }
-    });
+    // return Obx(() {
+    //   switch (controller.faceDetectionStatus.value) {
+    //     case FaceDetectionStatus.searching:
+    //       return _buildSearchingHeader(context, colorTheme, textTheme);
+    //     case FaceDetectionStatus.detected:
+    //       return _buildDetectedHeader(context, colorTheme, textTheme);
+    //     case FaceDetectionStatus.failed:
+    //       return _buildFailedHeader(context, colorTheme, textTheme);
+    //   }
+    // });
+
+    return _buildNoticeHeader(context, colorTheme, textTheme);
+  }
+
+  Widget _buildNoticeHeader(
+      BuildContext context, DPColors colorTheme, DPTypography textTheme) {
+    return Padding(
+      padding: const EdgeInsets.all(36),
+      child: Text(
+        'Face Sign은 추후 제공될 예정입니다.',
+        style: textTheme.header1.copyWith(
+          fontWeight: FontWeight.w500,
+          color: colorTheme.grayscale600,
+        ),
+      ),
+    );
   }
 
   Widget _buildSearchingHeader(

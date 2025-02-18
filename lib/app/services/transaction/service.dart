@@ -24,14 +24,6 @@ class TransactionService extends GetxController {
     }
   }
 
-  Future<void> deleteTransactionId({required String transactionId}) async {
-    try {
-      await repository.deleteTransactionId(transactionId);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   Future<TransactionResult> payQR({
     required String transactionId,
     required String dpToken,
