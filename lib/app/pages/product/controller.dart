@@ -52,7 +52,7 @@ class ProductPageController extends GetxController {
       addOrUpdateProductItem(firstProduct!);
     }
     await generateTransactionId();
-    await doFaceSignAction();
+    //await doFaceSignAction();
     timerService.startTimer();
   }
 
