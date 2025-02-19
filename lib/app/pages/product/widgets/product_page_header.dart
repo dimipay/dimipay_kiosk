@@ -32,7 +32,7 @@ class ProductPageHeader extends GetView<ProductPageController> {
     return Padding(
       padding: const EdgeInsets.all(36),
       child: Text(
-        'Face Sign은 추후 제공될 예정입니다.',
+        '얼굴 인식 결제는 추후 제공될 예정입니다.',
         style: textTheme.header1.copyWith(
           fontWeight: FontWeight.w500,
           color: colorTheme.grayscale600,
